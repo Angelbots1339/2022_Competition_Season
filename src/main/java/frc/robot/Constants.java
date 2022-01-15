@@ -65,6 +65,7 @@ public final class Constants {
         public final static double trackWidth = 0; //TODO
         public final static double wheelDiameter = Units.inchesToMeters(4);
         public final static double wheelRotPerMotorRot = 6.06;
+        public final static double falcon500ClicksPerRot = 2048;
 
         //PID 
         public final static double leftKP = 0.01;
