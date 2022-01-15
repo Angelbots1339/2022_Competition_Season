@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return current heading from gyro in a {@link Rotation2d}
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(ahrs.getYaw());
+    return Rotation2d.fromDegrees(-ahrs.getYaw());
   }
 
   /**
@@ -147,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pose = m_DriveOdometry.update(getHeading(), getDistanceRight(), getDistanceLeft());
+    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
 
     // Print info
     SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
@@ -155,11 +155,19 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
     SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
 
+    SmartDashboard.putNumber("x", pose.getX());
+    SmartDashboard.putNumber("y", pose.getY());
+    SmartDashboard.putNumber("yaw", pose.getRotation().getDegrees());
+
   }
 
   public void resetOdometry(Pose2d startingPose) {
     resetEncoders();
     m_DriveOdometry.resetPosition(startingPose, getHeading());
+  
+    ahrs.setAngleAdjustment(-90);
+    ahrs.zeroYaw();
+    ahrs.calibrate();
   }
 
   private void resetEncoders() {

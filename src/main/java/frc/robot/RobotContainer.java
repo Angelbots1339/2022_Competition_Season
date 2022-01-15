@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -80,7 +82,11 @@ public class RobotContainer {
 
     // simple trajectory that moves 1 meter forward
     Trajectory trajectory = TrajectoryGenerator
-        .generateTrajectory(Arrays.asList(new Pose2d(), new Pose2d(1, 0, new Rotation2d())), config);
+        .generateTrajectory(new Pose2d(), List.of(
+            new Translation2d(1, 1),
+            new Translation2d(2, -1)),
+          new Pose2d(3, 0, new Rotation2d()),
+           config);
 
     RamseteCommand command = new RamseteCommand(trajectory,
         m_driveSubsystem::getPose, new RamseteController(2, 0.7),
