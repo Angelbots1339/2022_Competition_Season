@@ -4,10 +4,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.I2C;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -22,7 +20,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
@@ -64,9 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   private AHRS ahrs = new AHRS();
 
-  private final I2C.Port i2cPort = I2C.Port.kMXP;
-  private ColorSensorV3 mColorSensorV3 = new ColorSensorV3(i2cPort);
-
   public DriveSubsystem() {
     ahrs.calibrate();
     ahrs.zeroYaw();
@@ -75,16 +69,15 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotorTop.configFactoryDefault();
 
     rightMotorControllerGroup.setInverted(true);
-
+    m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
 
   }
 
   /**
-   * Drives the robot using arcade controls. Intend use for inline command reason
-   * for Suppliers
+   * Drives the robot using arcade controls. Intend use for inline command
    * 
    * @param fwd supplier for forward movement
-   * @param rot supplier for rotation rotation
+   * @param rot supplier for rotation
    */
   public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot) {
     m_Drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
@@ -133,8 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * 
-   * @return Wheel speeds in type {@link DifferentialDriveWheelSpeeds} from
-   *         encoders in meters per sec
+   * @return Wheel speeds from encoders (m/s)
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
@@ -149,8 +141,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
     pose = m_DriveOdometry.update(getHeading(), getDistanceRight(), getDistanceLeft());
+
+    // Print info
+    SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
+    SmartDashboard.putNumber("Left speed (m/s)", getWheelSpeeds().leftMetersPerSecond);
+    SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
+    SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
 
   }
 

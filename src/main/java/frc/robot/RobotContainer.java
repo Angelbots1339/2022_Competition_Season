@@ -40,9 +40,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
+    
     configureButtonBindings();
 
+    // Binds drive subsystem to use the left joystick to control arcade drive
     m_driveSubsystem.setDefaultCommand(new RunCommand(
         () -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getRawAxis(Constants.JoystickConstants.leftJoystickY),
             () -> m_Joystick.getRawAxis(Constants.JoystickConstants.rightJoystickX)),
