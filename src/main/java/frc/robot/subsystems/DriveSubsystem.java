@@ -45,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
       new MotorController[] { rightMotorTop, new WPI_TalonFX(DriveConstants.rightMotorFrontPort),
           new WPI_TalonFX(DriveConstants.rightMotorBackPort) });
 
-  private DifferentialDrive m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
+  private DifferentialDrive m_Drive;
 
   private PIDController leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
   private PIDController rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
@@ -62,13 +62,19 @@ public class DriveSubsystem extends SubsystemBase {
   private AHRS ahrs = new AHRS();
 
   public DriveSubsystem() {
+    m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
+
+
     ahrs.calibrate();
     ahrs.zeroYaw();
 
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
+    
+
     rightMotorControllerGroup.setInverted(true);
+
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
 
   }
@@ -108,7 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
   public double getDistanceRight() {
     // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
     // Converts clicks to total rotation to distance travelled
-    return rightMotorTop.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
+    return -rightMotorTop.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
         * Math.PI;
   }
 
@@ -135,7 +141,7 @@ public class DriveSubsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(
         leftMotorTop.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
             * Math.PI * 10,
-        rightMotorTop.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
+        -rightMotorTop.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
             * Math.PI * 10 );
   }
 
@@ -149,6 +155,16 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
     SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
 
+  }
+
+  public void resetOdometry(Pose2d startingPose) {
+    resetEncoders();
+    m_DriveOdometry.resetPosition(startingPose, getHeading());
+  }
+
+  private void resetEncoders() {
+    leftMotorTop.setSelectedSensorPosition(0);
+    rightMotorTop.setSelectedSensorPosition(0);
   }
 
   // Getters

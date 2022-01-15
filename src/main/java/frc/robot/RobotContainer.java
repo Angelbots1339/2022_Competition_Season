@@ -9,12 +9,15 @@ import java.util.Set;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -34,19 +37,19 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final Joystick m_Joystick = new Joystick(Constants.JoystickConstants.mainJoystick);
+  private final XboxController m_Joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
+
     configureButtonBindings();
 
     // Binds drive subsystem to use the left joystick to control arcade drive
     m_driveSubsystem.setDefaultCommand(new RunCommand(
-        () -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getRawAxis(Constants.JoystickConstants.leftJoystickY),
-            () -> m_Joystick.getRawAxis(Constants.JoystickConstants.rightJoystickX)),
+        () -> m_driveSubsystem.arcadeDrive(() -> -m_Joystick.getLeftY(),
+            () -> m_Joystick.getRightX()),
         m_driveSubsystem));
   }
 
@@ -66,26 +69,34 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka),
+        m_driveSubsystem.getKinematics(), 10);
+
     // Simple path following auto
-    TrajectoryConfig config = new
-    TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
-    AutonomousConstants.maxAccelerationMetersPerSecondSq);
-    config.setKinematics(m_driveSubsystem.getKinematics());
+    TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
+        AutonomousConstants.maxAccelerationMetersPerSecondSq);
+    config.setKinematics(m_driveSubsystem.getKinematics()).addConstraint(voltageConstraint);
 
     // simple trajectory that moves 1 meter forward
     Trajectory trajectory = TrajectoryGenerator
-    .generateTrajectory(Arrays.asList(new Pose2d(), new Pose2d(1, 0, new
-    Rotation2d())), config);
+        .generateTrajectory(Arrays.asList(new Pose2d(), new Pose2d(1, 0, new Rotation2d())), config);
 
     RamseteCommand command = new RamseteCommand(trajectory,
-    m_driveSubsystem::getPose, new RamseteController(2, 0.7),
-    m_driveSubsystem.getFeedforward(), m_driveSubsystem.getKinematics(),
-    m_driveSubsystem::getWheelSpeeds,
-    m_driveSubsystem.getLeftPid(), m_driveSubsystem.getRightPid(),
-    m_driveSubsystem::tankDriveVolts,
-    m_driveSubsystem);
+        m_driveSubsystem::getPose, new RamseteController(2, 0.7),
+        m_driveSubsystem.getFeedforward(), m_driveSubsystem.getKinematics(),
+        m_driveSubsystem::getWheelSpeeds,
+        m_driveSubsystem.getLeftPid(), m_driveSubsystem.getRightPid(),
+        m_driveSubsystem::tankDriveVolts,
+        m_driveSubsystem);
 
-    return null;
+    m_driveSubsystem.resetOdometry(trajectory.getInitialPose());
 
+    return command.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+
+  }
+
+  public void resetDrive() {
+    m_driveSubsystem.resetOdometry(new Pose2d());
   }
 }

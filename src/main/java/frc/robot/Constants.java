@@ -54,12 +54,12 @@ public final class Constants {
         public final static double maxDriveOutput = 1;
 
         //Motor ports
-        public final static int leftMotorTopPort = 1; 
-        public final static int leftMotorFrontPort = 2; 
+        public final static int leftMotorTopPort = 2; 
+        public final static int leftMotorFrontPort = 1; 
         public final static int leftMotorBackPort = 3; 
         public final static int rightMotorTopPort = 5; 
-        public final static int rightMotorFrontPort = 6; 
-        public final static int rightMotorBackPort = 4; 
+        public final static int rightMotorFrontPort = 4; 
+        public final static int rightMotorBackPort = 6; 
         
         //Drive base values
         public final static double trackWidth = Units.inchesToMeters(21.5);
@@ -68,19 +68,19 @@ public final class Constants {
         public final static double falcon500ClicksPerRot = 2048;
 
         //PID 
-        public final static double leftKP = 0.01;
-        public final static double rightKP = 0.01;
+        public final static double leftKP = 2.1258;
+        public final static double rightKP = 2.1258;
 
         //Motion profiling
         //TODO motion profile robot
-        public final static double ks = 0; 
-        public final static double kv = 0; 
-        public final static double ka = 0; 
+        public final static double ks = 0.5221; 
+        public final static double kv = 2.1103; 
+        public final static double ka = 0.11835; 
 
     }
     public final static class AutonomousConstants{
-        public final static double maxVelocityMetersPerSecond = Units.feetToMeters(2);
-        public final static double maxAccelerationMetersPerSecondSq = Units.feetToMeters(2);
+        public final static double maxVelocityMetersPerSecond = 1;
+        public final static double maxAccelerationMetersPerSecondSq = 0.5;
 
     }
     public final static class LimelightConstants{
