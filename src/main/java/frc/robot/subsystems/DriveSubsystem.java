@@ -34,47 +34,39 @@ import java.util.function.DoubleSupplier;
 public class DriveSubsystem extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-  private WPI_TalonFX leftMotorTop = new WPI_TalonFX(DriveConstants.leftMotorTopPort);
 
-  private WPI_TalonFX rightMotorTop = new WPI_TalonFX(DriveConstants.rightMotorTopPort);
+  // Motors
+  private WPI_TalonFX leftMotorTop;
+  private WPI_TalonFX rightMotorTop;
+  private MotorControllerGroup leftMotorControllerGroup;
+  private MotorControllerGroup rightMotorControllerGroup;
 
-  private MotorControllerGroup leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
-      new WPI_TalonFX(DriveConstants.leftMotorFrontPort), new WPI_TalonFX(DriveConstants.leftMotorBackPort) });
+  // Controllers
+  private PIDController leftPID;
+  private PIDController rightPID;
+  private SimpleMotorFeedforward feedforward;
 
-  private MotorControllerGroup rightMotorControllerGroup = new MotorControllerGroup(
-      new MotorController[] { rightMotorTop, new WPI_TalonFX(DriveConstants.rightMotorFrontPort),
-          new WPI_TalonFX(DriveConstants.rightMotorBackPort) });
-
+  // Pose & differential drive
+  private Pose2d pose;
   private DifferentialDrive m_Drive;
+  private DifferentialDriveKinematics m_DriveKinematics;
+  private DifferentialDriveOdometry m_DriveOdometry;
 
-  private PIDController leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
-  private PIDController rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
-
-  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv,
-      DriveConstants.ka);
-
-  private Pose2d pose = new Pose2d();
-
-  private DifferentialDriveKinematics m_DriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
-
-  private DifferentialDriveOdometry m_DriveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
-
-  private AHRS ahrs = new AHRS();
+  // Gyro
+  private AHRS ahrs;
 
   public DriveSubsystem() {
-    m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
+    constructorHelper();
 
+    // Zero sensors
     ahrs.calibrate();
     resetOdometry(new Pose2d());
-
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
     // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
-
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
-
   }
 
   /**
@@ -206,5 +198,38 @@ public class DriveSubsystem extends SubsystemBase {
   private void resetEncoders() {
     leftMotorTop.setSelectedSensorPosition(0);
     rightMotorTop.setSelectedSensorPosition(0);
+  }
+
+  // --- Constructor helper ---
+
+  /**
+   * Moves all the ugly instantiation out of the way.
+   */
+  private void constructorHelper() {
+    leftMotorTop = new WPI_TalonFX(DriveConstants.leftMotorTopPort);
+    rightMotorTop = new WPI_TalonFX(DriveConstants.rightMotorTopPort);
+
+    leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
+        new WPI_TalonFX(DriveConstants.leftMotorFrontPort), new WPI_TalonFX(DriveConstants.leftMotorBackPort) });
+
+    rightMotorControllerGroup = new MotorControllerGroup( new MotorController[] { rightMotorTop,
+        new WPI_TalonFX(DriveConstants.rightMotorFrontPort), new WPI_TalonFX(DriveConstants.rightMotorBackPort) });
+
+    m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
+
+    leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
+    rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
+
+    feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
+
+    // TODO getting error on startup from differential drive not updated often enough. Need to set this to true value?
+    pose = new Pose2d();
+
+    // TODO this is a constant
+    m_DriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+
+    m_DriveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
+
+    ahrs = new AHRS();
   }
 }
