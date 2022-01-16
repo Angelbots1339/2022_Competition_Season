@@ -64,15 +64,13 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
 
-
     ahrs.calibrate();
-    ahrs.zeroYaw();
+    resetOdometry(new Pose2d());
 
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
-    
-
+    // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
 
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
@@ -80,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Drives the robot using arcade controls. Intend use for inline command
+   * Drives the robot using arcade controls. Intend use for inline default command
    * 
    * @param fwd supplier for forward movement
    * @param rot supplier for rotation
@@ -100,82 +98,77 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotorControllerGroup.setVoltage(rightVolts);
   }
 
+  @Override
+  public void periodic() {
+    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
+    debugLog(DriveConstants.debug);
+  }
+
+  /**
+   * Resets encoders to 0 and gyro yaw to 0
+   * @param startingPose Pose to initialize odometry object to
+   */
+  public void resetOdometry(Pose2d startingPose) {
+    resetEncoders();
+    
+    // TODO test if offset fixes auto routines
+    ahrs.setAngleAdjustment(-90);
+    ahrs.zeroYaw();
+    
+    // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
+    m_DriveOdometry.resetPosition(startingPose, getHeading());
+  }
+
+  /**
+   * Put any logging info here to not clutter up periodic.
+   * @param enabled Print logging info?
+   */
+  private void debugLog(boolean enabled) {
+    if(!enabled) return;
+    // Speeds
+    SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
+    SmartDashboard.putNumber("Left speed (m/s)", getWheelSpeeds().leftMetersPerSecond);
+    // Distance
+    SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
+    SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
+    // Position
+    SmartDashboard.putNumber("x", pose.getX());
+    SmartDashboard.putNumber("y", pose.getY());
+    // Rotation
+    SmartDashboard.putNumber("yaw", pose.getRotation().getDegrees());
+  }
+
+  // --- Getters ---
+
   /**
    * @return current heading from gyro in a {@link Rotation2d}
    */
   public Rotation2d getHeading() {
+    // TODO see if reversing gyro yaw fixes auto routine
     return Rotation2d.fromDegrees(-ahrs.getYaw());
   }
 
   /**
    * @return total distance right encoder has traveled in meters
    */
-
   public double getDistanceRight() {
-    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
-    // Converts clicks to total rotation to distance travelled
-    return -rightMotorTop.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
-        * Math.PI;
+    return -getEncoderDistance(rightMotorTop);
   }
 
   /**
-   * 
    * @return total distance left encoder has traveled in meters
    */
   public double getDistanceLeft() {
-    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
-    // Converts clicks to total rotation to distance travelled
-    return leftMotorTop.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
-        * Math.PI;
-
+    return getEncoderDistance(leftMotorTop);
   }
 
   /**
-   * 
    * @return Wheel speeds from encoders (m/s)
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
-    // COnvert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
-
-    return new DifferentialDriveWheelSpeeds(
-        leftMotorTop.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
-            * Math.PI * 10,
-        -rightMotorTop.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter
-            * Math.PI * 10 );
+    return new DifferentialDriveWheelSpeeds(getEncoderVelocity(leftMotorTop), -getEncoderVelocity(rightMotorTop));
   }
 
-  @Override
-  public void periodic() {
-    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
-
-    // Print info
-    SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
-    SmartDashboard.putNumber("Left speed (m/s)", getWheelSpeeds().leftMetersPerSecond);
-    SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
-    SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
-
-    SmartDashboard.putNumber("x", pose.getX());
-    SmartDashboard.putNumber("y", pose.getY());
-    SmartDashboard.putNumber("yaw", pose.getRotation().getDegrees());
-
-  }
-
-  public void resetOdometry(Pose2d startingPose) {
-    resetEncoders();
-    m_DriveOdometry.resetPosition(startingPose, getHeading());
-  
-    ahrs.setAngleAdjustment(-90);
-    ahrs.zeroYaw();
-    ahrs.calibrate();
-  }
-
-  private void resetEncoders() {
-    leftMotorTop.setSelectedSensorPosition(0);
-    rightMotorTop.setSelectedSensorPosition(0);
-  }
-
-  // Getters
   public SimpleMotorFeedforward getFeedforward() {
     return feedforward;
   }
@@ -196,4 +189,22 @@ public class DriveSubsystem extends SubsystemBase {
     return pose;
   }
 
+  // --- Setters ---
+
+  static double getEncoderDistance(WPI_TalonFX targetMotor) {
+    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
+    // Converts clicks to total rotation to distance travelled
+    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
+  }
+
+  static double getEncoderVelocity(WPI_TalonFX targetMotor) {
+    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
+    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
+    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
+  }
+
+  private void resetEncoders() {
+    leftMotorTop.setSelectedSensorPosition(0);
+    rightMotorTop.setSelectedSensorPosition(0);
+  }
 }

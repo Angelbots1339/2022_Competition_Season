@@ -83,6 +83,8 @@ public final class Constants {
         kV (theoretical) ~ 2.797
         */
 
+        public static final boolean debug = true;
+
     }
     public final static class AutonomousConstants{
         public final static double maxVelocityMetersPerSecond = 1;

@@ -38,21 +38,15 @@ import static frc.robot.Constants.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem m_driveSubsystem;
   private final XboxController m_Joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
+    m_driveSubsystem =  new DriveSubsystem();
     configureButtonBindings();
-
-    // Binds drive subsystem to use the left joystick to control arcade drive
-    m_driveSubsystem.setDefaultCommand(new RunCommand(
-        () -> m_driveSubsystem.arcadeDrive(() -> -m_Joystick.getLeftY(),
-            () -> m_Joystick.getRightX()),
-        m_driveSubsystem));
   }
 
   /**
@@ -62,7 +56,11 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    // Binds drive subsystem to use the left joystick to control arcade drive
+    m_driveSubsystem.setDefaultCommand(new RunCommand(
+        () -> m_driveSubsystem.arcadeDrive(() -> -m_Joystick.getLeftY(),
+            () -> m_Joystick.getRightX()),
+        m_driveSubsystem));
   }
 
   /**
@@ -71,16 +69,19 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    // TODO move this command into it's own class
+
+    // Constrain the max voltage to 10
     DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
         new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka),
         m_driveSubsystem.getKinematics(), 10);
 
-    // Simple path following auto
+    // Create & constrain a trajectory object
     TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
         AutonomousConstants.maxAccelerationMetersPerSecondSq);
     config.setKinematics(m_driveSubsystem.getKinematics()).addConstraint(voltageConstraint);
 
-    // simple trajectory that moves 1 meter forward
+    // Draw an 's' curve
     Trajectory trajectory = TrajectoryGenerator
         .generateTrajectory(new Pose2d(), List.of(
             new Translation2d(1, 1),
@@ -88,7 +89,8 @@ public class RobotContainer {
           new Pose2d(3, 0, new Rotation2d()),
            config);
 
-    RamseteCommand command = new RamseteCommand(trajectory,
+    // TODO b & zeta should be constants
+    RamseteCommand pathFollowCommand = new RamseteCommand(trajectory,
         m_driveSubsystem::getPose, new RamseteController(2, 0.7),
         m_driveSubsystem.getFeedforward(), m_driveSubsystem.getKinematics(),
         m_driveSubsystem::getWheelSpeeds,
@@ -96,10 +98,15 @@ public class RobotContainer {
         m_driveSubsystem::tankDriveVolts,
         m_driveSubsystem);
 
-    m_driveSubsystem.resetOdometry(trajectory.getInitialPose());
+    // Zero position before running path following command
+    resetDrive();
 
-    return command.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+    // Follow path, then cut voltage to motors (stop)
+    return pathFollowCommand.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+  }
 
+  public void resetDrive(Pose2d startingPose) {
+    m_driveSubsystem.resetOdometry(startingPose);
   }
 
   public void resetDrive() {
