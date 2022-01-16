@@ -3,11 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -15,16 +10,12 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -49,7 +40,6 @@ public class DriveSubsystem extends SubsystemBase {
   // Pose & differential drive
   private Pose2d pose;
   private DifferentialDrive m_Drive;
-  private DifferentialDriveKinematics m_DriveKinematics;
   private DifferentialDriveOdometry m_DriveOdometry;
 
   // Gyro
@@ -132,6 +122,18 @@ public class DriveSubsystem extends SubsystemBase {
 
   // --- Getters ---
 
+  static double getEncoderDistance(WPI_TalonFX targetMotor) {
+    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
+    // Converts clicks to total rotation to distance travelled
+    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
+  }
+
+  static double getEncoderVelocity(WPI_TalonFX targetMotor) {
+    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
+    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
+    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
+  }
+
   /**
    * @return current heading from gyro in a {@link Rotation2d}
    */
@@ -173,27 +175,11 @@ public class DriveSubsystem extends SubsystemBase {
     return rightPID;
   }
 
-  public DifferentialDriveKinematics getKinematics() {
-    return m_DriveKinematics;
-  }
-
   public Pose2d getPose() {
     return pose;
   }
 
   // --- Setters ---
-
-  static double getEncoderDistance(WPI_TalonFX targetMotor) {
-    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
-    // Converts clicks to total rotation to distance travelled
-    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
-  }
-
-  static double getEncoderVelocity(WPI_TalonFX targetMotor) {
-    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
-    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
-    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
-  }
 
   private void resetEncoders() {
     leftMotorTop.setSelectedSensorPosition(0);
@@ -224,9 +210,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     // TODO getting error on startup from differential drive not updated often enough. Need to set this to true value?
     pose = new Pose2d();
-
-    // TODO this is a constant
-    m_DriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
 
     m_DriveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 

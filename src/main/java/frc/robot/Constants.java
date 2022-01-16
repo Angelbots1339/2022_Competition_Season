@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -66,6 +67,7 @@ public final class Constants {
         public final static double wheelDiameter = Units.inchesToMeters(4);
         public final static double wheelRotPerMotorRot = 1/6.67;
         public final static double falcon500ClicksPerRot = 2048;
+        public static final DifferentialDriveKinematics m_DriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
 
         //PID 
         public final static double leftKP = 2.1258;
