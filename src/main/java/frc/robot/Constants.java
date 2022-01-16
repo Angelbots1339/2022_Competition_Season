@@ -47,7 +47,7 @@ public final class Constants {
 
     }
     /**
-     * All units in meters 
+     * All length units in meters 
      */
     public final static class DriveConstants{
         //general 
@@ -72,10 +72,16 @@ public final class Constants {
         public final static double rightKP = 2.1258;
 
         //Motion profiling
-        //TODO motion profile robot
-        public final static double ks = 0.5221; 
-        public final static double kv = 2.1103; 
-        public final static double ka = 0.11835; 
+        public final static double ks = 0.5221; // Volts
+        public final static double kv = 2.1103;  // Volts * Seconds / Meters
+        public final static double ka = 0.11835; // Volts * Seconds^2 / Meters
+        
+        /* Checking kV:
+        kV = voltage / free speed (meters per second)
+        free speed = free speed of the motor times the wheel circumference divided by the gear reduction
+        kV = 12v / (5380rpm / 60s * 0.1016m * pi / 6.67)
+        kV (theoretical) ~ 2.797
+        */
 
     }
     public final static class AutonomousConstants{
