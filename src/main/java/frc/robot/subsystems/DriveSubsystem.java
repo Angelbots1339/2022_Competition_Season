@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.fasterxml.jackson.databind.util.PrimitiveArrayBuilder;
 import com.kauailabs.navx.frc.AHRS;
@@ -56,11 +57,11 @@ public class DriveSubsystem extends SubsystemBase {
   // Gyro
   private AHRS ahrs;
 
-  // These classes help us simulate our drivetrain
-  public DifferentialDrivetrainSim m_drivetrainSimulator;
-
-  // The Field2d class shows the field in the sim GUI
+  // sim
+  private DifferentialDrivetrainSim m_drivetrainSimulator;
   private Field2d m_fieldSim;
+  private TalonFXSimCollection leftSim;
+  private TalonFXSimCollection rightSim;
 
   public DriveSubsystem() {
     constructorHelper();
@@ -86,6 +87,9 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.wheelDiameter / 2.0,
           VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
 
+      leftSim = leftMotorTop.getSimCollection();
+      rightSim = rightMotorTop.getSimCollection();
+
       // the Field2d class lets us visualize our robot in the simulation GUI.
       m_fieldSim = new Field2d();
       SmartDashboard.putData("Field", m_fieldSim);
@@ -97,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
     pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
 
     debugLog(DriveConstants.debug);
-    
+
     m_fieldSim.setRobotPose(getPose());
 
   }
@@ -114,8 +118,19 @@ public class DriveSubsystem extends SubsystemBase {
         rightMotorControllerGroup.get() * RobotController.getBatteryVoltage());
     m_drivetrainSimulator.update(0.020);
 
-    
-    
+    // Update all of our sensors.
+    leftSim.setIntegratedSensorRawPosition(
+      distanceToNativeUnits(
+          m_drivetrainSimulator.getLeftPositionMeters()));
+  leftSim.setIntegratedSensorVelocity(
+      velocityToNativeUnits(
+          m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
+  rightSim.setIntegratedSensorRawPosition(
+      distanceToNativeUnits(
+          m_drivetrainSimulator.getRightPositionMeters()));
+  rightSim.setIntegratedSensorVelocity(
+      velocityToNativeUnits(
+          m_drivetrainSimulator.getRightVelocityMetersPerSecond()));
 
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "yaw"));
@@ -184,6 +199,13 @@ public class DriveSubsystem extends SubsystemBase {
   // --- Getters ---
 
   /**
+   * @return The drawn current in Amps Sim only
+   */
+  public double getDrawnCurrentAmpsSim() {
+    return m_drivetrainSimulator.getCurrentDrawAmps();
+  }
+
+  /**
    * @return current heading from gyro in a {@link Rotation2d}
    */
   public Rotation2d getHeading() {
@@ -216,6 +238,10 @@ public class DriveSubsystem extends SubsystemBase {
     return feedforward;
   }
 
+  public Field2d getField2d() {
+    return m_fieldSim;
+  }
+
   public PIDController getLeftPid() {
     return leftPID;
   }
@@ -237,8 +263,11 @@ public class DriveSubsystem extends SubsystemBase {
   static double getEncoderDistance(WPI_TalonFX targetMotor) {
     // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
     // Converts clicks to total rotation to distance travelled
-    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot
-        * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
+    return targetMotor.getSelectedSensorPosition(0) * DriveConstants.distancePerClick;
+  }
+
+  static int distanceToNativeUnits(Double meters){
+    return (int)(meters / DriveConstants.distancePerClick);
   }
 
   static double getEncoderVelocity(WPI_TalonFX targetMotor) {
@@ -246,8 +275,10 @@ public class DriveSubsystem extends SubsystemBase {
     // diameter * pi * 10
     // Convert to motor ration per 100ms then convert to wheel rotation per 100ms
     // then to meters per 100ms then to per sec
-    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot
-        * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
+    return targetMotor.getSelectedSensorVelocity() * DriveConstants.distancePerClick * 10;
+  }
+  static int velocityToNativeUnits(Double meters){
+    return (int)(meters / DriveConstants.distancePerClick / 10);
   }
 
   private void resetEncoders() {

@@ -11,6 +11,7 @@ import java.util.Set;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -89,6 +90,9 @@ public class RobotContainer {
           new Pose2d(3, 0, new Rotation2d()),
            config);
 
+    //Simulation
+    //m_driveSubsystem.getField2d().getObject("traj").setTrajectory(trajectory);
+
     // TODO b & zeta should be constants
     RamseteCommand pathFollowCommand = new RamseteCommand(trajectory,
         m_driveSubsystem::getPose, new RamseteController(2, 0.7),
@@ -111,5 +115,9 @@ public class RobotContainer {
 
   public void resetDrive() {
     m_driveSubsystem.resetOdometry(new Pose2d());
+  }
+
+  public DriveSubsystem getRobotDrive(){
+    return m_driveSubsystem;
   }
 }

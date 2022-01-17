@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -19,6 +21,18 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  
+
+  @Override
+  public void simulationPeriodic() {
+    // Here we calculate the battery voltage based on drawn current.
+    // As our robot draws more power from the battery its voltage drops.
+    // The estimated voltage is highly dependent on the battery's internal
+    // resistance.
+    double drawCurrent = m_robotContainer.getRobotDrive().getDrawnCurrentAmpsSim();
+    double loadedVoltage = BatterySim.calculateDefaultBatteryLoadedVoltage(drawCurrent);
+    RoboRioSim.setVInVoltage(loadedVoltage);
+  }
   
   /**
    * This function is run when the robot is first started up and should be used for any

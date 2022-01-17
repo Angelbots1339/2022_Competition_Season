@@ -70,6 +70,7 @@ public final class Constants {
         public final static double wheelDiameter = Units.inchesToMeters(4);
         public final static double wheelRotPerMotorRot = 1/6.67;
         public final static double falcon500ClicksPerRot = 2048;
+        public final static double distancePerClick = (1/falcon500ClicksPerRot) *  wheelRotPerMotorRot * wheelDiameter * Math.PI;
 
         //PID 
         public final static double leftKP = 2.1258;
