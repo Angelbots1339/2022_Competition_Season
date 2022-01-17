@@ -3,29 +3,30 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.fasterxml.jackson.databind.util.PrimitiveArrayBuilder;
 import com.kauailabs.navx.frc.AHRS;
 
 import java.util.function.DoubleSupplier;
@@ -55,6 +56,12 @@ public class DriveSubsystem extends SubsystemBase {
   // Gyro
   private AHRS ahrs;
 
+  // These classes help us simulate our drivetrain
+  public DifferentialDrivetrainSim m_drivetrainSimulator;
+
+  // The Field2d class shows the field in the sim GUI
+  private Field2d m_fieldSim;
+
   public DriveSubsystem() {
     constructorHelper();
 
@@ -64,9 +71,55 @@ public class DriveSubsystem extends SubsystemBase {
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
-    // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
+    // FIXME is it strange to invert a motor group and then have to report negative
+    // values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
+
+    if (RobotBase.isSimulation()) { // If our robot is simulated
+      // This class simulates our drivetrain's motion around the field.
+      m_drivetrainSimulator = new DifferentialDrivetrainSim(
+          DriveConstants.drivetrainPlant,
+          DriveConstants.driveGearbox,
+          DriveConstants.wheelRotPerMotorRot,
+          DriveConstants.trackWidth,
+          DriveConstants.wheelDiameter / 2.0,
+          VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
+
+      // the Field2d class lets us visualize our robot in the simulation GUI.
+      m_fieldSim = new Field2d();
+      SmartDashboard.putData("Field", m_fieldSim);
+    }
+  }
+
+  @Override
+  public void periodic() {
+    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
+
+    debugLog(DriveConstants.debug);
+    
+    m_fieldSim.setRobotPose(getPose());
+
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    // To update our simulation, we set motor voltage inputs, update the simulation,
+    // and write the simulated positions and velocities to our simulated encoder and
+    // gyro.
+    // We negate the right side so that positive voltages make the right side
+    // move forward.
+    m_drivetrainSimulator.setInputs(
+        leftMotorControllerGroup.get() * RobotController.getBatteryVoltage(),
+        rightMotorControllerGroup.get() * RobotController.getBatteryVoltage());
+    m_drivetrainSimulator.update(0.020);
+
+    
+    
+
+    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+    SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "yaw"));
+    angle.set(-m_drivetrainSimulator.getHeading().getDegrees());
   }
 
   /**
@@ -90,33 +143,31 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotorControllerGroup.setVoltage(rightVolts);
   }
 
-  @Override
-  public void periodic() {
-    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
-    debugLog(DriveConstants.debug);
-  }
-
   /**
    * Resets encoders to 0 and gyro yaw to 0
+   * 
    * @param startingPose Pose to initialize odometry object to
    */
   public void resetOdometry(Pose2d startingPose) {
     resetEncoders();
-    
+
     // TODO test if offset fixes auto routines
     ahrs.setAngleAdjustment(-90);
     ahrs.zeroYaw();
-    
-    // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
+
+    // FIXME: The gyroscope angle does not need to be reset here on the user's robot
+    // code. The library automatically takes care of offsetting the gyro angle.
     m_DriveOdometry.resetPosition(startingPose, getHeading());
   }
 
   /**
    * Put any logging info here to not clutter up periodic.
+   * 
    * @param enabled Print logging info?
    */
   private void debugLog(boolean enabled) {
-    if(!enabled) return;
+    if (!enabled)
+      return;
     // Speeds
     SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
     SmartDashboard.putNumber("Left speed (m/s)", getWheelSpeeds().leftMetersPerSecond);
@@ -186,13 +237,17 @@ public class DriveSubsystem extends SubsystemBase {
   static double getEncoderDistance(WPI_TalonFX targetMotor) {
     // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
     // Converts clicks to total rotation to distance travelled
-    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
+    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot
+        * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
   }
 
   static double getEncoderVelocity(WPI_TalonFX targetMotor) {
-    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
-    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
-    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
+    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel
+    // diameter * pi * 10
+    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms
+    // then to meters per 100ms then to per sec
+    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot
+        * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
   }
 
   private void resetEncoders() {
@@ -212,7 +267,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
         new WPI_TalonFX(DriveConstants.leftMotorFrontPort), new WPI_TalonFX(DriveConstants.leftMotorBackPort) });
 
-    rightMotorControllerGroup = new MotorControllerGroup( new MotorController[] { rightMotorTop,
+    rightMotorControllerGroup = new MotorControllerGroup(new MotorController[] { rightMotorTop,
         new WPI_TalonFX(DriveConstants.rightMotorFrontPort), new WPI_TalonFX(DriveConstants.rightMotorBackPort) });
 
     m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
@@ -222,7 +277,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
 
-    // TODO getting error on startup from differential drive not updated often enough. Need to set this to true value?
+    // TODO getting error on startup from differential drive not updated often
+    // enough. Need to set this to true value?
     pose = new Pose2d();
 
     // TODO this is a constant

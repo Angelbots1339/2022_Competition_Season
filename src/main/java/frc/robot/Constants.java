@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -82,6 +86,16 @@ public final class Constants {
         kV = 12v / (5380rpm / 60s * 0.1016m * pi / 6.67)
         kV (theoretical) ~ 2.797
         */
+
+        //Simulation
+        public static final LinearSystem<N2, N2, N2> drivetrainPlant = LinearSystemId.identifyDrivetrainSystem(
+            kv,//kvVoltSecondsPerMeter
+            ka,//kaVoltSecondsSquaredPerMeter
+            1.5,//kvVoltSecondsPerRadian NOT actual value  TODO run sysid on drivtrain angular to get acctual values
+            0.3);//kaVoltSecondsSquaredPerRadian NOT actual value
+
+        public static final DCMotor driveGearbox = DCMotor.getFalcon500(3);
+        public static final double driveGearing = 6.67;
 
         public static final boolean debug = true;
 
