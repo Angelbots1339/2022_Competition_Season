@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private double maxElapsedTime = 0;
 
   
   /**
@@ -29,6 +31,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    CommandScheduler.getInstance().run();
+
     
   }
 
@@ -45,7 +49,10 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    double initialTime = m_robotContainer.getTime();
     CommandScheduler.getInstance().run();
+    double afterTime = m_robotContainer.getTime();
+    SmartDashboard.putNumber("Scheduler time elapsed", afterTime - initialTime);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -80,8 +87,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    m_robotContainer.resetDrive();
   }
 
   /** This function is called periodically during operator control. */

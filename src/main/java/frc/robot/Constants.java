@@ -72,6 +72,8 @@ public final class Constants {
         //PID 
         public final static double leftKP = 2.1258;
         public final static double rightKP = 2.1258;
+        public final static double slewRateLimitFwd = 2;
+        public final static double slewRateLimitRot = 2;
 
         //Motion profiling
         public final static double ks = 0.5221; // Volts

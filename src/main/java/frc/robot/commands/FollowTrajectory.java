@@ -21,6 +21,10 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class FollowTrajectory extends RamseteCommand{
     private final DriveSubsystem m_driveSubsystem;
+    private static Pose2d zeroPose = new Pose2d();
+    private static DifferentialDriveVoltageConstraint voltageConstraint;
+    private static TrajectoryConfig config;
+    private final SimpleMotorFeedforward simpleMotorFeedforward;
 
     /**
      * Create a RamesteCommand to follow a given trajectory
@@ -39,31 +43,28 @@ public class FollowTrajectory extends RamseteCommand{
         );
         this.m_driveSubsystem = m_driveSubsystem;
         addRequirements(m_driveSubsystem);
+        simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
+        // Constrain the max voltage to 10
+        voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward, DriveConstants.m_DriveKinematics, 10);
+        TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
+            AutonomousConstants.maxAccelerationMetersPerSecondSq);
+        config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        m_driveSubsystem.resetOdometry(new Pose2d());
+        m_driveSubsystem.resetOdometry(zeroPose);
     }
 
     /**
      * @return Trajectory to be followed for the auto routine
      */
     public static Trajectory getAutoTrajectory() {
-        // Constrain the max voltage to 10
-        DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka),
-            DriveConstants.m_DriveKinematics, 10);
-
-        // Create & constrain a trajectory object
-        TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
-            AutonomousConstants.maxAccelerationMetersPerSecondSq);
-        config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
-
+        System.out.println("Called getAutoTrajectoy");
         // Draw an 's' curve
         Trajectory trajectory = TrajectoryGenerator
-            .generateTrajectory(new Pose2d(), List.of(
+            .generateTrajectory(zeroPose, List.of(
                 new Translation2d(1, 1),
                 new Translation2d(2, -1)),
             new Pose2d(3, 0, new Rotation2d()),

@@ -5,7 +5,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,6 +38,8 @@ public class DriveSubsystem extends SubsystemBase {
   private PIDController leftPID;
   private PIDController rightPID;
   private SimpleMotorFeedforward feedforward;
+  private SlewRateLimiter slewFilterFwd;
+  private SlewRateLimiter slewFilterRot;
 
   // Pose & differential drive
   private Pose2d pose;
@@ -57,16 +61,31 @@ public class DriveSubsystem extends SubsystemBase {
     // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
+    m_Drive.arcadeDrive(0, 0);
+
+    debugLog(true);
+
+    LiveWindow.disableAllTelemetry();
   }
 
   /**
-   * Drives the robot using arcade controls. Intend use for inline default command
+   * Drives the robot using arcade controls. Intend use for inline default command.
+   * Slew filtering will be applied to the raw inputs
    * 
    * @param fwd supplier for forward movement
    * @param rot supplier for rotation
    */
   public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot) {
-    m_Drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
+    double forward = fwd.getAsDouble();
+    double rotate = rot.getAsDouble();
+    double maxForward = .5;
+    double maxTurn = 0.5;
+    if (forward > maxForward) forward = maxForward;
+    if (forward < -maxForward) forward = -maxForward;
+    if (rotate > maxTurn) rotate = maxTurn;
+    if (rotate < -maxTurn) rotate = -maxTurn;
+    m_Drive.arcadeDrive(forward, rotate);
+    SmartDashboard.putNumber("Drive Forward", fwd.getAsDouble());
   }
 
   /**
@@ -99,6 +118,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
     m_DriveOdometry.resetPosition(startingPose, getHeading());
+
+    slewFilterFwd.reset(0);
+    slewFilterRot.reset(0);
   }
 
   /**
@@ -152,6 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * @return total distance left encoder has traveled in meters
    */
+
   public double getDistanceLeft() {
     return getEncoderDistance(leftMotorTop);
   }
@@ -205,6 +228,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
     rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
+    slewFilterFwd = new SlewRateLimiter(DriveConstants.slewRateLimitFwd);
+    slewFilterRot = new SlewRateLimiter(DriveConstants.slewRateLimitRot);
 
     feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
 
