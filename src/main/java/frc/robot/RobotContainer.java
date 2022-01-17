@@ -60,7 +60,7 @@ public class RobotContainer {
     // Binds drive subsystem to use the left joystick to control arcade drive
     m_driveSubsystem.setDefaultCommand(new RunCommand(
         () -> m_driveSubsystem.arcadeDrive(() -> -m_Joystick.getLeftY(),
-            () -> m_Joystick.getRightX()),
+            () -> 0.1),
         m_driveSubsystem));
   }
 

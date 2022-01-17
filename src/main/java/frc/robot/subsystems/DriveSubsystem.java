@@ -85,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.wheelRotPerMotorRot,
           DriveConstants.trackWidth,
           DriveConstants.wheelDiameter / 2.0,
-          VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
+          null);
 
       leftSim = leftMotorTop.getSimCollection();
       rightSim = rightMotorTop.getSimCollection();
@@ -134,7 +134,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "yaw"));
-    angle.set(-m_drivetrainSimulator.getHeading().getDegrees());
+    angle.set(Math.IEEEremainder(-m_drivetrainSimulator.getHeading().getDegrees(), 360));
   }
 
   /**
@@ -217,7 +217,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return total distance right encoder has traveled in meters
    */
   public double getDistanceRight() {
-    return -getEncoderDistance(rightMotorTop);
+    return getEncoderDistance(rightMotorTop);
   }
 
   /**
@@ -231,7 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return Wheel speeds from encoders (m/s)
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getEncoderVelocity(leftMotorTop), -getEncoderVelocity(rightMotorTop));
+    return new DifferentialDriveWheelSpeeds(getEncoderVelocity(leftMotorTop), getEncoderVelocity(rightMotorTop));
   }
 
   public SimpleMotorFeedforward getFeedforward() {
