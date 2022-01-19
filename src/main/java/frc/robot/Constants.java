@@ -52,7 +52,7 @@ public final class Constants {
      */
     public final static class DriveConstants{
         //general 
-        public final static double maxDriveOutput = 1;
+        public final static double maxDriveOutput = 0.5;
 
         //Motor ports
         public final static int leftMotorTopPort = 2; 
@@ -92,7 +92,7 @@ public final class Constants {
     }
     public final static class AutonomousConstants{
         public final static double maxVelocityMetersPerSecond = 1;
-        public final static double maxAccelerationMetersPerSecondSq = 0.5;
+        public final static double maxAccelerationMetersPerSecondSq = 0.25;
 
     }
     public final static class LimelightConstants{

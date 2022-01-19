@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
@@ -55,12 +56,11 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    return new ArcadeDrive(() -> 0, () -> 0, m_driveSubsystem);
-    // FollowTrajectory pathFollowCommand = new FollowTrajectory(m_driveSubsystem, FollowTrajectory.getAutoTrajectory());
+  public Command getAutonomousCommand(Trajectory trajectory) {
+    FollowTrajectory pathFollowCommand = new FollowTrajectory(m_driveSubsystem, trajectory);
 
-    // // Follow path, then cut voltage to motors (stop)
-    // return pathFollowCommand.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+     // Follow path, then cut voltage to motors (stop)
+    return pathFollowCommand.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
   }
   
   public void resetDrive() {

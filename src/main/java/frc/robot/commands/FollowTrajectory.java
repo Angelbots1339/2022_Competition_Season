@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.spline.Spline.ControlVector;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -23,7 +24,8 @@ public class FollowTrajectory extends RamseteCommand{
     private final DriveSubsystem m_driveSubsystem;
     private static Pose2d zeroPose = new Pose2d();
     private static DifferentialDriveVoltageConstraint voltageConstraint;
-    private static TrajectoryConfig config;
+    private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
+    AutonomousConstants.maxAccelerationMetersPerSecondSq);
     private final SimpleMotorFeedforward simpleMotorFeedforward;
 
     /**
@@ -46,8 +48,6 @@ public class FollowTrajectory extends RamseteCommand{
         simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
         // Constrain the max voltage to 10
         voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward, DriveConstants.m_DriveKinematics, 10);
-        TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
-            AutonomousConstants.maxAccelerationMetersPerSecondSq);
         config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
     }
 
@@ -65,11 +65,11 @@ public class FollowTrajectory extends RamseteCommand{
         // Draw an 's' curve
         Trajectory trajectory = TrajectoryGenerator
             .generateTrajectory(zeroPose, List.of(
-                new Translation2d(1, 1),
-                new Translation2d(2, -1)),
-            new Pose2d(3, 0, new Rotation2d()),
+                new Translation2d(1.5, 0.5)),
+            new Pose2d(2, 2, Rotation2d.fromDegrees(90)),
             config);
 
         return trajectory;
     }
+
 }

@@ -60,12 +60,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
+    leftMotorControllerGroup.setInverted(false);
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
     m_Drive.arcadeDrive(0, 0);
 
     debugLog(true);
 
     LiveWindow.disableAllTelemetry();
+
+    resetOdometry(new Pose2d());
   }
 
   /**
@@ -76,15 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot supplier for rotation
    */
   public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot) {
-    double forward = fwd.getAsDouble();
-    double rotate = rot.getAsDouble();
-    double maxForward = .5;
-    double maxTurn = 0.5;
-    if (forward > maxForward) forward = maxForward;
-    if (forward < -maxForward) forward = -maxForward;
-    if (rotate > maxTurn) rotate = maxTurn;
-    if (rotate < -maxTurn) rotate = -maxTurn;
-    m_Drive.arcadeDrive(forward, rotate);
+    m_Drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
     SmartDashboard.putNumber("Drive Forward", fwd.getAsDouble());
   }
 
@@ -113,7 +108,6 @@ public class DriveSubsystem extends SubsystemBase {
     resetEncoders();
     
     // TODO test if offset fixes auto routines
-    ahrs.setAngleAdjustment(-90);
     ahrs.zeroYaw();
     
     // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
