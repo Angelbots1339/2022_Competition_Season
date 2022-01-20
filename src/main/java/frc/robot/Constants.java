@@ -87,7 +87,7 @@ public final class Constants {
         kV (theoretical) ~ 2.797
         */
 
-        public static final boolean debug = true;
+        public static final boolean debug = false;
 
     }
     public final static class AutonomousConstants{

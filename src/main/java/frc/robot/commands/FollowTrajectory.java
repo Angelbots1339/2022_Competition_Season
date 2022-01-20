@@ -54,7 +54,8 @@ public class FollowTrajectory extends RamseteCommand{
     @Override
     public void initialize() {
         super.initialize();
-        m_driveSubsystem.resetOdometry(zeroPose);
+        //m_driveSubsystem.resetOdometry(zeroPose);
+        //m_driveSubsystem.manuallyFeedMotors();
     }
 
     /**

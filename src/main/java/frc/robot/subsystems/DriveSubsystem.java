@@ -5,7 +5,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -38,8 +37,6 @@ public class DriveSubsystem extends SubsystemBase {
   private PIDController leftPID;
   private PIDController rightPID;
   private SimpleMotorFeedforward feedforward;
-  private SlewRateLimiter slewFilterFwd;
-  private SlewRateLimiter slewFilterRot;
 
   // Pose & differential drive
   private Pose2d pose;
@@ -51,14 +48,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public DriveSubsystem() {
     constructorHelper();
-
     // Zero sensors
-    ahrs.calibrate();
+    //ahrs.calibrate();
     resetOdometry(new Pose2d());
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
-    // FIXME is it strange to invert a motor group and then have to report negative values in getDistanceRight()?
     rightMotorControllerGroup.setInverted(true);
     leftMotorControllerGroup.setInverted(false);
     m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
@@ -92,12 +87,21 @@ public class DriveSubsystem extends SubsystemBase {
   public void tankDriveVolts(Double leftVolts, Double rightVolts) {
     leftMotorControllerGroup.setVoltage(leftVolts);
     rightMotorControllerGroup.setVoltage(rightVolts);
+    m_Drive.feed();
+    
   }
 
   @Override
   public void periodic() {
     pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
     debugLog(DriveConstants.debug);
+  }
+
+  public void manuallyFeedMotors() {
+    rightMotorControllerGroup.setVoltage(0);
+    leftMotorControllerGroup.setVoltage(0);
+    rightMotorTop.feed();
+    leftMotorTop.feed();
   }
 
   /**
@@ -107,14 +111,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d startingPose) {
     resetEncoders();
     
-    // TODO test if offset fixes auto routines
-    ahrs.zeroYaw();
-    
     // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
     m_DriveOdometry.resetPosition(startingPose, getHeading());
-
-    slewFilterFwd.reset(0);
-    slewFilterRot.reset(0);
   }
 
   /**
@@ -222,8 +220,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
     rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
-    slewFilterFwd = new SlewRateLimiter(DriveConstants.slewRateLimitFwd);
-    slewFilterRot = new SlewRateLimiter(DriveConstants.slewRateLimitRot);
 
     feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
 

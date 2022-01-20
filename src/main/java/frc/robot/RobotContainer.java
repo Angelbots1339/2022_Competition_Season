@@ -7,14 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.geometry.Pose2d;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PerpetualCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final DriveSubsystem m_driveSubsystem;
+  private final DriveSubsystem m_driveSubsystem =  new DriveSubsystem();
   private final XboxController m_Joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
   private final Timer timer = new Timer();
 
@@ -34,10 +32,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    timer.start();
-    double timerInit = timer.get();
-    m_driveSubsystem =  new DriveSubsystem();
     configureButtonBindings();
+    //m_driveSubsystem.setDefaultCommand(new RunCommand(() -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getLeftY(), () -> m_Joystick.getRightX()), m_driveSubsystem));
   }
 
   /**
@@ -57,6 +53,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(Trajectory trajectory) {
+    //return new ArcadeDrive(() -> 0, () -> 0, m_driveSubsystem);
     FollowTrajectory pathFollowCommand = new FollowTrajectory(m_driveSubsystem, trajectory);
 
      // Follow path, then cut voltage to motors (stop)
