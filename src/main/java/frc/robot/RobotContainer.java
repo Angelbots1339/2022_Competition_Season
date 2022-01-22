@@ -7,7 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectory;
@@ -26,12 +27,15 @@ public class RobotContainer {
 
   private final DriveSubsystem m_driveSubsystem =  new DriveSubsystem();
   private final XboxController m_Joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
-  private final Timer timer = new Timer();
+  private SendableChooser<Command> autoSendableChooser = new SendableChooser<Command>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    autoSendableChooser.setDefaultOption("test auto", new FollowTrajectory(m_driveSubsystem, "Unnamed"));
+    autoSendableChooser.addOption("bad auto", new FollowTrajectory(m_driveSubsystem, "Unnamed_0"));
+    SmartDashboard.putData(autoSendableChooser);
     configureButtonBindings();
     //m_driveSubsystem.setDefaultCommand(new RunCommand(() -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getLeftY(), () -> m_Joystick.getRightX()), m_driveSubsystem));
   }
@@ -52,19 +56,14 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand(Trajectory trajectory) {
-    //return new ArcadeDrive(() -> 0, () -> 0, m_driveSubsystem);
-    FollowTrajectory pathFollowCommand = new FollowTrajectory(m_driveSubsystem, trajectory);
+  public Command getAutonomousCommand() {
 
      // Follow path, then cut voltage to motors (stop)
-    return pathFollowCommand.andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+
+    return autoSendableChooser.getSelected().andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
   }
   
   public void resetDrive() {
     //m_driveSubsystem.resetOdometry(new Pose2d());
-  }
-
-  public double getTime() {
-    return timer.get();
   }
 }

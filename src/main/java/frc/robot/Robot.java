@@ -25,8 +25,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  String trajectoryJSON = "output/Unnamed.wpilib.json";
-  Trajectory trajectory = new Trajectory();
+  
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -38,14 +37,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(trajectory);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
   }
 
   /**
