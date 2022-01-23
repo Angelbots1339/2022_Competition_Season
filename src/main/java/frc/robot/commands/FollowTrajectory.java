@@ -32,9 +32,10 @@ public class FollowTrajectory extends RamseteCommand {
     private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
             AutonomousConstants.maxAccelerationMetersPerSecondSq);
     private final SimpleMotorFeedforward simpleMotorFeedforward;
+    private Trajectory trajectory;
 
     /**
-     * Create a RamesteCommand to follow a given trajectory
+     * Create a RamseteCommand to follow a given trajectory
      * 
      * @param m_driveSubsystem Drive subsytem for sensors & dependancy injection
      * @param trajectory       Trajectory to follow. See {@link #getAutoTrajectory}
@@ -56,32 +57,20 @@ public class FollowTrajectory extends RamseteCommand {
         voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
                 DriveConstants.m_DriveKinematics, 10);
         config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
-    }
-
-    
-    public FollowTrajectory(DriveSubsystem m_driveSubsystem, String pathWeeverFileName) {
-
-        super(getTrajectoryFromJSON(pathWeeverFileName),
-                m_driveSubsystem::getPose, new RamseteController(2, 0.7),
-                m_driveSubsystem.getFeedforward(), DriveConstants.m_DriveKinematics,
-                m_driveSubsystem::getWheelSpeeds,
-                m_driveSubsystem.getLeftPid(), m_driveSubsystem.getRightPid(),
-                m_driveSubsystem::tankDriveVolts,
-                m_driveSubsystem);
-        this.m_driveSubsystem = m_driveSubsystem;
-        addRequirements(m_driveSubsystem);
-        simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
-        // Constrain the max voltage to 10
-        voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
-                DriveConstants.m_DriveKinematics, 10);
-        config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
+        
+        this.trajectory = trajectory;
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        m_driveSubsystem.resetPose2D(trajectory.getInitialPose());
         // m_driveSubsystem.resetOdometry(zeroPose);
         // m_driveSubsystem.manuallyFeedMotors();
+    }
+
+    public static FollowTrajectory followTrajectoryFromJSON(DriveSubsystem driveSubsystem, String fileName) {
+        return new FollowTrajectory(driveSubsystem, getTrajectoryFromJSON(fileName));
     }
 
     private static Trajectory getTrajectoryFromJSON(String pathWeeverFileName) {
@@ -109,6 +98,9 @@ public class FollowTrajectory extends RamseteCommand {
                         config);
 
         return trajectory;
+    }
+    public Pose2d getStartPose2d() {
+        return trajectory.getInitialPose();
     }
 
 }

@@ -13,12 +13,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+
+import org.opencv.core.Mat;
 
 import java.util.function.DoubleSupplier;
 
@@ -153,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     // TODO see if reversing gyro yaw fixes auto routine
-    return Rotation2d.fromDegrees(-ahrs.getYaw());
+    return Rotation2d.fromDegrees(-Math.IEEEremainder(ahrs.getAngle(), 360));
   }
 
   /**
@@ -229,5 +232,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_DriveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 
     ahrs = new AHRS();
+  }
+
+  public void resetPose2D(Pose2d pose) {
+    rightMotorTop.setSelectedSensorPosition(0);
+    leftMotorTop.setSelectedSensorPosition(0);
+    ahrs.reset();
+    ahrs.setAngleAdjustment(pose.getRotation().getDegrees());
+    m_DriveOdometry.resetPosition(pose, getHeading());
+
   }
 }

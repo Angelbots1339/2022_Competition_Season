@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,11 +34,18 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    autoSendableChooser.setDefaultOption("test auto", new FollowTrajectory(m_driveSubsystem, "Unnamed"));
-    autoSendableChooser.addOption("bad auto", new FollowTrajectory(m_driveSubsystem, "Unnamed_0"));
-    SmartDashboard.putData(autoSendableChooser);
+    
+    chooseAutoCommands();
     configureButtonBindings();
     //m_driveSubsystem.setDefaultCommand(new RunCommand(() -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getLeftY(), () -> m_Joystick.getRightX()), m_driveSubsystem));
+  }
+
+  public void chooseAutoCommands() {
+    autoSendableChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(m_driveSubsystem));
+    autoSendableChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed_0"));
+    autoSendableChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed"));
+
+    SmartDashboard.putData(autoSendableChooser);
   }
 
   /**
@@ -48,6 +56,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Binds drive subsystem to use the left joystick y/right joystick x to control arcade drive
+
     m_driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> -m_Joystick.getLeftY(), () -> -m_Joystick.getRightX(), m_driveSubsystem));
   }
 
@@ -57,10 +66,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
+    System.out.println(autoSendableChooser.getSelected().getName());
      // Follow path, then cut voltage to motors (stop)
 
     return autoSendableChooser.getSelected().andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+    
   }
   
   public void resetDrive() {
