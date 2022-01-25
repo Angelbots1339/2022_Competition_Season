@@ -5,11 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.trajectory.Trajectory;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.FollowTrajectory;
@@ -26,26 +26,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final DriveSubsystem m_driveSubsystem =  new DriveSubsystem();
-  private final XboxController m_Joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
-  private SendableChooser<Command> autoSendableChooser = new SendableChooser<Command>();
+  //Subsystems 
+  private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
+
+  private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
+
+  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+
+  private ShuffleboardTab tab;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
-    chooseAutoCommands();
+    addAutoCommands();
     configureButtonBindings();
-    //m_driveSubsystem.setDefaultCommand(new RunCommand(() -> m_driveSubsystem.arcadeDrive(() -> m_Joystick.getLeftY(), () -> m_Joystick.getRightX()), m_driveSubsystem));
+
+    tab = Shuffleboard.getTab("Commands");
   }
 
-  public void chooseAutoCommands() {
-    autoSendableChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(m_driveSubsystem));
-    autoSendableChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed_0"));
-    autoSendableChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed"));
+  public void addAutoCommands() {
+    autoChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(driveSubsystem));
+    autoChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"));
+    autoChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
+    tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
 
-    SmartDashboard.putData(autoSendableChooser);
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -57,7 +63,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Binds drive subsystem to use the left joystick y/right joystick x to control arcade drive
 
-    m_driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> -m_Joystick.getLeftY(), () -> -m_Joystick.getRightX(), m_driveSubsystem));
+    driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> -joystick.getLeftY(), () -> -joystick.getRightX(), driveSubsystem));
   }
 
   /**
@@ -66,14 +72,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    System.out.println(autoSendableChooser.getSelected().getName());
-     // Follow path, then cut voltage to motors (stop)
+    System.out.println(autoChooser.getSelected().getName());
 
-    return autoSendableChooser.getSelected().andThen(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0));
+     // Follow path, then cut voltage to motors (stop)
+    return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
     
   }
-  
-  public void resetDrive() {
-    //m_driveSubsystem.resetOdometry(new Pose2d());
-  }
+
 }

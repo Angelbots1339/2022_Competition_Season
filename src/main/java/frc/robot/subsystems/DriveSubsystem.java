@@ -9,19 +9,17 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.*;
-
+import static frc.robot.Constants.DriveConstants.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
-
-import org.opencv.core.Mat;
 
 import java.util.function.DoubleSupplier;
 
@@ -43,142 +41,108 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Pose & differential drive
   private Pose2d pose;
-  private DifferentialDrive m_Drive;
-  private DifferentialDriveOdometry m_DriveOdometry;
+  private DifferentialDrive drive;
+  private DifferentialDriveOdometry driveOdometry;
 
   // Gyro
-  private AHRS ahrs;
+  private AHRS gyro;
+
+  // log
+  ShuffleboardTab tab;
+  Field2d field2d;
 
   public DriveSubsystem() {
     constructorHelper();
     // Zero sensors
-    //ahrs.calibrate();
     resetOdometry(new Pose2d());
     leftMotorTop.configFactoryDefault();
     rightMotorTop.configFactoryDefault();
 
-    rightMotorControllerGroup.setInverted(true);
-    leftMotorControllerGroup.setInverted(false);
-    m_Drive.setMaxOutput(DriveConstants.maxDriveOutput);
-    m_Drive.arcadeDrive(0, 0);
+    rightMotorControllerGroup.setInverted(RIGHT_INVERTED);
+    leftMotorControllerGroup.setInverted(LEFT_INVERTED);
+    drive.setMaxOutput(maxDriveOutput);
+    drive.arcadeDrive(0, 0);
 
-    debugLog(true);
+    tab = Shuffleboard.getTab(this.getName());
+
+    logData();
 
     LiveWindow.disableAllTelemetry();
+  }
 
-    resetOdometry(new Pose2d());
+  @Override
+  public void periodic() {
+    pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
+    field2d.setRobotPose(pose);
   }
 
   /**
-   * Drives the robot using arcade controls. Intend use for inline default command.
+   * Drives the robot using arcade controls. Intend use for inline default
+   * command.
    * Slew filtering will be applied to the raw inputs
    * 
    * @param fwd supplier for forward movement
    * @param rot supplier for rotation
    */
   public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot) {
-    m_Drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
-    SmartDashboard.putNumber("Drive Forward", fwd.getAsDouble());
+    drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
   }
 
-  /**
-   * Drive the robot through tank drive using volts
-   * 
-   * @param leftVolts  left motor speeds in volts
-   * @param rightVolts right motor speeds in volts
-   */
-  public void tankDriveVolts(Double leftVolts, Double rightVolts) {
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotorControllerGroup.setVoltage(leftVolts);
     rightMotorControllerGroup.setVoltage(rightVolts);
-    m_Drive.feed();
-    
+    drive.feed();
   }
 
-  @Override
-  public void periodic() {
-    pose = m_DriveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
-    debugLog(DriveConstants.debug);
-  }
-
-  public void manuallyFeedMotors() {
-    rightMotorControllerGroup.setVoltage(0);
-    leftMotorControllerGroup.setVoltage(0);
-    rightMotorTop.feed();
-    leftMotorTop.feed();
-  }
-
-  /**
-   * Resets encoders to 0 and gyro yaw to 0
-   * @param startingPose Pose to initialize odometry object to
-   */
-  public void resetOdometry(Pose2d startingPose) {
-    resetEncoders();
-    
-    // FIXME: The gyroscope angle does not need to be reset here on the user's robot code. The library automatically takes care of offsetting the gyro angle.
-    m_DriveOdometry.resetPosition(startingPose, getHeading());
-  }
-
-  /**
-   * Put any logging info here to not clutter up periodic.
-   * @param enabled Print logging info?
-   */
-  private void debugLog(boolean enabled) {
-    if(!enabled) return;
-    // Speeds
-    SmartDashboard.putNumber("Right speed (m/s)", getWheelSpeeds().rightMetersPerSecond);
-    SmartDashboard.putNumber("Left speed (m/s)", getWheelSpeeds().leftMetersPerSecond);
-    // Distance
-    SmartDashboard.putNumber("Right distance (m)", getDistanceRight());
-    SmartDashboard.putNumber("Left distance (m)", getDistanceLeft());
-    // Position
-    SmartDashboard.putNumber("x", pose.getX());
-    SmartDashboard.putNumber("y", pose.getY());
-    // Rotation
-    SmartDashboard.putNumber("yaw", pose.getRotation().getDegrees());
+  public void logData(){
+    if(LOG_DATA) return;
+    tab.add(gyro);
+    tab.add(this);
+    tab.add(leftMotorTop);
+    tab.add(rightMotorTop);
+    tab.add(field2d);
+    tab.add(leftPID);
+    tab.add(rightPID);
   }
 
   // --- Getters ---
 
-  static double getEncoderDistance(WPI_TalonFX targetMotor) {
-    // Total clicks / clicks per rotation * gear ratio * wheel diameter * pi
-    // Converts clicks to total rotation to distance travelled
-    return targetMotor.getSelectedSensorPosition(0) / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI;
+  private static double getEncoderDistance(WPI_TalonFX targetMotor) {
+
+    // Converts clicks to distance in meters
+    return targetMotor.getSelectedSensorPosition(0) * CLICKS_TO_METERS;
   }
 
-  static double getEncoderVelocity(WPI_TalonFX targetMotor) {
-    // Velocity in clicks per 100ms / clicks per rotation * gear ratio * wheel diameter * pi * 10
-    // Convert to motor ration per 100ms then convert to wheel rotation per 100ms then to meters per 100ms then to per sec
-    return targetMotor.getSelectedSensorVelocity() / DriveConstants.falcon500ClicksPerRot * DriveConstants.wheelRotPerMotorRot * DriveConstants.wheelDiameter * Math.PI * 10;
+  private static double getEncoderVelocity(WPI_TalonFX targetMotor) {
+    // Convert from clicks per 100ms to meters per 100ms then to per sec
+    return targetMotor.getSelectedSensorVelocity() * CLICKS_TO_METERS * 10;
   }
 
-  /**
-   * @return current heading from gyro in a {@link Rotation2d}
-   */
+  
   public Rotation2d getHeading() {
-    // TODO see if reversing gyro yaw fixes auto routine
-    return Rotation2d.fromDegrees(-Math.IEEEremainder(ahrs.getAngle(), 360));
+    return Rotation2d.fromDegrees(-Math.IEEEremainder(gyro.getAngle(), 360));
   }
 
-  /**
-   * @return total distance right encoder has traveled in meters
-   */
   public double getDistanceRight() {
-    return -getEncoderDistance(rightMotorTop);
+    return (RIGHT_INVERTED ? -1 : 1) * getEncoderDistance(rightMotorTop);
   }
-
-  /**
-   * @return total distance left encoder has traveled in meters
-   */
 
   public double getDistanceLeft() {
-    return getEncoderDistance(leftMotorTop);
+    return (LEFT_INVERTED ? -1 : 1) * getEncoderDistance(leftMotorTop);
   }
 
-  /**
-   * @return Wheel speeds from encoders (m/s)
-   */
+  public double getVelocityRight() {
+    return (RIGHT_INVERTED ? -1 : 1) * getEncoderVelocity(rightMotorTop);
+  }
+
+  public double getVelocityLeft() {
+    return (LEFT_INVERTED ? -1 : 1) * getEncoderVelocity(leftMotorTop);
+  }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getEncoderVelocity(leftMotorTop), -getEncoderVelocity(rightMotorTop));
+    return new DifferentialDriveWheelSpeeds(
+        getVelocityLeft(), getVelocityRight());
   }
 
   public SimpleMotorFeedforward getFeedforward() {
@@ -204,42 +168,51 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotorTop.setSelectedSensorPosition(0);
   }
 
+  /**
+   * Resets encoders to 0
+   * 
+   * @param startingPose Pose to initialize odometry object to
+   */
+  public void resetOdometry(Pose2d startingPose) {
+    resetEncoders();
+    driveOdometry.resetPosition(startingPose, getHeading());
+  }
+
   // --- Constructor helper ---
 
   /**
    * Moves all the ugly instantiation out of the way.
    */
   private void constructorHelper() {
-    leftMotorTop = new WPI_TalonFX(DriveConstants.leftMotorTopPort);
-    rightMotorTop = new WPI_TalonFX(DriveConstants.rightMotorTopPort);
+    leftMotorTop = new WPI_TalonFX(LEFT_MOTOR_TOP_PORT);
+    rightMotorTop = new WPI_TalonFX(RIGHT_MOTOR_TOP_PORT);
 
     leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
-        new WPI_TalonFX(DriveConstants.leftMotorFrontPort), new WPI_TalonFX(DriveConstants.leftMotorBackPort) });
+        new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT), new WPI_TalonFX(LEFT_MOTOR_BACK_PORT) });
 
-    rightMotorControllerGroup = new MotorControllerGroup( new MotorController[] { rightMotorTop,
-        new WPI_TalonFX(DriveConstants.rightMotorFrontPort), new WPI_TalonFX(DriveConstants.rightMotorBackPort) });
+    rightMotorControllerGroup = new MotorControllerGroup(new MotorController[] { rightMotorTop,
+        new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT), new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT) });
 
-    m_Drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
+    drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
 
-    leftPID = new PIDController(DriveConstants.leftKP, 0, 0);
-    rightPID = new PIDController(DriveConstants.rightKP, 0, 0);
+    leftPID = new PIDController(LEFT_KP, 0, 0);
+    rightPID = new PIDController(RIGHT_KP, 0, 0);
 
-    feedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
+    feedforward = new SimpleMotorFeedforward(KS, KV, KA);
 
-    // TODO getting error on startup from differential drive not updated often enough. Need to set this to true value?
     pose = new Pose2d();
 
-    m_DriveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
+    driveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 
-    ahrs = new AHRS();
+    gyro = new AHRS();
   }
 
   public void resetPose2D(Pose2d pose) {
     rightMotorTop.setSelectedSensorPosition(0);
     leftMotorTop.setSelectedSensorPosition(0);
-    ahrs.reset();
-    ahrs.setAngleAdjustment(pose.getRotation().getDegrees());
-    m_DriveOdometry.resetPosition(pose, getHeading());
+    gyro.reset();
+    gyro.setAngleAdjustment(pose.getRotation().getDegrees());
+    driveOdometry.resetPosition(pose, getHeading());
 
   }
 }

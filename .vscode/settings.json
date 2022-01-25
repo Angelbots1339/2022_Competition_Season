@@ -25,5 +25,13 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "cSpell.words": [
+    "camtran",
+    "getpipe",
+    "sidelength",
+    "tlong",
+    "tshort",
+    "tvert"
+  ]
 }

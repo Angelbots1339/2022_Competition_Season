@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import static frc.robot.Constants.LimelightConstants.*;
 

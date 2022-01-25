@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.spline.Spline.ControlVector;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -22,11 +21,8 @@ import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
-/**
- * 
- */
 public class FollowTrajectory extends RamseteCommand {
-    private final DriveSubsystem m_driveSubsystem;
+    private final DriveSubsystem driveSubsystem;
     private static Pose2d zeroPose = new Pose2d();
     private static DifferentialDriveVoltageConstraint voltageConstraint;
     private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
@@ -37,26 +33,25 @@ public class FollowTrajectory extends RamseteCommand {
     /**
      * Create a RamseteCommand to follow a given trajectory
      * 
-     * @param m_driveSubsystem Drive subsytem for sensors & dependancy injection
+     * @param m_driveSubsystem Drive subsystem for sensors & dependency injection
      * @param trajectory       Trajectory to follow. See {@link #getAutoTrajectory}
      *                         for autonomous trajectory
      */
     public FollowTrajectory(DriveSubsystem m_driveSubsystem, Trajectory trajectory) {
-        // TODO b & zeta should be constants
         super(trajectory,
-                m_driveSubsystem::getPose, new RamseteController(2, 0.7),
-                m_driveSubsystem.getFeedforward(), DriveConstants.m_DriveKinematics,
+                m_driveSubsystem::getPose, new RamseteController(DriveConstants.KB, DriveConstants.ZETA),
+                m_driveSubsystem.getFeedforward(), DriveConstants.DRIVE_KINEMATICS,
                 m_driveSubsystem::getWheelSpeeds,
                 m_driveSubsystem.getLeftPid(), m_driveSubsystem.getRightPid(),
                 m_driveSubsystem::tankDriveVolts,
                 m_driveSubsystem);
-        this.m_driveSubsystem = m_driveSubsystem;
+        this.driveSubsystem = m_driveSubsystem;
         addRequirements(m_driveSubsystem);
-        simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka);
+        simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV, DriveConstants.KA);
         // Constrain the max voltage to 10
         voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
-                DriveConstants.m_DriveKinematics, 10);
-        config.setKinematics(DriveConstants.m_DriveKinematics).addConstraint(voltageConstraint);
+                DriveConstants.DRIVE_KINEMATICS, 10);
+        config.setKinematics(DriveConstants.DRIVE_KINEMATICS).addConstraint(voltageConstraint);
         
         this.trajectory = trajectory;
     }
@@ -64,10 +59,9 @@ public class FollowTrajectory extends RamseteCommand {
     @Override
     public void initialize() {
         super.initialize();
-        m_driveSubsystem.resetPose2D(trajectory.getInitialPose());
-        // m_driveSubsystem.resetOdometry(zeroPose);
-        // m_driveSubsystem.manuallyFeedMotors();
+        driveSubsystem.resetPose2D(trajectory.getInitialPose());
     }
+
 
     public static FollowTrajectory followTrajectoryFromJSON(DriveSubsystem driveSubsystem, String fileName) {
         return new FollowTrajectory(driveSubsystem, getTrajectoryFromJSON(fileName));
@@ -89,7 +83,7 @@ public class FollowTrajectory extends RamseteCommand {
      * @return Trajectory to be followed for the auto routine
      */
     public static Trajectory getAutoTrajectory() {
-        System.out.println("Called getAutoTrajectoy");
+        System.out.println("Called getAutoTrajectory");
         // Draw an 's' curve
         Trajectory trajectory = TrajectoryGenerator
                 .generateTrajectory(zeroPose, List.of(

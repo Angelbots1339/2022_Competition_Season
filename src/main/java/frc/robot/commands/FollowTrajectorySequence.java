@@ -14,16 +14,15 @@ import frc.robot.subsystems.DriveSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FollowTrajectorySequence extends SequentialCommandGroup {
-  public FollowTrajectorySequence(DriveSubsystem m_driveSubsystem) {
-    addRequirements(m_driveSubsystem);
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+  public FollowTrajectorySequence(DriveSubsystem driveSubsystem) {
+    addRequirements(driveSubsystem);
+    
     addCommands(
-        FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed_0"),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"),
         new ParallelRaceGroup(
             new WaitCommand(10),
-            new RunCommand(() -> m_driveSubsystem.tankDriveVolts(0.0, 0.0), m_driveSubsystem)),
-        FollowTrajectory.followTrajectoryFromJSON(m_driveSubsystem, "Unnamed"));
+            new RunCommand(() -> driveSubsystem.tankDriveVolts(0.0, 0.0), driveSubsystem)),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
   }
 
 }

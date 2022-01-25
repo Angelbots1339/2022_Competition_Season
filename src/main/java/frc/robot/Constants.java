@@ -37,7 +37,7 @@ public final class Constants {
         public final static int buttonA = 2;
         public final static int buttonB = 3;
         public final static int buttonY = 4;
-        public final static int leftBumper = 5; //TODO Actually put in ports for the joystick
+        public final static int leftBumper = 5;
         public final static int rightBumper = 6;
         public final static int leftTrigger = 7;
         public final static int rightTrigger = 8;
@@ -53,32 +53,40 @@ public final class Constants {
     public final static class DriveConstants{
         //general 
         public final static double maxDriveOutput = 0.5;
+        public final static boolean LOG_DATA = true;
 
         //Motor ports
-        public final static int leftMotorTopPort = 2; 
-        public final static int leftMotorFrontPort = 1; 
-        public final static int leftMotorBackPort = 3; 
-        public final static int rightMotorTopPort = 5; 
-        public final static int rightMotorFrontPort = 4; 
-        public final static int rightMotorBackPort = 6; 
+        public final static int LEFT_MOTOR_TOP_PORT = 2; 
+        public final static int LEFT_MOTOR_FRONT_PORT = 1; 
+        public final static int LEFT_MOTOR_BACK_PORT = 3; 
+        public final static int RIGHT_MOTOR_TOP_PORT = 5; 
+        public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
+        public final static int RIGHT_MOTOR_BACK_PORT = 6; 
         
         //Drive base values
-        public final static double trackWidth = Units.inchesToMeters(21.5);
-        public final static double wheelDiameter = Units.inchesToMeters(4);
-        public final static double wheelRotPerMotorRot = 1/6.67;
-        public final static double falcon500ClicksPerRot = 2048;
-        public static final DifferentialDriveKinematics m_DriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public final static double TRACK_WIDTH = Units.inchesToMeters(21.5);
+        public final static double WHEEL_DIAMETER = Units.inchesToMeters(4);
+        public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
+        public final static double CLICKS_PER_ROT = 2048;
+        public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
+        public final static boolean RIGHT_INVERTED = true;
+        public final static boolean LEFT_INVERTED = false;
+        public final static double CLICKS_TO_METERS = 1 / CLICKS_PER_ROT
+                * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER * Math.PI;
+        public final static boolean GYRO_INVERTED = true;
 
         //PID 
-        public final static double leftKP = 2.1258;
-        public final static double rightKP = 2.1258;
-        public final static double slewRateLimitFwd = 2;
-        public final static double slewRateLimitRot = 2;
+        public final static double LEFT_KP = 2.1258;
+        public final static double RIGHT_KP = 2.1258;
 
         //Motion profiling
-        public final static double ks = 0.5221; // Volts
-        public final static double kv = 2.1103;  // Volts * Seconds / Meters
-        public final static double ka = 0.11835; // Volts * Seconds^2 / Meters
+        public final static double KS = 0.5221; // Volts
+        public final static double KV = 2.1103;  // Volts * Seconds / Meters
+        public final static double KA = 0.11835; // Volts * Seconds^2 / Meters
+
+        //Ramsete
+        public final static double KB = 2;
+        public final static double ZETA = 0.7;
         
         /* Checking kV:
         kV = voltage / free speed (meters per second)
@@ -86,8 +94,6 @@ public final class Constants {
         kV = 12v / (5380rpm / 60s * 0.1016m * pi / 6.67)
         kV (theoretical) ~ 2.797
         */
-
-        public static final boolean debug = true;
 
     }
     public final static class AutonomousConstants{
