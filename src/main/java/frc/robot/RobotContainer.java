@@ -49,7 +49,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(driveSubsystem));
     autoChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"));
     autoChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
-    tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
+    //tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
 
     SmartDashboard.putData(autoChooser);
   }

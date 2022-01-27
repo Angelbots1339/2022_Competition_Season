@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // log
   ShuffleboardTab tab;
-  Field2d field2d;
+  Field2d field2d = new Field2d();
 
   public DriveSubsystem() {
     constructorHelper();
@@ -64,6 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
     drive.arcadeDrive(0, 0);
 
     tab = Shuffleboard.getTab(this.getName());
+    
 
     logData();
 
@@ -88,15 +89,14 @@ public class DriveSubsystem extends SubsystemBase {
     drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
   }
 
-
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotorControllerGroup.setVoltage(leftVolts);
     rightMotorControllerGroup.setVoltage(rightVolts);
     drive.feed();
   }
 
-  public void logData(){
-    if(LOG_DATA) return;
+  public void logData() {
+    if (!LOG_DATA) return;
     tab.add(gyro);
     tab.add(this);
     tab.add(leftMotorTop);
@@ -119,7 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
     return targetMotor.getSelectedSensorVelocity() * CLICKS_TO_METERS * 10;
   }
 
-  
   public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(-Math.IEEEremainder(gyro.getAngle(), 360));
   }
@@ -159,6 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return pose;
+
   }
 
   // --- Setters ---
