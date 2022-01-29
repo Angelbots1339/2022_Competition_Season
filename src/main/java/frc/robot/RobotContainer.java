@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.FollowComandGenerationBellCurve;
 import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
@@ -60,12 +61,13 @@ public class RobotContainer {
   }
 
   public void addAutoCommands() {
-    autoChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(driveSubsystem));
-    autoChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"));
-    autoChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
-    autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
-    autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
-    autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
+
+    //autoChooser.setDefaultOption("leftTurnTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "TurnLeft"));
+    autoChooser.setDefaultOption("MeterTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "AutoTest1"));
+    // autoChooser.setDefaultOption("AutoTestPathWeever", new FollowTrajectorySequence(driveSubsystem));
+    // autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
+    // autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
+    // autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
     //tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
 
     SmartDashboard.putData(autoChooser);
@@ -92,7 +94,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     driveSubsystem.resetOdometry(new Pose2d());
-    System.out.println(autoChooser.getSelected().getName());
+    //System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
     return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
