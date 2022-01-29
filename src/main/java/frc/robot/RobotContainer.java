@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,20 +41,31 @@ public class RobotContainer {
 
   private ShuffleboardTab tab;
 
+  private boolean isDriveReversed;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     addAutoCommands();
     configureButtonBindings();
+    driveSubsystem.resetOdometry(new Pose2d());
+    
 
     tab = Shuffleboard.getTab("Commands");
+  }
+
+  public void resetOdometry() {
+    driveSubsystem.resetOdometry(new Pose2d());
   }
 
   public void addAutoCommands() {
     autoChooser.setDefaultOption("AutoTest", new FollowTrajectorySequence(driveSubsystem));
     autoChooser.addOption("Path_1", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"));
     autoChooser.addOption("Path_2", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
+    autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
+    autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
+    autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
     //tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
 
     SmartDashboard.putData(autoChooser);
@@ -65,8 +80,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Binds drive subsystem to use the left joystick y/right joystick x to control arcade drive
 
-    driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> -joystick.getLeftY(), () -> -joystick.getRightX(), driveSubsystem));
-    new JoystickButton(joystick, Constants.JoystickConstants.buttonB).toggleWhenPressed(new ToggleCamera());
+    driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> (isDriveReversed? -1 : 1) * joystick.getLeftY(), () -> -joystick.getRightX(), driveSubsystem));
+    new JoystickButton(joystick, Constants.JoystickConstants.buttonB).toggleWhenPressed(new ToggleCamera(
+        (boolean x) -> isDriveReversed = x));
   }
 
   /**
@@ -75,6 +91,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    driveSubsystem.resetOdometry(new Pose2d());
     System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)

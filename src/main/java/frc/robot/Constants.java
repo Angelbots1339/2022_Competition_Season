@@ -52,7 +52,7 @@ public final class Constants {
      */
     public final static class DriveConstants{
         //general 
-        public final static double maxDriveOutput = 0.5;
+        public final static double maxDriveOutput = 0.25;
         public final static boolean LOG_DATA = true;
 
         //Motor ports
@@ -65,7 +65,7 @@ public final class Constants {
         
         //Drive base values
         public final static double TRACK_WIDTH = Units.inchesToMeters(21.5);
-        public final static double WHEEL_DIAMETER = Units.inchesToMeters(4);
+        public final static double WHEEL_DIAMETER = Units.inchesToMeters(3.875);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
         public final static double CLICKS_PER_ROT = 2048;
         public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);

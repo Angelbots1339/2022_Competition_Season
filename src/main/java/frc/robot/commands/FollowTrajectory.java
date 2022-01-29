@@ -59,7 +59,6 @@ public class FollowTrajectory extends RamseteCommand {
     @Override
     public void initialize() {
         super.initialize();
-        driveSubsystem.resetPose2D(trajectory.getInitialPose());
     }
 
 

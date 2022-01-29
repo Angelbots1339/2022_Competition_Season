@@ -18,11 +18,11 @@ public class FollowTrajectorySequence extends SequentialCommandGroup {
     addRequirements(driveSubsystem);
     
     addCommands(
-        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed_0"),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "AutoTest1"),
         new ParallelRaceGroup(
-            new WaitCommand(10),
+            new WaitCommand(4),
             new RunCommand(() -> driveSubsystem.tankDriveVolts(0.0, 0.0), driveSubsystem)),
-        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Unnamed"));
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "AutoTest2"));
   }
 
 }

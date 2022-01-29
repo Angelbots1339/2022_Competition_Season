@@ -19,7 +19,6 @@ public class ArcadeDrive extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
-        driveSubsystem.resetOdometry(new Pose2d());
         driveSubsystem.tankDriveVolts(0, 0);
     }
 

@@ -64,6 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
     drive.arcadeDrive(0, 0);
 
     tab = Shuffleboard.getTab(this.getName());
+
+    gyro.reset();
     
 
     logData();
@@ -97,13 +99,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void logData() {
     if (!LOG_DATA) return;
-    tab.add(gyro);
+    tab.addNumber("angle", () -> pose.getRotation().getDegrees());
+    tab.addNumber("heading", () -> getHeading().getDegrees());
     tab.add(this);
     tab.add(leftMotorTop);
     tab.add(rightMotorTop);
     tab.add(field2d);
     tab.add(leftPID);
     tab.add(rightPID);
+    tab.addNumber("x", () -> pose.getX());
+    tab.addNumber("y",  () -> pose.getY());
+   
   }
 
   // --- Getters ---
@@ -175,6 +181,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d startingPose) {
     resetEncoders();
+    gyro.reset();
     driveOdometry.resetPosition(startingPose, getHeading());
   }
 
