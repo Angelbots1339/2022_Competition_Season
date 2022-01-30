@@ -4,12 +4,11 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,6 +21,7 @@ import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import static frc.robot.Constants.JoystickConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -60,16 +60,22 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(new Pose2d());
   }
 
+  /**
+   * Populate auto chooser in SmartDashboard with auto commands
+   */
   public void addAutoCommands() {
+    // Sequence
+    autoChooser.setDefaultOption("AutoTestPathWeever", new FollowTrajectorySequence(driveSubsystem));
 
-    //autoChooser.setDefaultOption("leftTurnTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "TurnLeft"));
-    autoChooser.setDefaultOption("MeterTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "AutoTest1"));
-    // autoChooser.setDefaultOption("AutoTestPathWeever", new FollowTrajectorySequence(driveSubsystem));
-    // autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
-    // autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
-    // autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
-    //tab.add("AutoCommand", new FollowTrajectorySequence(driveSubsystem));
+    // Single
+    autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
+    autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
+    autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
 
+    // Tests
+    autoChooser.addOption("leftTurnTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "TurnLeft"));
+    autoChooser.addOption("MeterTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "AutoTest1"));
+    
     SmartDashboard.putData(autoChooser);
   }
 
@@ -80,11 +86,13 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Binds drive subsystem to use the left joystick y/right joystick x to control arcade drive
-
-    driveSubsystem.setDefaultCommand(new ArcadeDrive(() -> (isDriveReversed? -1 : 1) * joystick.getLeftY(), () -> -joystick.getRightX(), driveSubsystem));
-    new JoystickButton(joystick, Constants.JoystickConstants.buttonB).toggleWhenPressed(new ToggleCamera(
-        (boolean x) -> isDriveReversed = x));
+    // Invert drive when using rear camera
+    DoubleSupplier fwd = () -> (isDriveReversed? -1 : 1) * joystick.getLeftY();
+    DoubleSupplier rot = () -> -joystick.getRightX();
+    driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
+    // Toggle cameras & drive when B is pressed
+    new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
+        (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
   }
 
   /**
@@ -94,7 +102,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     driveSubsystem.resetOdometry(new Pose2d());
-    //System.out.println(autoChooser.getSelected().getName());
+    System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
     return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));

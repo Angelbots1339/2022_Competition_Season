@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -17,12 +16,8 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutonomousConstants;
@@ -74,6 +69,12 @@ public class FollowTrajectory extends RamseteCommand {
         return new FollowTrajectory(driveSubsystem, getTrajectoryFromJSON(fileName));
     }
 
+    /**
+     * For testing PID/Ramsete controller. Not for use in final robot
+     * @param driveSubsystem
+     * @param fileName
+     * @return
+     */
     public static RamseteCommand TestFollowTrjectory(DriveSubsystem driveSubsystem, String fileName) {
 
         var leftController = new PIDController(DriveConstants.LEFT_KP + 0.5, 0, 0);
@@ -98,10 +99,11 @@ public class FollowTrajectory extends RamseteCommand {
 
         ShuffleboardTab tab = Shuffleboard.getTab("Test");
 
-        tab.addNumber("LeftActual", () -> driveSubsystem.getWheelSpeeds().leftMetersPerSecond);
-        tab.addNumber("RightActual", () -> driveSubsystem.getWheelSpeeds().rightMetersPerSecond);
-        tab.addNumber("LeftIdeal", () -> leftController.getSetpoint());
-        tab.addNumber("RightIdeal", () -> rightController.getSetpoint());
+        // Graph these together to tune P value
+        tab.addNumber(new StringBuffer("LeftActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().leftMetersPerSecond);
+        tab.addNumber(new StringBuffer("RightActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().rightMetersPerSecond);
+        tab.addNumber(new StringBuffer("LeftIdeal").append(fileName).toString(), () -> leftController.getSetpoint());
+        tab.addNumber(new StringBuffer("RightIdeal").append(fileName).toString(), () -> rightController.getSetpoint());
 
         return ramseteCommand;
 
@@ -120,6 +122,7 @@ public class FollowTrajectory extends RamseteCommand {
         return trajectory;
     }
 
+    // TODO delete me
     public static Trajectory getAutoTrajectory1() {
         System.out.println("Called getAutoTrajectory");
         // Draw an 's' curve
@@ -128,6 +131,7 @@ public class FollowTrajectory extends RamseteCommand {
         return trajectory;
     }
 
+    // TODO delete me
     public static Trajectory getAutoTrajectory2() {
         System.out.println("Called getAutoTrajectory");
         // Draw an 's' curve
