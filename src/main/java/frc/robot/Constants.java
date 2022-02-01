@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.StickyFaults;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -107,6 +110,61 @@ public final class Constants {
         */
 
     }
+    public final static class IntakeConstants{
+
+        // TODO Make the ports correct
+        public final static int INTAKE_MOTOR_PORT = 7;
+        public final static int INDEXER_RIGHT_PORT = 8;
+        public final static int INDEXER_LEFT_PORT = 9;
+        public final static int INDEXER_UPPER_PORT = 10;
+        public final static double MAX_INDEXER_SPEED = 0.5;
+
+        public final static boolean INDEXER_LEFT_INVERSE = true;
+        public final static boolean INDEXER_RIGHT_INVERSE = false;
+        
+        public final static int SERVO_RIGHT_PORT = 0;
+        public final static int SERVO_LEFT_PORT = 1;
+
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = Integer.MAX_VALUE;
+
+        
+        // TODO Fix color sensor ports
+        //public final static Port COLOR_SENSOR_HIGH_PORT = new Port(0);
+        //public final static Port COLOR_SENSOR_LOW_PORT = new Port(1);
+
+
+
+
+    }
+
+    public static final class ClimberConstants{
+        public static final int ROTATOR_LEFT_PORT = -1;
+        public static final int ROTATOR_RIGHT_PORT = -1;
+        public static final int EXTENDER_LEFT_PORT = -1;
+        public static final int EXTENDER_RIGHT_PORT = -1;
+        public static final boolean ROTATOR_LEFT_INVERTED = false;
+        public static final boolean ROTATOR_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_LEFT_INVERTED = false;
+        public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        
+
+        public static final double SLACK_LENGTH = Units.inchesToMeters(60);
+        public static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
+        public static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
+        public static final double SPOOL_CIRCUM = Units.inchesToMeters(4) * 2 * Math.PI;
+        public static final double LENGTH_PER_CLICK = SPOOL_CIRCUM * MOTOR_ROT_PER_SPOOL_ROT / DriveConstants.CLICKS_PER_ROT;
+        
+        public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
+            return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360, 360);
+
+        }
+
+
+        public final static double EXTENDER_ANGLE_TOLERANCE = 1;
+        public final static double EXTENDER_KP = 1;
+
+    }
+
     public final static class AutonomousConstants{ // TODO ensure these match pathweaver inputs
         public final static double maxVelocityMetersPerSecond = 1;
         public final static double maxAccelerationMetersPerSecondSq = 0.25;

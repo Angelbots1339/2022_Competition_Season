@@ -16,9 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowComandGenerationBellCurve;
 import frc.robot.commands.FollowTrajectorySequence;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static frc.robot.Constants.JoystickConstants.*;
@@ -35,6 +37,7 @@ public class RobotContainer {
 
   //Subsystems 
   private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
+  private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
@@ -93,6 +96,8 @@ public class RobotContainer {
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
+
+    new JoystickButton(joystick, buttonA).whenHeld(new RunIntake(intakeSubsystem));
   }
 
   /**
