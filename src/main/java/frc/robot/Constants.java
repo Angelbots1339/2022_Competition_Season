@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -27,25 +28,17 @@ public final class Constants {
 
 
         // TODO all of these are incorrect
-        public final static int leftJoystickY = 1;
-        public final static int leftJoystickX = 2;
-        public final static int rightJoystickX = 4;
-        public final static int rightJoystickY = 4;
-        public final static int dpadHorizontal = 5;
-        public final static int dpadVertical = 6;
 
-
-
-        public final static int buttonX = 1;
-        public final static int buttonA = 2;
-        public final static int buttonB = 3;
+        public final static int buttonA = 1;
+        public final static int buttonB = 2;
+        public final static int buttonX = 3;
         public final static int buttonY = 4;
         public final static int leftBumper = 5;
         public final static int rightBumper = 6;
-        public final static int leftTrigger = 7;
-        public final static int rightTrigger = 8;
-        public final static int leftJoystickButton = 0;
-        public final static int rightJoystickButton = 0;
+        public final static int leftMenuButton = 7;
+        public final static int rightMenuButton = 8;
+        public final static int leftJoystickButton = 9;
+        public final static int rightJoystickButton = 10;
         
         
 
@@ -61,7 +54,7 @@ public final class Constants {
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
         public final static int LEFT_MOTOR_FRONT_PORT = 1; 
-        public final static int LEFT_MOTOR_BACK_PORT = 3; 
+        public final static int LEFT_MOTOR_BACK_PORT = 3;
         public final static int RIGHT_MOTOR_TOP_PORT = 5; 
         public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
