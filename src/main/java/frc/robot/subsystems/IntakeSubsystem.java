@@ -5,14 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.ColorSensorV3;
+
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ColorMUXed;
 
 import static frc.robot.Constants.IntakeConstants.*;
-import edu.wpi.first.wpilibj.I2C;
+
 
 public class IntakeSubsystem extends SubsystemBase {
 

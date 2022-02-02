@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.StickyFaults;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;

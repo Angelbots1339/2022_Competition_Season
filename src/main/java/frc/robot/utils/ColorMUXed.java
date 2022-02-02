@@ -1,9 +1,6 @@
 package frc.robot.utils;
 
 import com.revrobotics.ColorSensorV3;
-
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.utils.Multiplexer.MultiplexerSwitchException;
 import static frc.robot.Constants.*;
 
@@ -30,7 +27,7 @@ public class ColorMUXed {
     /**
      * Attempts to read proximity from color sensor through multiplexer.
      * 
-     * @return Sensor's proximity, or -1 upon {@link #MultiplexerSwitchExcpetion}
+     * @return Sensor's proximity, or -1 upon {@link #MultiplexerSwitchException}
      */
     public int getProximity() {
         try {

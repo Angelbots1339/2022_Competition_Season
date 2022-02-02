@@ -89,9 +89,6 @@ public class RobotContainer {
     autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
     autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
 
-    // Tests
-    autoChooser.addOption("leftTurnTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "TurnLeft"));
-    autoChooser.addOption("MeterTest", FollowTrajectory.TestFollowTrjectory(driveSubsystem, "AutoTest1"));
     
     SmartDashboard.putData(autoChooser);
   }

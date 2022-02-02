@@ -2,16 +2,13 @@ package frc.robot.commands;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,8 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends RamseteCommand {
-    private final DriveSubsystem driveSubsystem;
-    private static Pose2d zeroPose = new Pose2d();
+
     private static DifferentialDriveVoltageConstraint voltageConstraint;
     private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
             AutonomousConstants.maxAccelerationMetersPerSecondSq);
@@ -48,8 +44,7 @@ public class FollowTrajectory extends RamseteCommand {
                 driveSubsystem.getLeftPid(), driveSubsystem.getRightPid(),
                 driveSubsystem::tankDriveVolts,
                 driveSubsystem);
-        this.driveSubsystem = driveSubsystem;
-
+        
 
         addRequirements(driveSubsystem);
         simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV, DriveConstants.KA);
@@ -77,7 +72,7 @@ public class FollowTrajectory extends RamseteCommand {
      * @param fileName
      * @return
      */
-    public static RamseteCommand TestFollowTrjectory(DriveSubsystem driveSubsystem, String fileName) {
+    public static RamseteCommand TestFollowTrajectory(DriveSubsystem driveSubsystem, String fileName) {
 
         var leftController = new PIDController(DriveConstants.LEFT_KP + 0.5, 0, 0);
         var rightController = new PIDController(DriveConstants.RIGHT_KP + 0.5, 0, 0);
@@ -121,25 +116,6 @@ public class FollowTrajectory extends RamseteCommand {
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathWeeverFileName, ex.getStackTrace());
         }
-        return trajectory;
-    }
-
-    // TODO delete me
-    public static Trajectory getAutoTrajectory1() {
-        System.out.println("Called getAutoTrajectory");
-        // Draw an 's' curve
-        Trajectory trajectory = TrajectoryGenerator
-                .generateTrajectory(List.of(zeroPose, new Pose2d(2, 2, Rotation2d.fromDegrees(0))), config);
-        return trajectory;
-    }
-
-    // TODO delete me
-    public static Trajectory getAutoTrajectory2() {
-        System.out.println("Called getAutoTrajectory");
-        // Draw an 's' curve
-        Trajectory trajectory = TrajectoryGenerator
-                .generateTrajectory(List.of(new Pose2d(2, 2, Rotation2d.fromDegrees(0)),
-                        new Pose2d(0, 4, Rotation2d.fromDegrees(0))), config);
         return trajectory;
     }
 

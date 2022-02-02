@@ -50,7 +50,6 @@ public class Multiplexer extends I2C {
                 setDevice(i, (byte) 1);
                 System.out.println("Switch device success");
             } catch (MultiplexerSwitchException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
