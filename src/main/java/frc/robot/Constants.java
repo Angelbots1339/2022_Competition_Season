@@ -214,6 +214,7 @@ public final class Constants {
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
 
+    }
 
     public final static class MultiplexerConstants {
         public static final byte DEFAULT_ADDRESS = 0x70;
@@ -270,3 +271,4 @@ public final class Constants {
 
     
 }
+
