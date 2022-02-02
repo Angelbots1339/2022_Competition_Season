@@ -43,7 +43,7 @@ public class ExtendArms extends CommandBase {
     double rightSpeed = (Math.abs(setpoint - climbingSubsystem.getRightLength()) < EXTENDER_P_TOLERANCE)
         ? rightExtend.calculate(climbingSubsystem.getRightLength(), setpoint)
         : EXTENDER_SPEED;
-    climbingSubsystem.setExtensionSpeed(leftSpeed, rightSpeed); // TODO swictch pid to talonfx intrnal
+    climbingSubsystem.setExtensionSpeed(leftSpeed, rightSpeed); 
   }
 
   // Called once the command ends or is interrupted.
