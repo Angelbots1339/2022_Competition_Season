@@ -56,7 +56,7 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
-    
+    intakeSubsystem.deployIntake();
 
     tab = Shuffleboard.getTab("Commands");
   }

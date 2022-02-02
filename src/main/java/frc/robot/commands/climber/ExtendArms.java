@@ -18,6 +18,7 @@ public class ExtendArms extends CommandBase {
 
   /** Creates a new ExtendArms. */
   public ExtendArms(ClimbingSubsystem climbingSubsystem, boolean isRetract) {
+    addRequirements(climbingSubsystem);
     setpoint = isRetract ? 0 : SLACK_LENGTH;
 
     this.climbingSubsystem = climbingSubsystem;
