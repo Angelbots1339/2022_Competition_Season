@@ -27,7 +27,7 @@ public final class Constants {
          //public final static int secondaryJoystick = 0; //This is optional
 
 
-        // TODO all of these are incorrect
+    
 
         public final static int buttonA = 1;
         public final static int buttonB = 2;
@@ -91,7 +91,6 @@ public final class Constants {
         
 
         //Ramsete
-        // TODO The practice bot does better without a ramsete than with one. Need to tune
         public final static double KB = 2;
         public final static double ZETA = 0.7;
         
@@ -106,14 +105,14 @@ public final class Constants {
     public final static class IntakeConstants{
 
         // TODO Make the ports correct
-        public final static int INTAKE_MOTOR_PORT = 7;
-        public final static int INDEXER_RIGHT_PORT = 8;
-        public final static int INDEXER_LEFT_PORT = 9;
-        public final static int INDEXER_UPPER_PORT = 10;
+        public final static int INTAKE_MOTOR_PORT = -1;
+        public final static int INDEXER_RIGHT_PORT = -1;
+        public final static int INDEXER_LEFT_PORT = -1;
+        public final static int INDEXER_UPPER_PORT = -1;
         public final static double MAX_INDEXER_SPEED = 0.5;
 
-        public final static boolean INDEXER_LEFT_INVERSE = true;
-        public final static boolean INDEXER_RIGHT_INVERSE = false;
+        public final static boolean INDEXER_LEFT_INVERSE = false;
+        public final static boolean INDEXER_RIGHT_INVERSE = true;
         public final static boolean INDEXER_UPPER_INVERSE = false;
         public final static boolean INTAKE_INVERSE = false;
         
@@ -138,9 +137,9 @@ public final class Constants {
         public static final int EXTENDER_LEFT_PORT = -1;
         public static final int EXTENDER_RIGHT_PORT = -1;
         public static final boolean ROTATOR_LEFT_INVERTED = false;
-        public static final boolean ROTATOR_RIGHT_INVERTED = false;
+        public static final boolean ROTATOR_RIGHT_INVERTED = true;
         public static final boolean EXTENDER_LEFT_INVERTED = false;
-        public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_RIGHT_INVERTED = true;
         public static final double ROTATOR_SPEED = 0.5;
         public static final double EXTENDER_SPEED = 0.5;
         
@@ -152,7 +151,7 @@ public final class Constants {
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
-        private static final double SPOOL_CIRCUM = Units.inchesToMeters(4) * 2 * Math.PI;//TODO get correct measurements
+        private static final double SPOOL_CIRCUM = Units.inchesToMeters(1) * 2 * Math.PI;
         public static final double LENGTH_PER_CLICK = SPOOL_CIRCUM * MOTOR_ROT_PER_SPOOL_ROT / DriveConstants.CLICKS_PER_ROT;
         
         
@@ -171,7 +170,7 @@ public final class Constants {
 
     }
 
-    public final static class AutonomousConstants{ // TODO ensure these match pathweaver inputs
+    public final static class AutonomousConstants{
         public final static double maxVelocityMetersPerSecond = 1;
         public final static double maxAccelerationMetersPerSecondSq = 0.25;
         /* Tuning constraints:
@@ -187,14 +186,14 @@ public final class Constants {
     }
     
     public final static class ShooterConstants {
-        public final static int LEFT_POWER_WHEEL = 0;
-        public final static int RIGHT_POWER_WHEEL = 1;
-        public final static int AIM_WHEEL = 2;
+        public final static int LEFT_POWER_WHEEL = -1;
+        public final static int RIGHT_POWER_WHEEL = -1;//TODO ports 
+        public final static int AIM_WHEEL = -1;
 
-        public final static double POWER_WHEEL_KP = 0;
+        public final static double POWER_WHEEL_KP = 0.001;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-        public final static double AIM_WHEEL_KP = 0;
+        public final static double AIM_WHEEL_KP = 0.001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 

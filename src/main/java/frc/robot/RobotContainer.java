@@ -120,7 +120,7 @@ public class RobotContainer {
     new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
-    new JoystickButton(joystick, buttonA).whenHeld(new RunIntake(intakeSubsystem));
+    new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
 
     new JoystickButton(joystick, rightBumper).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }

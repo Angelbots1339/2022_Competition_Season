@@ -11,6 +11,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import static frc.robot.Constants.DriveConstants.*;
@@ -30,6 +32,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private SimpleMotorFeedforward aimWheelFF = new SimpleMotorFeedforward(AIM_KS, AIM_KV, AIM_KA);
   private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
 
+  private ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
+
   public ShooterSubsystem() {
     powerWheelRight.configFactoryDefault();
     powerWheelLeft.configFactoryDefault();
@@ -41,13 +45,17 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelPID.setTolerance(POWER_WHEEL_KP);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
 
+    tab.add(aimWheelPID);
+    tab.add(powerWheelPID);
+
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
+  //TODO add motor feed forward
   public void setPowerWheelRPM(double speed) {
     powerWheelGroup.set(powerWheelPID.calculate(getPowerRPM(), speed));
   }

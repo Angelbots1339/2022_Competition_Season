@@ -29,10 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    /* TODO add color sensor initialization */
-    
-
-
+  
     intakeMotor.configFactoryDefault();
     indexerLeftMotor.configFactoryDefault();
     indexerRightMotor.configFactoryDefault();
