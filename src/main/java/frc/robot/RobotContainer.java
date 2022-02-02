@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,11 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.ShooterProfiles;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,6 +45,7 @@ public class RobotContainer {
   private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
   private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
   private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
@@ -110,13 +115,14 @@ public class RobotContainer {
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
     new JoystickButton(joystick, buttonA).whenHeld(climbCommand).whenHeld(stopDrive);
+    
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
     new JoystickButton(joystick, buttonA).whenHeld(new RunIntake(intakeSubsystem));
 
-  
+    new JoystickButton(joystick, rightBumper).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
 
   /**

@@ -4,30 +4,25 @@
 
 package frc.robot.utils;
 
+import java.util.function.DoubleSupplier;
+
 /** Add your docs here. */
 public class ShooterProfiles {
-    private double powerRPM;
-    private double aimRPM;
+    private DoubleSupplier powerRPM;
+    private DoubleSupplier aimRPM;
 
-    public ShooterProfiles(double powerRPM, double aimRPM) {
+    public ShooterProfiles(DoubleSupplier powerRPM, DoubleSupplier aimRPM) {
         this.powerRPM = powerRPM;
         this.aimRPM = aimRPM;
     }
 
-    public void setPowerRPM(double RPM) {
-        this.powerRPM = RPM;
-    }
-
-    public void setAimRPM(double RPM) {
-        this.aimRPM = RPM;
-    }
 
     public double getPowerRPM() {
-        return this.powerRPM;
+        return this.powerRPM.getAsDouble();
     }
 
     public double getAimRPM() {
-        return this.aimRPM;
+        return this.aimRPM.getAsDouble();
     }
     
 }
