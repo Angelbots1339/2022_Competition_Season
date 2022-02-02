@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -49,6 +50,12 @@ public class RobotContainer {
 
   private boolean isDriveReversed;
 
+  tab = Shuffleboard.getTab("RobotContainer");
+  private NetworkTableEntry powerWheelRPM = tab.add("Max Speed", 100)
+      .getEntry();
+  private NetworkTableEntry aimWheelRPM = tab.add("Max Speed", 100)
+      .getEntry();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -58,7 +65,7 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(new Pose2d());
     intakeSubsystem.deployIntake();
 
-    tab = Shuffleboard.getTab("Commands");
+    
   }
 
   public void resetOdometry() {
@@ -101,12 +108,15 @@ public class RobotContainer {
       climbingSubsystem.setExtensionSpeed(() -> joystick.getLeftY());
     } , climbingSubsystem);
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
+
     new JoystickButton(joystick, buttonA).whenHeld(climbCommand).whenHeld(stopDrive);
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
     new JoystickButton(joystick, buttonA).whenHeld(new RunIntake(intakeSubsystem));
+
+  
   }
 
   /**

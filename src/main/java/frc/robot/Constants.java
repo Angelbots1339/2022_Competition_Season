@@ -198,8 +198,13 @@ public final class Constants {
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
+        public final static double AIM_WHEEL_TOLERANCE = 100;
+        public final static double POWER_WHEEL_TOLERANCE = 100;
+
+        
+
         public final static boolean LEFT_POWER_WHEEL_INVERTED = false;
-        public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
+        public final static boolean RIGHT_POWER_WHEEL_INVERTED = true;
 
         public final static double POWER_KS = 0;
         public final static double POWER_KV = 0;
@@ -208,6 +213,7 @@ public final class Constants {
         public final static double AIM_KS = 0;
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
+
     }
 
     public final static class MultiplexerConstants {
