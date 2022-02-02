@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.FollowComandGenerationBellCurve;
 import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
