@@ -26,6 +26,16 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     /* TODO add color sensor initialization */
+
+    intakeMotor.configFactoryDefault();
+    indexerLeftMotor.configFactoryDefault();
+    indexerRightMotor.configFactoryDefault();
+    indexerUpperMotor.configFactoryDefault();
+
+    indexerLeftMotor.setInverted(INDEXER_LEFT_INVERSE);
+    indexerRightMotor.setInverted(INDEXER_RIGHT_INVERSE);
+    indexerUpperMotor.setInverted(INDEXER_UPPER_INVERSE);
+    intakeMotor.setInverted(INTAKE_INVERSE);
   }
 
   @Override
@@ -38,14 +48,29 @@ public class IntakeSubsystem extends SubsystemBase {
     servoLeft.setAngle(90);
   }
 
+  /**
+   * This will spin the intake motor at the given speed
+   * 
+   * @param speed
+   */
   public void runIntake(double speed) {
     intakeMotor.set(speed);
   }
 
+  /**
+   * This will run the indexer wheel in the shooter
+   * 
+   * @param speed
+   */
   public void runIndexerHigh(double speed) {
     indexerUpperMotor.set(speed);
   }
 
+  /**
+   * This will run the belts on the lower indexer
+   * 
+   * @param speed
+   */
   public void runIndexerLow(double speed) {
     indexerLeftMotor.set((INDEXER_LEFT_INVERSE ? -1 : 1) * speed);
     indexerRightMotor.set((INDEXER_RIGHT_INVERSE ? -1 : 1) * speed);

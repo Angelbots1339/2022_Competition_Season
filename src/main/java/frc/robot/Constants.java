@@ -114,6 +114,8 @@ public final class Constants {
 
         public final static boolean INDEXER_LEFT_INVERSE = true;
         public final static boolean INDEXER_RIGHT_INVERSE = false;
+        public final static boolean INDEXER_UPPER_INVERSE = false;
+        public final static boolean INTAKE_INVERSE = false;
         
         public final static int SERVO_RIGHT_PORT = 0;
         public final static int SERVO_LEFT_PORT = 1;
