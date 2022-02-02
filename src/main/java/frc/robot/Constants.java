@@ -146,13 +146,20 @@ public final class Constants {
         public static final boolean ROTATOR_RIGHT_INVERTED = false;
         public static final boolean EXTENDER_LEFT_INVERTED = false;
         public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        public static final double ROTATOR_SPEED = 0.5;
+        public static final double EXTENDER_SPEED = 0.5;
         
+        public static final int ROTATOR_LEFT_LIMIT_PORT = -1;
+        public static final int ROTATOR_RIGHT_LIMIT_PORT = -1;
+        public static final double LIMIT_SWITCH_DEBOUNCE_TIME = 0.02;
 
         public static final double SLACK_LENGTH = Units.inchesToMeters(60);
-        public static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
-        public static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
-        public static final double SPOOL_CIRCUM = Units.inchesToMeters(4) * 2 * Math.PI;
+       
+        private static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
+        private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
+        private static final double SPOOL_CIRCUM = Units.inchesToMeters(4) * 2 * Math.PI;//TODO get correct measurements
         public static final double LENGTH_PER_CLICK = SPOOL_CIRCUM * MOTOR_ROT_PER_SPOOL_ROT / DriveConstants.CLICKS_PER_ROT;
+        
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360, 360);
@@ -160,8 +167,12 @@ public final class Constants {
         }
 
 
-        public final static double EXTENDER_ANGLE_TOLERANCE = 1;
+        public final static double EXTENDER_TOLERANCE = 1;
+        public final static double EXTENDER_P_TOLERANCE = 1;
+        public final static double ROTATOR_ANGLE_P_TOLERANCE = 1; // error angle at which it switches to pid
+        public final static double ROTATOR_ANGLE_TOLERANCE = 1; // error angle at which it stops
         public final static double EXTENDER_KP = 1;
+        public final static double ROTATOR_KP = 0.01;
 
     }
 

@@ -5,16 +5,16 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import static frc.robot.Constants.ClimberConstants.*;
+
 import frc.robot.subsystems.ClimbingSubsystem;
 
-public class RotateToAngles extends CommandBase {
+public class RotateClimberOut extends CommandBase {
   private ClimbingSubsystem climbingSubsystem;
-  private double target;
   /** Creates a new RotateToAngles. */
-  public RotateToAngles(ClimbingSubsystem climbingSubsystem, double target) {
+  public RotateClimberOut(ClimbingSubsystem climbingSubsystem) {
     addRequirements(climbingSubsystem);
     this.climbingSubsystem = climbingSubsystem;
-    this.target = target;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,17 +25,18 @@ public class RotateToAngles extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO ask nick wether we need to go to a specific angle or just to the limit swich
-    //climbingSubsystem.setRotationSpeed(target > climbingSubsystem.getRightAngle(), 1);
+    climbingSubsystem.setRotationSpeed(climbingSubsystem.getLeftRotatorLimit()? 0 : ROTATOR_SPEED , climbingSubsystem.getRightRotatorLimit()? 0 : ROTATOR_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climbingSubsystem.setRotationSpeed(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return climbingSubsystem.getLeftRotatorLimit() && climbingSubsystem.getRightRotatorLimit();
   }
 }

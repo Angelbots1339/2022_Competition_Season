@@ -28,7 +28,9 @@
   "java.test.defaultConfig": "WPIlibUnitTests",
   "cSpell.words": [
     "camtran",
+    "Debouncer",
     "getpipe",
+    "setpoint",
     "sidelength",
     "tlong",
     "tshort",

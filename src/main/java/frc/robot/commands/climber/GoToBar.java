@@ -13,9 +13,14 @@ public class GoToBar extends SequentialCommandGroup{
     public GoToBar(ClimbingSubsystem climbingSubsystem, double angle, BooleanSupplier proceed) {
         addRequirements(climbingSubsystem);
         addCommands(
-            new RotateToAngles(climbingSubsystem, 2),
-
-            new WaitUntilCommand(proceed)
+            new RotateClimberOut(climbingSubsystem),
+            new WaitUntilCommand(proceed),
+            new ExtendArms(climbingSubsystem, false),
+            new WaitUntilCommand(proceed),
+            new ExtendArms(climbingSubsystem, true),
+            new WaitUntilCommand(proceed),
+            new RotateClimberOut(climbingSubsystem)
+            
         );
     }
 }
