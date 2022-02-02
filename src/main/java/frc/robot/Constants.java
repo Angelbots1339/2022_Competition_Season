@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.StickyFaults;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C.Port;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -24,25 +28,17 @@ public final class Constants {
 
 
         // TODO all of these are incorrect
-        public final static int leftJoystickY = 1;
-        public final static int leftJoystickX = 2;
-        public final static int rightJoystickX = 4;
-        public final static int rightJoystickY = 4;
-        public final static int dpadHorizontal = 5;
-        public final static int dpadVertical = 6;
 
-
-
-        public final static int buttonX = 1;
-        public final static int buttonA = 2;
-        public final static int buttonB = 3;
+        public final static int buttonA = 1;
+        public final static int buttonB = 2;
+        public final static int buttonX = 3;
         public final static int buttonY = 4;
         public final static int leftBumper = 5;
         public final static int rightBumper = 6;
-        public final static int leftTrigger = 7;
-        public final static int rightTrigger = 8;
-        public final static int leftJoystickButton = 0;
-        public final static int rightJoystickButton = 0;
+        public final static int leftMenuButton = 7;
+        public final static int rightMenuButton = 8;
+        public final static int leftJoystickButton = 9;
+        public final static int rightJoystickButton = 10;
         
         
 
@@ -58,7 +54,7 @@ public final class Constants {
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
         public final static int LEFT_MOTOR_FRONT_PORT = 1; 
-        public final static int LEFT_MOTOR_BACK_PORT = 3; 
+        public final static int LEFT_MOTOR_BACK_PORT = 3;
         public final static int RIGHT_MOTOR_TOP_PORT = 5; 
         public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
@@ -107,6 +103,74 @@ public final class Constants {
         */
 
     }
+    public final static class IntakeConstants{
+
+        // TODO Make the ports correct
+        public final static int INTAKE_MOTOR_PORT = 7;
+        public final static int INDEXER_RIGHT_PORT = 8;
+        public final static int INDEXER_LEFT_PORT = 9;
+        public final static int INDEXER_UPPER_PORT = 10;
+        public final static double MAX_INDEXER_SPEED = 0.5;
+
+        public final static boolean INDEXER_LEFT_INVERSE = true;
+        public final static boolean INDEXER_RIGHT_INVERSE = false;
+        public final static boolean INDEXER_UPPER_INVERSE = false;
+        public final static boolean INTAKE_INVERSE = false;
+        
+        public final static int SERVO_RIGHT_PORT = 0;
+        public final static int SERVO_LEFT_PORT = 1;
+
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 1000; // 0 to 2047
+
+        
+        // TODO Fix color sensor ports
+        public final static int COLOR_SENSOR_HIGH_PORT = -1;
+        public final static int COLOR_SENSOR_LOW_PORT = -1;
+
+
+
+
+    }
+
+    public static final class ClimberConstants{
+        public static final int ROTATOR_LEFT_PORT = -1;
+        public static final int ROTATOR_RIGHT_PORT = -1;
+        public static final int EXTENDER_LEFT_PORT = -1;
+        public static final int EXTENDER_RIGHT_PORT = -1;
+        public static final boolean ROTATOR_LEFT_INVERTED = false;
+        public static final boolean ROTATOR_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_LEFT_INVERTED = false;
+        public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        public static final double ROTATOR_SPEED = 0.5;
+        public static final double EXTENDER_SPEED = 0.5;
+        
+        public static final int ROTATOR_LEFT_LIMIT_PORT = -1;
+        public static final int ROTATOR_RIGHT_LIMIT_PORT = -1;
+        public static final double LIMIT_SWITCH_DEBOUNCE_TIME = 0.02;
+
+        public static final double SLACK_LENGTH = Units.inchesToMeters(60);
+       
+        private static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
+        private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
+        private static final double SPOOL_CIRCUM = Units.inchesToMeters(4) * 2 * Math.PI;//TODO get correct measurements
+        public static final double LENGTH_PER_CLICK = SPOOL_CIRCUM * MOTOR_ROT_PER_SPOOL_ROT / DriveConstants.CLICKS_PER_ROT;
+        
+        
+        public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
+            return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360, 360);
+
+        }
+
+
+        public final static double EXTENDER_TOLERANCE = 1;
+        public final static double EXTENDER_P_TOLERANCE = 1;
+        public final static double ROTATOR_ANGLE_P_TOLERANCE = 1; // error angle at which it switches to pid
+        public final static double ROTATOR_ANGLE_TOLERANCE = 1; // error angle at which it stops
+        public final static double EXTENDER_KP = 1;
+        public final static double ROTATOR_KP = 0.01;
+
+    }
+
     public final static class AutonomousConstants{ // TODO ensure these match pathweaver inputs
         public final static double maxVelocityMetersPerSecond = 1;
         public final static double maxAccelerationMetersPerSecondSq = 0.25;
@@ -121,6 +185,7 @@ public final class Constants {
         but if it seems to go around tight turns to quickly then you should decrease the maximum centripetal acceleration.
         */
     }
+<<<<<<< shooter
     
     public final static class ShooterConstants {
         public final static int LEFT_POWER_WHEEL = 0;
@@ -145,6 +210,12 @@ public final class Constants {
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
 
+=======
+
+    public final static class MultiplexerConstants {
+        public static final byte DEFAULT_ADDRESS = 0x70;
+        public static final Port DEFAULT_PORT = Port.kMXP;
+>>>>>>> Intake
     }
     public final static class LimelightConstants{
         public static enum entryType{

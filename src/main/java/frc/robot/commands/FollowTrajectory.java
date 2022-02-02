@@ -50,12 +50,14 @@ public class FollowTrajectory extends RamseteCommand {
                 driveSubsystem);
         this.driveSubsystem = driveSubsystem;
 
+
         addRequirements(driveSubsystem);
         simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV, DriveConstants.KA);
         // Constrain the max voltage to 10
         voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
                 DriveConstants.DRIVE_KINEMATICS, 10);
         config.setKinematics(DriveConstants.DRIVE_KINEMATICS).addConstraint(voltageConstraint);
+        
 
         this.trajectory = trajectory;
     }
