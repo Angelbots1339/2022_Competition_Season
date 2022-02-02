@@ -185,10 +185,37 @@ public final class Constants {
         but if it seems to go around tight turns to quickly then you should decrease the maximum centripetal acceleration.
         */
     }
+<<<<<<< shooter
+    
+    public final static class ShooterConstants {
+        public final static int LEFT_POWER_WHEEL = 0;
+        public final static int RIGHT_POWER_WHEEL = 1;
+        public final static int AIM_WHEEL = 2;
+
+        public final static double POWER_WHEEL_KP = 0;
+        public final static double POWER_WHEEL_KI = 0;
+        public final static double POWER_WHEEL_KD = 0;
+        public final static double AIM_WHEEL_KP = 0;
+        public final static double AIM_WHEEL_KI = 0;
+        public final static double AIM_WHEEL_KD = 0;
+
+        public final static boolean LEFT_POWER_WHEEL_INVERTED = false;
+        public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
+
+        public final static double POWER_KS = 0;
+        public final static double POWER_KV = 0;
+        public final static double POWER_KA = 0;
+
+        public final static double AIM_KS = 0;
+        public final static double AIM_KV = 0;
+        public final static double AIM_KA = 0;
+
+=======
 
     public final static class MultiplexerConstants {
         public static final byte DEFAULT_ADDRESS = 0x70;
         public static final Port DEFAULT_PORT = Port.kMXP;
+>>>>>>> Intake
     }
     public final static class LimelightConstants{
         public static enum entryType{
