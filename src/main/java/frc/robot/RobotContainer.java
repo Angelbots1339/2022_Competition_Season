@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
+import frc.robot.commands.Load;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
@@ -51,11 +52,10 @@ public class RobotContainer {
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private ShuffleboardTab tab;
+  private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
   private boolean isDriveReversed;
 
-  tab = Shuffleboard.getTab("RobotContainer");
   private NetworkTableEntry powerWheelRPM = tab.add("Max Speed", 100)
       .getEntry();
   private NetworkTableEntry aimWheelRPM = tab.add("Max Speed", 100)
@@ -118,6 +118,8 @@ public class RobotContainer {
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
     new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
+
+    new JoystickButton(joystick, buttonY).whenHeld(new Load(intakeSubsystem));
 
     new JoystickButton(joystick, rightBumper).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
