@@ -9,7 +9,10 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.ColorMUXed;
+
 import static frc.robot.Constants.IntakeConstants.*;
+import edu.wpi.first.wpilibj.I2C;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -18,14 +21,17 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT);
   private WPI_TalonFX indexerUpperMotor = new WPI_TalonFX(INDEXER_UPPER_PORT);
   private Servo servoRight = new Servo(SERVO_RIGHT_PORT);
-  private Servo servoLeft = new Servo(SERVO_LEFT_PORT);
+  private Servo servoLeft = new Servo(SERVO_LEFT_PORT); 
 
-  private ColorSensorV3 colorSensorHigh;
-  private ColorSensorV3 colorSensorLow;
+  // TODO Warning: Set NavX voltage jumper to 3.3v
+  private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
+  private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     /* TODO add color sensor initialization */
+    
+
 
     intakeMotor.configFactoryDefault();
     indexerLeftMotor.configFactoryDefault();
@@ -81,7 +87,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean isBallLow() {
-    return colorSensorHigh.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
+    return colorSensorLow.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
   }
 
 }

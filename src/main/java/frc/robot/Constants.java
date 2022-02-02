@@ -120,12 +120,12 @@ public final class Constants {
         public final static int SERVO_RIGHT_PORT = 0;
         public final static int SERVO_LEFT_PORT = 1;
 
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = Integer.MAX_VALUE;
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 1000; // 0 to 2047
 
         
         // TODO Fix color sensor ports
-        //public final static Port COLOR_SENSOR_HIGH_PORT = new Port(0);
-        //public final static Port COLOR_SENSOR_LOW_PORT = new Port(1);
+        public final static int COLOR_SENSOR_HIGH_PORT = -1;
+        public final static int COLOR_SENSOR_LOW_PORT = -1;
 
 
 
@@ -184,6 +184,11 @@ public final class Constants {
         If your robot doesn’t seem to turn enough then you should increase the max centripetal acceleration,
         but if it seems to go around tight turns to quickly then you should decrease the maximum centripetal acceleration.
         */
+    }
+
+    public final static class MultiplexerConstants {
+        public static final byte DEFAULT_ADDRESS = 0x70;
+        public static final Port DEFAULT_PORT = Port.kMXP;
     }
     public final static class LimelightConstants{
         public static enum entryType{
