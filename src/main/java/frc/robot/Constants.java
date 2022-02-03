@@ -104,10 +104,10 @@ public final class Constants {
     public final static class IntakeConstants{
 
         // TODO Make the ports correct
-        public final static int INTAKE_MOTOR_PORT = -1;
-        public final static int INDEXER_RIGHT_PORT = -1;
-        public final static int INDEXER_LEFT_PORT = -1;
-        public final static int INDEXER_UPPER_PORT = -1;
+        public final static int INTAKE_MOTOR_PORT = 7; // 7
+        public final static int INDEXER_RIGHT_PORT = 9; // 9
+        public final static int INDEXER_LEFT_PORT = 8; // 8
+        public final static int INDEXER_UPPER_PORT = 10; // 10
         public final static double MAX_INDEXER_SPEED = 0.5;
 
         public final static boolean INDEXER_LEFT_INVERSE = false;
@@ -131,10 +131,10 @@ public final class Constants {
     }
 
     public static final class ClimberConstants{
-        public static final int ROTATOR_LEFT_PORT = -1;
-        public static final int ROTATOR_RIGHT_PORT = -1;
-        public static final int EXTENDER_LEFT_PORT = -1;
-        public static final int EXTENDER_RIGHT_PORT = -1;
+        public static final int ROTATOR_LEFT_PORT = 16;  // 16 
+        public static final int ROTATOR_RIGHT_PORT = 17; // 17
+        public static final int EXTENDER_LEFT_PORT = 14; // 14
+        public static final int EXTENDER_RIGHT_PORT = 15; // 15
         public static final boolean ROTATOR_LEFT_INVERTED = false;
         public static final boolean ROTATOR_RIGHT_INVERTED = true;
         public static final boolean EXTENDER_LEFT_INVERTED = false;
@@ -185,9 +185,9 @@ public final class Constants {
     }
     
     public final static class ShooterConstants {
-        public final static int LEFT_POWER_WHEEL = -1;
-        public final static int RIGHT_POWER_WHEEL = -1;//TODO ports 
-        public final static int AIM_WHEEL = -1;
+        public final static int LEFT_POWER_WHEEL = 11;  // 11
+        public final static int RIGHT_POWER_WHEEL = 12; // 12 
+        public final static int AIM_WHEEL = 13;  // 13
 
         public final static double POWER_WHEEL_KP = 0.001;
         public final static double POWER_WHEEL_KI = 0;
