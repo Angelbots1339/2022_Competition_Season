@@ -28,16 +28,16 @@ public final class Constants {
 
     
 
-        public final static int buttonA = 1;
-        public final static int buttonB = 2;
-        public final static int buttonX = 3;
-        public final static int buttonY = 4;
-        public final static int leftBumper = 5;
-        public final static int rightBumper = 6;
-        public final static int leftMenuButton = 7;
-        public final static int rightMenuButton = 8;
-        public final static int leftJoystickButton = 9;
-        public final static int rightJoystickButton = 10;
+        public final static int BUTTON_A = 1;
+        public final static int BUTTON_B = 2;
+        public final static int BUTTON_X = 3;
+        public final static int BUTTON_Y = 4;
+        public final static int LEFT_BUMPER = 5;
+        public final static int RIGHT_BUMPER = 6;
+        public final static int LEFT_MENU_BUTTON = 7;
+        public final static int RIGHT_MENU_BUTTON = 8;
+        public final static int LEFT_JOYSTICK_BUTTON = 9;
+        public final static int RIGHT_JOYSTICK_BUTTON = 10;
         
         
 
