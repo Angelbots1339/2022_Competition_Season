@@ -27,7 +27,7 @@ public class LoadShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    loaderSubsystem.runLoader(MAX_INDEXER_SPEED);
+    loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
   }
 
   // Called once the command ends or is interrupted.

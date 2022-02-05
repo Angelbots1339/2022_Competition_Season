@@ -30,9 +30,9 @@ public class ejectBalls extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIndexerLow(-MAX_INDEXER_SPEED);
-    intakeSubsystem.runIntake(-MAX_INTAKE_SPEED);
-    loaderSubsystem.runLoader(-MAX_LOADER_SPEED);
+    intakeSubsystem.runIndexerLow(-MAX_INDEXER_PERCENT);
+    intakeSubsystem.runIntake(-MAX_INTAKE_PERCENT);
+    loaderSubsystem.runLoader(-MAX_LOADER_PERCENT);
   }
 
   // Called once the command ends or is interrupted.

@@ -33,10 +33,10 @@ public class RotateClimberBack extends CommandBase {
   public void execute() {
     double leftSpeed = climbingSubsystem.getLeftAngle() < ROTATOR_ANGLE_P_TOLERANCE 
         ? leftController.calculate(climbingSubsystem.getLeftAngle(), 0)
-        : -ROTATOR_SPEED;
+        : -ROTATOR_PERCENT_MAX;
     double rightSpeed = climbingSubsystem.getRightAngle() < ROTATOR_ANGLE_P_TOLERANCE
         ? rightController.calculate(climbingSubsystem.getRightAngle(), 0)
-        : -ROTATOR_SPEED;
+        : -ROTATOR_PERCENT_MAX;
 
     climbingSubsystem.setExtensionSpeed(leftSpeed, rightSpeed);
   }

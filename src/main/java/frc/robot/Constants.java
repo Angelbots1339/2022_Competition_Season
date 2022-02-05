@@ -47,7 +47,7 @@ public final class Constants {
      */
     public final static class DriveConstants{
         //general 
-        public final static double maxDriveOutput = 0.25;
+        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.25;
         public final static boolean LOG_DATA = true;
 
         //Motor ports
@@ -59,15 +59,15 @@ public final class Constants {
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
         
         //Drive base values
-        public final static double TRACK_WIDTH = Units.inchesToMeters(21.5); // Center of left wheel to center of right wheel
-        public final static double WHEEL_DIAMETER = Units.inchesToMeters(3.875);
+        public final static double TRACK_WIDTH_METERS = Units.inchesToMeters(21.5); // Center of left wheel to center of right wheel
+        public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.875);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
         public final static double CLICKS_PER_ROT = 2048;
-        public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
+        public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
         public final static boolean RIGHT_INVERTED = true;
         public final static boolean LEFT_INVERTED = false;
         public final static double CLICKS_TO_METERS = 1 / CLICKS_PER_ROT
-                * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER * Math.PI;
+                * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER_METERS * Math.PI;
         public final static boolean GYRO_INVERTED = true;
 
         /* Checking robot kinematics:
@@ -107,11 +107,14 @@ public final class Constants {
         public final static int INTAKE_MOTOR_PORT = 7; // 7
         public final static int INDEXER_RIGHT_PORT = 9; // 9
         public final static int INDEXER_LEFT_PORT = 8; // 8
-        public final static double MAX_INDEXER_SPEED = 0.5;
-        public final static double MAX_INTAKE_SPEED = 0.6;
+        public final static int LOADER_PORT = 10; // 10
+        public final static double MAX_INDEXER_PERCENT = 0.5;
+        public final static double MAX_INTAKE_PERCENT = 0.6;
+        public final static double MAX_LOADER_PERCENT = 0.6;
 
-        public final static boolean INDEXER_LEFT_INVERSE = false;
-        public final static boolean INDEXER_RIGHT_INVERSE = true;
+        public final static boolean INDEXER_LEFT_INVERTED = false;
+        public final static boolean INDEXER_RIGHT_INVERTED = true;
+        public final static boolean LOADER_INVERSE = false;
         public final static boolean INTAKE_INVERSE = false;
         
         public final static int SERVO_RIGHT_PORT = 0;
@@ -141,14 +144,14 @@ public final class Constants {
         public static final boolean ROTATOR_RIGHT_INVERTED = true;
         public static final boolean EXTENDER_LEFT_INVERTED = false;
         public static final boolean EXTENDER_RIGHT_INVERTED = true;
-        public static final double ROTATOR_SPEED = 0.5;
-        public static final double EXTENDER_SPEED = 0.5;
+        public static final double ROTATOR_PERCENT_MAX = 0.5;
+        public static final double EXTENDER_PERCENT_MAX = 0.5;
         
         public static final int ROTATOR_LEFT_LIMIT_PORT = -1;
         public static final int ROTATOR_RIGHT_LIMIT_PORT = -1;
-        public static final double LIMIT_SWITCH_DEBOUNCE_TIME = 0.02;
+        public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
-        public static final double SLACK_LENGTH = Units.inchesToMeters(60);
+        public static final double SLACK_LENGTH_METERS = Units.inchesToMeters(60);
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;

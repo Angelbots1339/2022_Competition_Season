@@ -18,8 +18,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     private DigitalInput rotatorLeftLimit = new DigitalInput(ROTATOR_LEFT_LIMIT_PORT);
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
-    private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
-    private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
+    private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     
 
     public ClimbingSubsystem() {

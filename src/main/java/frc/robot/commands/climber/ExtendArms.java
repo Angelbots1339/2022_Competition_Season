@@ -19,7 +19,7 @@ public class ExtendArms extends CommandBase {
   /** Creates a new ExtendArms. */
   public ExtendArms(ClimbingSubsystem climbingSubsystem, boolean isRetract) {
     addRequirements(climbingSubsystem);
-    setpoint = isRetract ? 0 : SLACK_LENGTH;
+    setpoint = isRetract ? 0 : SLACK_LENGTH_METERS;
 
     this.climbingSubsystem = climbingSubsystem;
     leftExtend.setTolerance(EXTENDER_TOLERANCE);
@@ -39,10 +39,10 @@ public class ExtendArms extends CommandBase {
   public void execute() {
     double leftSpeed = (Math.abs(setpoint - climbingSubsystem.getLeftLength()) < EXTENDER_P_TOLERANCE)
         ? leftExtend.calculate(climbingSubsystem.getLeftLength(), setpoint)
-        : EXTENDER_SPEED;
+        : EXTENDER_PERCENT_MAX;
     double rightSpeed = (Math.abs(setpoint - climbingSubsystem.getRightLength()) < EXTENDER_P_TOLERANCE)
         ? rightExtend.calculate(climbingSubsystem.getRightLength(), setpoint)
-        : EXTENDER_SPEED;
+        : EXTENDER_PERCENT_MAX;
     climbingSubsystem.setExtensionSpeed(leftSpeed, rightSpeed); 
   }
 

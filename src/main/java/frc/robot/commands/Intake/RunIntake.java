@@ -10,6 +10,10 @@ import frc.robot.subsystems.LoaderSubsystem;
 
 import static frc.robot.Constants.IntakeConstants.*;
 
+/**
+ * 
+ * Runs intake, lower indexer, and if no ball is at the high color sensor it runs the loader
+ */
 public class RunIntake extends CommandBase {
   /** Creates a new RunIntake. */
 
@@ -31,12 +35,12 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
 
-    intakeSubsystem.runIntake(MAX_INTAKE_SPEED);
-    intakeSubsystem.runIndexerLow(MAX_INDEXER_SPEED);
+    intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
+    intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
     if(!intakeSubsystem.isBallLow()) {
 
-      loaderSubsystem.runLoader(MAX_INDEXER_SPEED);
+      loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
 
     }
 

@@ -8,9 +8,19 @@ import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.LimeLight;
 
+/**
+ * 
+ * Toggles between the front and back cameras, and reverses the driving controls
+ */
 public class ToggleCamera extends CommandBase {
   BooleanConsumer isDriveReversed;
-  /** Creates a new ToggleCamera. */
+
+  /**
+   * 
+   * 
+   * @param isDriveReversed use this to invert the drive when cameras are swapped
+   *
+   */
   public ToggleCamera(BooleanConsumer isDriveReversed) {
     this.isDriveReversed = isDriveReversed;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,12 +34,13 @@ public class ToggleCamera extends CommandBase {
     LimeLight.setCamMode(1);
     LimeLight.setLEDMode(3);
     isDriveReversed.accept(true);
-    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
