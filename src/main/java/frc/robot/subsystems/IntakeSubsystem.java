@@ -37,8 +37,8 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.configFactoryDefault();
     loaderMotor.configFactoryDefault();
 
-    indexerLeftMotor.setInverted(INDEXER_LEFT_INVERSE);
-    indexerRightMotor.setInverted(INDEXER_RIGHT_INVERSE);
+    indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
+    indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     loaderMotor.setInverted(LOADER_INVERSE);
     intakeMotor.setInverted(INTAKE_INVERSE);
   }

@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 
+/**
+ * 
+ * Runs intake, lower indexer, and if no ball is at the high color sensor it runs the loader
+ */
 public class RunIntake extends CommandBase {
   /** Creates a new RunIntake. */
 
@@ -27,12 +31,12 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
 
-    intakeSubsystem.runIntake(MAX_INTAKE_SPEED);
-    intakeSubsystem.runIndexerLow(MAX_INDEXER_SPEED);
+    intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
+    intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
     if(!intakeSubsystem.isBallLow()) {
 
-      intakeSubsystem.runLoader(MAX_INDEXER_SPEED);
+      intakeSubsystem.runLoader(MAX_INDEXER_PERCENT);
 
     }
 

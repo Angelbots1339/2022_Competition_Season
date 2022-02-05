@@ -25,7 +25,7 @@ public class RotateClimberOut extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climbingSubsystem.setRotationSpeed(climbingSubsystem.getLeftRotatorLimit()? 0 : ROTATOR_SPEED , climbingSubsystem.getRightRotatorLimit()? 0 : ROTATOR_SPEED);
+    climbingSubsystem.setRotationSpeed(climbingSubsystem.getLeftRotatorLimit()? 0 : ROTATOR_PERCENT_MAX , climbingSubsystem.getRightRotatorLimit()? 0 : ROTATOR_PERCENT_MAX);
   }
 
   // Called once the command ends or is interrupted.

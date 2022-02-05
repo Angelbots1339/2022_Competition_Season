@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     rightMotorControllerGroup.setInverted(RIGHT_INVERTED);
     leftMotorControllerGroup.setInverted(LEFT_INVERTED);
-    drive.setMaxOutput(maxDriveOutput);
+    drive.setMaxOutput(MAX_DRIVE_OUTPUT_PERCENT);
     drive.arcadeDrive(0, 0);
 
     tab = Shuffleboard.getTab(this.getName());
