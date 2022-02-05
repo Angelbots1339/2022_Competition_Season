@@ -113,7 +113,7 @@ public class RobotContainer {
     new JoystickButton(joystick, buttonA).whenHeld(climbCommand).whenHeld(stopDrive);
     
     // Toggle cameras & drive when B is pressed
-    new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
+    new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
     new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
