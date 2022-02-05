@@ -110,17 +110,20 @@ public class RobotContainer {
     } , climbingSubsystem);
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
-    new JoystickButton(joystick, buttonA).whenHeld(climbCommand).whenHeld(stopDrive);
+    new JoystickButton(joystick, BUTTON_A).whenHeld(climbCommand).whenHeld(stopDrive);
     
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
-    new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
+    // Run Intake while the left bumper is held
+    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem));
 
-    new JoystickButton(joystick, buttonY).whenHeld(new Load(intakeSubsystem));
+    // Run feeder when the Y button is pressed
+    new JoystickButton(joystick, BUTTON_Y).whenHeld(new Load(intakeSubsystem));
 
-    new JoystickButton(joystick, rightBumper).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
+    // When the right bumper is held down, the flywheel on the shooter will spin up to set speed
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
 
   /**
