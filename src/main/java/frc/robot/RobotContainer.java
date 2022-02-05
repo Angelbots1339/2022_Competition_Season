@@ -90,7 +90,7 @@ public class RobotContainer {
     DoubleSupplier rot = () -> -joystick.getRightX();
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
     // Toggle cameras & drive when B is pressed
-    new JoystickButton(joystick, buttonB).toggleWhenPressed(new ToggleCamera(
+    new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
   }
 
