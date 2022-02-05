@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
-import frc.robot.commands.Load;
+import frc.robot.commands.LoadShooter;
 import frc.robot.commands.RunIntake;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.RevShooter;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -120,10 +120,10 @@ public class RobotContainer {
     new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem));
 
     // Run feeder when the Y button is pressed
-    new JoystickButton(joystick, BUTTON_Y).whenHeld(new Load(intakeSubsystem));
+    new JoystickButton(joystick, BUTTON_Y).whenHeld(new LoadShooter(intakeSubsystem));
 
     // When the right bumper is held down, the flywheel on the shooter will spin up to set speed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new RevShooter(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
 
   /**

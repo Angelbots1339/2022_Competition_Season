@@ -107,12 +107,14 @@ public final class Constants {
         public final static int INTAKE_MOTOR_PORT = 7; // 7
         public final static int INDEXER_RIGHT_PORT = 9; // 9
         public final static int INDEXER_LEFT_PORT = 8; // 8
-        public final static int INDEXER_UPPER_PORT = 10; // 10
+        public final static int LOADER_PORT = 10; // 10
         public final static double MAX_INDEXER_SPEED = 0.5;
+        public final static double MAX_INTAKE_SPEED = 0.6;
+        public final static double MAX_LOADER_SPEED = 0.6;
 
         public final static boolean INDEXER_LEFT_INVERSE = false;
         public final static boolean INDEXER_RIGHT_INVERSE = true;
-        public final static boolean INDEXER_UPPER_INVERSE = false;
+        public final static boolean LOADER_INVERSE = false;
         public final static boolean INTAKE_INVERSE = false;
         
         public final static int SERVO_RIGHT_PORT = 0;

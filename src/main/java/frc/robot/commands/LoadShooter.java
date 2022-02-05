@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 
-public class Load extends CommandBase {
+public class LoadShooter extends CommandBase {
 
   IntakeSubsystem intakeSubsystem;
-  public Load(IntakeSubsystem intakeSubsystem) {
+  public LoadShooter(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
@@ -25,7 +25,7 @@ public class Load extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIndexerHigh(MAX_INDEXER_SPEED);
+    intakeSubsystem.runLoader(MAX_INDEXER_SPEED);
   }
 
   // Called once the command ends or is interrupted.

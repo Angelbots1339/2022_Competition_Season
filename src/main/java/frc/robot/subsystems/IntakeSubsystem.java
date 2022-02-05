@@ -5,9 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ColorMUXed;
 
@@ -19,13 +20,14 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT);
-  private WPI_TalonFX indexerUpperMotor = new WPI_TalonFX(INDEXER_UPPER_PORT);
+  private WPI_TalonFX loaderMotor = new WPI_TalonFX(LOADER_PORT);
   private Servo servoRight = new Servo(SERVO_RIGHT_PORT);
   private Servo servoLeft = new Servo(SERVO_LEFT_PORT); 
 
   // TODO Warning: Set NavX voltage jumper to 3.3v
-  private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
-  private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);
+  //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
+  //private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);
+  private ColorSensorV3 colorSensorLow = new ColorSensorV3(Port.kMXP);
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -33,11 +35,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.configFactoryDefault();
     indexerLeftMotor.configFactoryDefault();
     indexerRightMotor.configFactoryDefault();
-    indexerUpperMotor.configFactoryDefault();
+    loaderMotor.configFactoryDefault();
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERSE);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERSE);
-    indexerUpperMotor.setInverted(INDEXER_UPPER_INVERSE);
+    loaderMotor.setInverted(LOADER_INVERSE);
     intakeMotor.setInverted(INTAKE_INVERSE);
   }
 
@@ -65,8 +67,8 @@ public class IntakeSubsystem extends SubsystemBase {
    * 
    * @param speed
    */
-  public void runIndexerHigh(double speed) {
-    indexerUpperMotor.set(speed);
+  public void runLoader(double speed) {
+    loaderMotor.set(speed);
   }
 
   /**
@@ -75,13 +77,13 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param speed
    */
   public void runIndexerLow(double speed) {
-    indexerLeftMotor.set((INDEXER_LEFT_INVERSE ? -1 : 1) * speed);
-    indexerRightMotor.set((INDEXER_RIGHT_INVERSE ? -1 : 1) * speed);
+    indexerLeftMotor.set(speed);
+    indexerRightMotor.set(speed);
   }
 
-  public boolean isBallHigh() {
-    return colorSensorHigh.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
-  }
+  // public boolean isBallHigh() {
+  //   return colorSensorHigh.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
+  // }
 
   public boolean isBallLow() {
     return colorSensorLow.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
