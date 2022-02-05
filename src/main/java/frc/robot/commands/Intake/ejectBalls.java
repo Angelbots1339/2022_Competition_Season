@@ -32,7 +32,7 @@ public class ejectBalls extends CommandBase {
   public void execute() {
     intakeSubsystem.runIndexerLow(-MAX_INDEXER_PERCENT);
     intakeSubsystem.runIntake(-MAX_INTAKE_PERCENT);
-    loaderSubsystem.runLoader(-MAX_LOADER_PERCENT);
+    loaderSubsystem.runLoader(-MAX_LOADER_SPEED);
   }
 
   // Called once the command ends or is interrupted.

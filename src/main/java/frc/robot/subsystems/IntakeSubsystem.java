@@ -9,6 +9,9 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ColorMUXed;
 
@@ -24,6 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private Servo servoRight = new Servo(SERVO_RIGHT_PORT);
   private Servo servoLeft = new Servo(SERVO_LEFT_PORT); 
 
+  private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
+
   // TODO Warning: Set NavX voltage jumper to 3.3v
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
   //private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);
@@ -36,6 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerLeftMotor.configFactoryDefault();
     indexerRightMotor.configFactoryDefault();
     
+    tab.addNumber("supply current", () -> intakeMotor.getSupplyCurrent());
+    tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
+    tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);

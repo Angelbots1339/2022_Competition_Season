@@ -55,8 +55,8 @@ public class DriveSubsystem extends SubsystemBase {
     constructorHelper();
     // Zero sensors
     resetOdometry(new Pose2d());
-    leftMotorTop.configFactoryDefault();
-    rightMotorTop.configFactoryDefault();
+    //leftMotorTop.configFactoryDefault();
+    //rightMotorTop.configFactoryDefault();
 
     rightMotorControllerGroup.setInverted(RIGHT_INVERTED);
     leftMotorControllerGroup.setInverted(LEFT_INVERTED);
@@ -109,6 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
     tab.add(rightPID);
     tab.addNumber("x", () -> pose.getX());
     tab.addNumber("y",  () -> pose.getY());
+    tab.addNumber("Left Speed",  () -> getWheelSpeeds().leftMetersPerSecond);
+    tab.addNumber("Right Speed",  () -> (getWheelSpeeds().rightMetersPerSecond));
    
   }
 

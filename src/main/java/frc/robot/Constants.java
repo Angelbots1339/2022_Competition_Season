@@ -107,20 +107,21 @@ public final class Constants {
         public final static int INTAKE_MOTOR_PORT = 7; // 7
         public final static int INDEXER_RIGHT_PORT = 9; // 9
         public final static int INDEXER_LEFT_PORT = 8; // 8
-        public final static int LOADER_PORT = 10; // 10
         public final static double MAX_INDEXER_PERCENT = 0.5;
         public final static double MAX_INTAKE_PERCENT = 0.6;
-        public final static double MAX_LOADER_PERCENT = 0.6;
 
-        public final static boolean INDEXER_LEFT_INVERTED = false;
-        public final static boolean INDEXER_RIGHT_INVERTED = true;
-        public final static boolean LOADER_INVERSE = false;
+        public final static double MAX_INTAKE_CURRENT = 0;
+        
+
+        public final static boolean INDEXER_LEFT_INVERTED = true;
+        public final static boolean INDEXER_RIGHT_INVERTED = false;
+        
         public final static boolean INTAKE_INVERSE = false;
         
         public final static int SERVO_RIGHT_PORT = 0;
         public final static int SERVO_LEFT_PORT = 1;
 
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 1000; // 0 to 2047
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 to 2047
 
         
         // TODO Fix color sensor ports
@@ -130,7 +131,7 @@ public final class Constants {
     }
     public static final class LoaderConstants{
         public final static int LOADER_PORT = 10; // 10
-        public final static boolean LOADER_INVERSE = false;
+        public final static boolean LOADER_INVERSE = true;
         public final static double MAX_LOADER_SPEED = 0.6;
 
     }
@@ -194,10 +195,10 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KP = 0.001;
+        public final static double POWER_WHEEL_KP = 0.0001;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-        public final static double AIM_WHEEL_KP = 0.001;
+        public final static double AIM_WHEEL_KP = 0.0001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
@@ -206,8 +207,8 @@ public final class Constants {
 
         
 
-        public final static boolean LEFT_POWER_WHEEL_INVERTED = false;
-        public final static boolean RIGHT_POWER_WHEEL_INVERTED = true;
+        public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
+        public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
 
         public final static double POWER_KS = 0;
         public final static double POWER_KV = 0;

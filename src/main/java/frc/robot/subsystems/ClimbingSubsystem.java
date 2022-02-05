@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ClimberConstants.*;
@@ -16,6 +18,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     private WPI_TalonFX rotatorLeft = new WPI_TalonFX(ROTATOR_LEFT_PORT);
     private WPI_TalonFX rotatorRight = new WPI_TalonFX(ROTATOR_RIGHT_PORT);
 
+
+    private ShuffleboardTab tab = Shuffleboard.getTab("Climber");
+
     private DigitalInput rotatorLeftLimit = new DigitalInput(ROTATOR_LEFT_LIMIT_PORT);
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
@@ -23,14 +28,18 @@ public class ClimbingSubsystem extends SubsystemBase {
     
 
     public ClimbingSubsystem() {
-        extenderLeft.configFactoryDefault();
-        extenderRight.configFactoryDefault();
-        rotatorLeft.configFactoryDefault();
-        rotatorRight.configFactoryDefault();
+        // extenderLeft.configFactoryDefault();
+        // extenderRight.configFactoryDefault();
+        // rotatorLeft.configFactoryDefault();
+        // rotatorRight.configFactoryDefault();
         extenderLeft.setInverted(EXTENDER_LEFT_INVERTED);
         extenderRight.setInverted(EXTENDER_RIGHT_INVERTED);
         rotatorLeft.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRight.setInverted(ROTATOR_RIGHT_INVERTED);
+
+        tab.addBoolean("left", () -> getLeftRotatorLimit());
+        tab.addBoolean("right", () -> getRightRotatorLimit());
+
     }
 
     // Getters

@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -24,14 +25,14 @@ public class ShooterSubsystem extends SubsystemBase {
   //private SimpleMotorFeedforward powerWheelFF = new SimpleMotorFeedforward(POWER_KS, POWER_KV, POWER_KA);
 
   //private SimpleMotorFeedforward aimWheelFF = new SimpleMotorFeedforward(AIM_KS, AIM_KV, AIM_KA);
-  private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
+  //private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
 
   private ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
 
   public ShooterSubsystem() {
-    powerWheelRight.configFactoryDefault();
-    powerWheelLeft.configFactoryDefault();
-    aimWheel.configFactoryDefault();
+    //powerWheelRight.configFactoryDefault();
+    //powerWheelLeft.configFactoryDefault();
+    //aimWheel.configFactoryDefault();
 
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
@@ -41,6 +42,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     tab.add(aimWheelPID);
     tab.add(powerWheelPID);
+    tab.addNumber("Aim Wheel Speed", () -> getAimRPM());
+    //tab.addNumber("Aim Power Speed", () -> getPowerRPM());
 
 
   }
@@ -51,17 +54,32 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   //TODO add motor feed forward
   public void setPowerWheelRPM(double speed) {
-    powerWheelGroup.set(powerWheelPID.calculate(getPowerRPM(), speed));
+    SmartDashboard.putNumber("PowerWheelLeftOutput",powerWheelPID.calculate(getPowerRPM(), speed));
+    SmartDashboard.putNumber("PowerWheelRightOutput",powerWheelPID.calculate(getPowerRPM(), speed));
+    
+    //powerWheelRight.set(powerWheelPID.calculate(getPowerRPM(), speed));
+
+    powerWheelLeft.set(speed);
+    powerWheelRight.set(speed);
+  }
+  public void setPowerWheelSpeed(double speed){
+      powerWheelLeft.set(speed);
+      powerWheelRight.set(speed);
   }
 
   public void setAimWheelRPM(double speed) {
-    aimWheel.set(aimWheelPID.calculate(getAimRPM(), speed));
+    //aimWheel.set(aimWheelPID.calculate(getAimRPM(), speed));
+    aimWheel.set(speed);
+  }
+  public void setAimWheelSpeed(double speed) {
+    aimWheel.set(speed);
   }
   /**
    * Disable all motors
    */
   public void disable() {
-    powerWheelGroup.set(0);
+    powerWheelLeft.set(0);
+    powerWheelRight.set(0);
     aimWheel.set(0);
   }
 
@@ -72,10 +90,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getPowerRPM(){
-    return (powerWheelRight.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
+    return 0;//(powerWheelRight.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
   public double getAimRPM(){
-    return (aimWheel.getSelectedSensorVelocity()/CLICKS_PER_ROT) *600;
+    return (aimWheel.getSelectedSensorVelocity()/CLICKS_PER_ROT) * 600;
   }
 
 

@@ -15,7 +15,7 @@ public class LoaderSubsystem extends SubsystemBase {
   private WPI_TalonFX loaderMotor = new WPI_TalonFX(LOADER_PORT);
   /** Creates a new LoaderSubsystem. */
   public LoaderSubsystem() {
-    loaderMotor.configFactoryDefault();
+    //loaderMotor.configFactoryDefault();
     loaderMotor.setInverted(LOADER_INVERSE);
     
   }

@@ -19,6 +19,7 @@ import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.RevShooter;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.LoadShooter;
+import frc.robot.commands.Intake.RevShooterSimple;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
 import frc.robot.commands.FollowTrajectory;
@@ -58,9 +59,13 @@ public class RobotContainer {
 
   private boolean isDriveReversed;
 
-  private NetworkTableEntry powerWheelRPM = tab.add("Max Speed", 100)
+  // private NetworkTableEntry powerWheelRPM = tab.add("Max Power wheel Speed", 100)
+  //     .getEntry();
+  // private NetworkTableEntry aimWheelRPM = tab.add("Max aim wheel Speed", 100)
+  //     .getEntry();
+  private NetworkTableEntry powerWheelSpeed = tab.add("Max Power wheel Speed", 0.1)
       .getEntry();
-  private NetworkTableEntry aimWheelRPM = tab.add("Max Speed", 100)
+  private NetworkTableEntry aimWheelSpeed = tab.add("Max aim wheel Speed", 0.1)
       .getEntry();
 
   /**
@@ -129,7 +134,9 @@ public class RobotContainer {
     new JoystickButton(joystick, LEFT_MENU_BUTTON).whenHeld(new ejectBalls(intakeSubsystem, loaderSubsystem));
 
     // When the right bumper is held down, the flywheel on the shooter will spin up to set speed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new RevShooter(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
+    //new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new RevShooter(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
+    
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new RevShooterSimple(shooterSubsystem, () -> powerWheelSpeed.getDouble(0.1), () -> aimWheelSpeed.getDouble(0.1)));
   }
 
   /**
@@ -142,7 +149,8 @@ public class RobotContainer {
     System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
-    return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
+    //return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
+    return null;
     
   }
 

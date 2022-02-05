@@ -39,9 +39,10 @@ public class RunIntake extends CommandBase {
     intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
     if(!intakeSubsystem.isBallLow()) {
-
       loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
-
+    }
+    else{
+      loaderSubsystem.disable();
     }
 
   }
