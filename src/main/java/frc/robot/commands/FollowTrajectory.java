@@ -24,8 +24,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class FollowTrajectory extends RamseteCommand {
 
     private static DifferentialDriveVoltageConstraint voltageConstraint;
-    private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.maxVelocityMetersPerSecond,
-            AutonomousConstants.maxAccelerationMetersPerSecondSq);
+    private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.MAX_VEL_METERS_PER_SECOND,
+            AutonomousConstants.MAX_ACC_METERS_PER_SECOND);
     private final SimpleMotorFeedforward simpleMotorFeedforward;
     private Trajectory trajectory;
 

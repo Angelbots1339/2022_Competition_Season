@@ -161,8 +161,8 @@ public final class Constants {
 
         }
 
-
-        public final static double EXTENDER_TOLERANCE = 1;
+        // TODO change to feed forward
+        public final static double EXTENDER_TOLERANCE_POS = 1;
         public final static double EXTENDER_P_TOLERANCE = 1;
         public final static double ROTATOR_ANGLE_P_TOLERANCE = 1; // error angle at which it switches to pid
         public final static double ROTATOR_ANGLE_TOLERANCE = 1; // error angle at which it stops
@@ -172,8 +172,8 @@ public final class Constants {
     }
 
     public final static class AutonomousConstants{
-        public final static double maxVelocityMetersPerSecond = 1;
-        public final static double maxAccelerationMetersPerSecondSq = 0.25;
+        public final static double MAX_VEL_METERS_PER_SECOND = 1;
+        public final static double MAX_ACC_METERS_PER_SECOND = 0.25;
         /* Tuning constraints:
         - DifferentialDriveVoltageConstraint: If your robot accelerates very slowly then
         it’s possible that the max voltage for this constraint is too low.
