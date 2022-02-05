@@ -5,18 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class RunIntake extends CommandBase {
-  /** Creates a new RunIntake. */
-
-  private final IntakeSubsystem intakeSubsystem;
-
-  public RunIntake(IntakeSubsystem intakeSubsystem) {
+public class ejectBalls extends CommandBase {
+  /** Creates a new ejectBalls. */
+  private IntakeSubsystem intakeSubsystem;
+  public ejectBalls(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
     this.intakeSubsystem = intakeSubsystem;
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -26,16 +24,9 @@ public class RunIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    intakeSubsystem.runIntake(MAX_INTAKE_SPEED);
-    intakeSubsystem.runIndexerLow(MAX_INDEXER_SPEED);
-
-    if(!intakeSubsystem.isBallLow()) {
-
-      intakeSubsystem.runLoader(MAX_INDEXER_SPEED);
-
-    }
-
+    intakeSubsystem.runIndexerLow(-MAX_INDEXER_SPEED);
+    intakeSubsystem.runIntake(-MAX_INTAKE_SPEED);
+    intakeSubsystem.runLoader(-MAX_LOADER_SPEED);
   }
 
   // Called once the command ends or is interrupted.

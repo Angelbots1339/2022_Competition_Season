@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
-import frc.robot.commands.Load;
+import frc.robot.commands.LoadShooter;
 import frc.robot.commands.RunIntake;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.RevShooter;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -118,9 +118,9 @@ public class RobotContainer {
 
     new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
 
-    new JoystickButton(joystick, buttonY).whenHeld(new Load(intakeSubsystem));
+    new JoystickButton(joystick, buttonY).whenHeld(new LoadShooter(intakeSubsystem));
 
-    new JoystickButton(joystick, rightBumper).whenHeld(new Shoot(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
+    new JoystickButton(joystick, rightBumper).whenHeld(new RevShooter(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
 
   /**

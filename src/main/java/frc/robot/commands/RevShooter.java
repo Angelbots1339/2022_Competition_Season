@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.ShooterProfiles;
 
-public class Shoot extends CommandBase {
+public class RevShooter extends CommandBase {
   /** Creates a new Shoot. */
   private ShooterSubsystem shooterSubsystem;
   private ShooterProfiles shooterProfile;
   private XboxController joystick;
-  public Shoot(ShooterSubsystem shooterSubsystem, ShooterProfiles shooterProfile, XboxController joystick) {
+  public RevShooter(ShooterSubsystem shooterSubsystem, ShooterProfiles shooterProfile, XboxController joystick) {
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfile = shooterProfile;
     this.joystick = joystick;
