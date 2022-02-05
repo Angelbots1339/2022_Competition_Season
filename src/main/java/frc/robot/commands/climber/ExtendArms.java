@@ -22,8 +22,8 @@ public class ExtendArms extends CommandBase {
     setpoint = isRetract ? 0 : SLACK_LENGTH_METERS;
 
     this.climbingSubsystem = climbingSubsystem;
-    leftExtend.setTolerance(EXTENDER_TOLERANCE);
-    rightExtend.setTolerance(EXTENDER_TOLERANCE);
+    leftExtend.setTolerance(EXTENDER_TOLERANCE_POS);
+    rightExtend.setTolerance(EXTENDER_TOLERANCE_POS);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -37,6 +37,8 @@ public class ExtendArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // TODO Change to feed forward
     double leftSpeed = (Math.abs(setpoint - climbingSubsystem.getLeftLength()) < EXTENDER_P_TOLERANCE)
         ? leftExtend.calculate(climbingSubsystem.getLeftLength(), setpoint)
         : EXTENDER_PERCENT_MAX;
