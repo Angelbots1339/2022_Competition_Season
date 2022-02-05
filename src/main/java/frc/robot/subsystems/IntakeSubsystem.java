@@ -20,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT);
-  private WPI_TalonFX loaderMotor = new WPI_TalonFX(LOADER_PORT);
+  
   private Servo servoRight = new Servo(SERVO_RIGHT_PORT);
   private Servo servoLeft = new Servo(SERVO_LEFT_PORT); 
 
@@ -35,11 +35,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.configFactoryDefault();
     indexerLeftMotor.configFactoryDefault();
     indexerRightMotor.configFactoryDefault();
-    loaderMotor.configFactoryDefault();
+    
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERSE);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERSE);
-    loaderMotor.setInverted(LOADER_INVERSE);
     intakeMotor.setInverted(INTAKE_INVERSE);
   }
 
@@ -63,15 +62,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * This will run the indexer wheel in the shooter
-   * 
-   * @param speed
-   */
-  public void runLoader(double speed) {
-    loaderMotor.set(speed);
-  }
-
-  /**
    * This will run the belts on the lower indexer
    * 
    * @param speed
@@ -87,6 +77,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean isBallLow() {
     return colorSensorLow.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
+  }
+
+  /**
+   * Disables all motors 
+   */
+  public void Disable() {
+    indexerLeftMotor.set(0);
+    indexerRightMotor.set(0);
+    intakeMotor.set(0);
   }
 
 }

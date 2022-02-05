@@ -57,6 +57,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setAimWheelRPM(double speed) {
     aimWheel.set(aimWheelPID.calculate(getAimRPM(), speed));
   }
+  /**
+   * Disable all motors
+   */
+  public void disable() {
+    powerWheelGroup.set(0);
+    aimWheel.set(0);
+  }
 
   //GET
 
@@ -70,5 +77,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity()/CLICKS_PER_ROT) *600;
   }
+
 
 }

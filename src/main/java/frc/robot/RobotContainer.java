@@ -16,14 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
-import frc.robot.commands.LoadShooter;
-import frc.robot.commands.RunIntake;
 import frc.robot.commands.RevShooter;
 import frc.robot.commands.ToggleCamera;
+import frc.robot.commands.Intake.LoadShooter;
+import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.ShooterProfiles;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +47,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
   private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
@@ -116,9 +118,9 @@ public class RobotContainer {
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
         (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
-    new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem));
+    new JoystickButton(joystick, leftBumper).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));
 
-    new JoystickButton(joystick, buttonY).whenHeld(new LoadShooter(intakeSubsystem));
+    new JoystickButton(joystick, buttonY).whenHeld(new LoadShooter(loaderSubsystem));
 
     new JoystickButton(joystick, rightBumper).whenHeld(new RevShooter(shooterSubsystem, new ShooterProfiles(() -> powerWheelRPM.getDouble(0), () -> aimWheelRPM.getDouble(0)), joystick));
   }
