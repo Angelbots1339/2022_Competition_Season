@@ -141,23 +141,23 @@ public final class Constants {
         public static final int ROTATOR_RIGHT_PORT = 17; // 17
         public static final int EXTENDER_LEFT_PORT = 14; // 14
         public static final int EXTENDER_RIGHT_PORT = 15; // 15
-        public static final boolean ROTATOR_LEFT_INVERTED = false;
-        public static final boolean ROTATOR_RIGHT_INVERTED = true;
-        public static final boolean EXTENDER_LEFT_INVERTED = false;
-        public static final boolean EXTENDER_RIGHT_INVERTED = true;
-        public static final double ROTATOR_PERCENT_MAX = 0.5;
-        public static final double EXTENDER_PERCENT_MAX = 0.5;
+        public static final boolean ROTATOR_LEFT_INVERTED = true;
+        public static final boolean ROTATOR_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_LEFT_INVERTED = true;
+        public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        public static final double ROTATOR_PERCENT_MAX = 0.3;
+        public static final double EXTENDER_PERCENT_MAX = 0.3;
         
-        public static final int ROTATOR_LEFT_LIMIT_PORT = -1;
-        public static final int ROTATOR_RIGHT_LIMIT_PORT = -1;
+        public static final int ROTATOR_LEFT_LIMIT_PORT = 1;
+        public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
-        public static final double SLACK_LENGTH_METERS = Units.inchesToMeters(60);
+        public static final double SLACK_LENGTH_METERS = 0.8;
        
-        private static final double MOTOR_ROT_PER_SPOOL_ROT = 30/1;
+        private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
-        private static final double SPOOL_CIRCUM = Units.inchesToMeters(1) * 2 * Math.PI;
-        public static final double LENGTH_PER_CLICK = SPOOL_CIRCUM * MOTOR_ROT_PER_SPOOL_ROT / DriveConstants.CLICKS_PER_ROT;
+        private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
+        public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
         
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){

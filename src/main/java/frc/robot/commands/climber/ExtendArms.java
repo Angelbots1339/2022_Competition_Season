@@ -11,19 +11,16 @@ import frc.robot.subsystems.ClimbingSubsystem;
 import static frc.robot.Constants.ClimberConstants.*;
 
 public class ExtendArms extends CommandBase {
-  private PIDController leftExtend = new PIDController(EXTENDER_KP, 0, 0);
-  private PIDController rightExtend = new PIDController(EXTENDER_KP, 0, 0);
   private ClimbingSubsystem climbingSubsystem;
-  private double setpoint;
+  private boolean isRetract;
 
+  private double direction;
   /** Creates a new ExtendArms. */
   public ExtendArms(ClimbingSubsystem climbingSubsystem, boolean isRetract) {
     addRequirements(climbingSubsystem);
-    setpoint = isRetract ? 0 : SLACK_LENGTH_METERS;
-
     this.climbingSubsystem = climbingSubsystem;
-    leftExtend.setTolerance(EXTENDER_TOLERANCE_POS);
-    rightExtend.setTolerance(EXTENDER_TOLERANCE_POS);
+    this.isRetract = isRetract;
+    direction = isRetract? 1 : -1;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -31,21 +28,31 @@ public class ExtendArms extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
+    if (inBounds(climbingSubsystem.getLeftLength())) {
+      climbingSubsystem.setExtensionSpeedLeft(EXTENDER_PERCENT_MAX * direction);
+    }
 
+    if (inBounds(climbingSubsystem.getRightLength())) {
+      climbingSubsystem.setExtensionSpeedRight(EXTENDER_PERCENT_MAX * direction);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    // TODO Change to feed forward
-    double leftSpeed = (Math.abs(setpoint - climbingSubsystem.getLeftLength()) < EXTENDER_P_TOLERANCE)
-        ? leftExtend.calculate(climbingSubsystem.getLeftLength(), setpoint)
-        : EXTENDER_PERCENT_MAX;
-    double rightSpeed = (Math.abs(setpoint - climbingSubsystem.getRightLength()) < EXTENDER_P_TOLERANCE)
-        ? rightExtend.calculate(climbingSubsystem.getRightLength(), setpoint)
-        : EXTENDER_PERCENT_MAX;
-    climbingSubsystem.setExtensionSpeed(leftSpeed, rightSpeed); 
+    
+    if(!inBounds(climbingSubsystem.getLeftLength())){
+      climbingSubsystem.setExtensionSpeedLeft(0);
+    }
+
+    if (!inBounds(climbingSubsystem.getRightLength())) {
+      climbingSubsystem.setExtensionSpeedRight(0);
+    } 
+
+    
+
   }
 
   // Called once the command ends or is interrupted.
@@ -54,9 +61,19 @@ public class ExtendArms extends CommandBase {
     climbingSubsystem.setExtensionSpeed(0, 0);
   }
 
+  public boolean inBounds(double length) {
+    if(isRetract){
+      return length < 0.8;
+    }
+    else{
+      return length > 0;
+    }
+    // return true;
+  }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rightExtend.atSetpoint() && leftExtend.atSetpoint();
+    return !inBounds(climbingSubsystem.getLeftLength()) && !inBounds(climbingSubsystem.getRightLength());
   }
 }
