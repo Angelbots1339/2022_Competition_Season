@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,7 +27,10 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
-    
+   
+    private SimpleMotorFeedforward extenderLeftFeedforward;
+    private SimpleMotorFeedforward extenderRightFeedforward;
+
 
     public ClimbingSubsystem() {
         // extenderLeft.configFactoryDefault();
@@ -51,11 +55,13 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
 
+        extenderLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_LEFT_KS, EXTENDER_LEFT_KV);
+        extenderRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS, EXTENDER_RIGHT_KV);
 
     }
 
     // Getters
-
+    
     
     public double getRightLength() {
         return extenderRight.getSelectedSensorPosition() * LENGTH_PER_CLICK;
@@ -85,20 +91,27 @@ public class ClimbingSubsystem extends SubsystemBase {
     /**
      * This is used for PID controlling the climber arm extension
      * 
-     * @param left
-     * @param right
+     * @param left in meters per second
+     * @param right in meters per second
      */
     public void setExtensionSpeed(double left, double right) {
-        extenderRight.set(right);
-        extenderLeft.set(left);
+        setExtensionSpeedRight(right); 
+        setExtensionSpeedLeft(left);
 
     }
-
+    /**
+     * 
+     * @param right in meters per second
+     */
     public void setExtensionSpeedRight(double right) {
-        extenderRight.set(right);
+        extenderRight.set(extenderRightFeedforward.calculate(right));
     }
+    /**
+     * 
+     * @param left in meters per second
+     */
     public void setExtensionSpeedLeft(double left) {
-        extenderLeft.set(left);
+        extenderLeft.set(extenderLeftFeedforward.calculate(left));
     }
     
     /**

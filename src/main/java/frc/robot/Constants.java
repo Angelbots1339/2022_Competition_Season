@@ -165,13 +165,15 @@ public final class Constants {
 
         }
 
-        // TODO change to feed forward
-        public final static double EXTENDER_TOLERANCE_POS = 1;
-        public final static double EXTENDER_P_TOLERANCE = 1;
-        public final static double ROTATOR_ANGLE_P_TOLERANCE = 1; // error angle at which it switches to pid
-        public final static double ROTATOR_ANGLE_TOLERANCE = 1; // error angle at which it stops
-        public final static double EXTENDER_KP = 1;
-        public final static double ROTATOR_KP = 0.01;
+        public final static double EXTENDER_FOLLOWER_KP = .05;
+        public final static double EXTENDER_FOLLOWER_KI = 0;
+        public final static double EXTENDER_FOLLOWER_KD = 0;
+        public final static double EXTENDER_LEFT_KS = .05; // Volts
+        public final static double EXTENDER_LEFT_KV = .05; // Volt seconds per meter
+        public final static double EXTENDER_RIGHT_KS = .05; // Volts
+        public final static double EXTENDER_RIGHT_KV = .05; // Volt seconds per meter
+
+
 
     }
 
