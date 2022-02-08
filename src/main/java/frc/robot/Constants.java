@@ -38,6 +38,8 @@ public final class Constants {
         public final static int RIGHT_MENU_BUTTON = 8;
         public final static int LEFT_JOYSTICK_BUTTON = 9;
         public final static int RIGHT_JOYSTICK_BUTTON = 10;
+
+        public final static double JOYSTICK_THRESHOLD = .1;
         
         
 
@@ -155,13 +157,14 @@ public final class Constants {
         public static final double SLACK_LENGTH_METERS = 0.8;
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
-        private static final double MOTOR_ROT_PER_ARM_ROT = 30/1;
+        private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
         
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
-            return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360, 360);
+            return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
+            //return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT / MOTOR_ROT_PER_ARM_ROT * 360, 360);
 
         }
 
@@ -172,6 +175,8 @@ public final class Constants {
         public final static double ROTATOR_ANGLE_TOLERANCE = 1; // error angle at which it stops
         public final static double EXTENDER_KP = 1;
         public final static double ROTATOR_KP = 0.01;
+
+        public final static double ROTATOR_BACK_LIMIT_DEG = -20;
 
     }
 
