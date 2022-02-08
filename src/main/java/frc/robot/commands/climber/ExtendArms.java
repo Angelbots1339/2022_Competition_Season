@@ -5,6 +5,7 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
 
@@ -12,47 +13,44 @@ import static frc.robot.Constants.ClimberConstants.*;
 
 public class ExtendArms extends CommandBase {
   private ClimbingSubsystem climbingSubsystem;
-  private boolean isRetract;
+  private double velocity;
+  private double setpoint;
+  //private PIDController followerArmController;
 
   private double direction;
   /** Creates a new ExtendArms. */
-  public ExtendArms(ClimbingSubsystem climbingSubsystem, boolean isRetract) {
+  /**
+   * 
+   * @param climbingSubsystem
+   * @param speed meters per second
+   * @param setpoint meters, 0 is base
+   */
+  public ExtendArms(ClimbingSubsystem climbingSubsystem, double speed, double setpoint) {
     addRequirements(climbingSubsystem);
     this.climbingSubsystem = climbingSubsystem;
-    this.isRetract = isRetract;
-    direction = isRetract? 1 : -1;
-
-    // Use addRequirements() here to declare subsystem dependencies.
+    // TODO check if negative / positive is flipped
+    // Negative is out, positive is in
+    if(climbingSubsystem.getRightLength() > setpoint) {
+      this.velocity = -speed;
+    } else {
+      this.velocity = speed;
+    }
+    this.setpoint = setpoint;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     
-    if (inBounds(climbingSubsystem.getLeftLength())) {
-      climbingSubsystem.setExtensionSpeedLeft(EXTENDER_PERCENT_MAX * direction);
-    }
-
-    if (inBounds(climbingSubsystem.getRightLength())) {
-      climbingSubsystem.setExtensionSpeedRight(EXTENDER_PERCENT_MAX * direction);
-    }
+    climbingSubsystem.setExtensionSpeed(velocity, velocity);
   }
+
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    
-    if(!inBounds(climbingSubsystem.getLeftLength())){
-      climbingSubsystem.setExtensionSpeedLeft(0);
-    }
-
-    if (!inBounds(climbingSubsystem.getRightLength())) {
-      climbingSubsystem.setExtensionSpeedRight(0);
-    } 
-
-    
-
+    regulateSpeeds();
   }
 
   // Called once the command ends or is interrupted.
@@ -61,19 +59,29 @@ public class ExtendArms extends CommandBase {
     climbingSubsystem.setExtensionSpeed(0, 0);
   }
 
-  public boolean inBounds(double length) {
-    if(isRetract){
-      return length < 0.8;
-    }
-    else{
-      return length > 0;
-    }
-    // return true;
+  /**
+   * Checks if both arms have reached setpoints.
+   * Will turn off arms that have reached setpoints.
+   */
+  private void regulateSpeeds() {
+    climbingSubsystem.setExtensionSpeed(leftReachedSetpoint() ? 0 : velocity , rightReachedSetpoint() ? 0 : velocity);
+  }
+
+
+  private boolean leftReachedSetpoint() {
+    // True if going out (false) and above setpoint (false)
+    // True if going in (true) and below setpoint (true)
+    return velocity > 0 == climbingSubsystem.getLeftLength() < setpoint;
+  }
+
+  private boolean rightReachedSetpoint() {
+    return velocity > 0 == climbingSubsystem.getRightLength() < setpoint;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !inBounds(climbingSubsystem.getLeftLength()) && !inBounds(climbingSubsystem.getRightLength());
+    // Going in? 
+    return leftReachedSetpoint() && rightReachedSetpoint();
   }
 }

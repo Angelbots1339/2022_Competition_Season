@@ -9,15 +9,15 @@ import frc.robot.subsystems.ClimbingSubsystem;
 public class GoToBar extends SequentialCommandGroup{
     public GoToBar(ClimbingSubsystem climbingSubsystem, double angle, BooleanSupplier proceed) {
         addRequirements(climbingSubsystem);
-        addCommands(
-            new RotateClimberOut(climbingSubsystem),
-            new WaitUntilCommand(proceed),
-            new ExtendArms(climbingSubsystem, false),
-            new WaitUntilCommand(proceed),
-            new ExtendArms(climbingSubsystem, true),
-            new WaitUntilCommand(proceed),
-            new RotateClimberOut(climbingSubsystem)
+        // addCommands(
+        //     new RotateClimberOut(climbingSubsystem),
+        //     new WaitUntilCommand(proceed),
+        //     new ExtendArms(climbingSubsystem, false),
+        //     new WaitUntilCommand(proceed),
+        //     new ExtendArms(climbingSubsystem, true),
+        //     new WaitUntilCommand(proceed),
+        //     new RotateClimberOut(climbingSubsystem)
             
-        );
+        // );
     }
 }
