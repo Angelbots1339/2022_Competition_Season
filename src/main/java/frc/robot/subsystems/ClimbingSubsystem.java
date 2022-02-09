@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,292 +20,175 @@ import static frc.robot.Constants.ClimberConstants.*;
 import java.util.function.DoubleSupplier;
 
 public class ClimbingSubsystem extends SubsystemBase {
-    private WPI_TalonFX extenderLeft = new WPI_TalonFX(EXTENDER_LEFT_PORT);
-    private WPI_TalonFX extenderRight = new WPI_TalonFX(EXTENDER_RIGHT_PORT);
-    private WPI_TalonFX rotatorLeft = new WPI_TalonFX(ROTATOR_LEFT_PORT);
-    private WPI_TalonFX rotatorRight = new WPI_TalonFX(ROTATOR_RIGHT_PORT);
 
+    // Motors
+    private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT);
+    private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT);
+    private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT);
+    private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT);
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Climber Subsystem");
 
+    // Limit Switches
     private DigitalInput rotatorLeftLimit = new DigitalInput(ROTATOR_LEFT_LIMIT_PORT);
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
-   
-    private SimpleMotorFeedforward extenderLeftFeedforward;
-    private SimpleMotorFeedforward extenderRightFeedforward;
 
+    // Encoders
+    private Encoder rotatorLeftEncoder;
+    private Encoder rotatorRightEncoder;
 
-    private PIDController leftExtenderPID = new PIDController(.1, 0, 0);
-    private PIDController leftRotatorPID = new PIDController(.001, 0, 0);
-    private PIDController rightExtenderPID = new PIDController(.1, 0, 0);
-    private PIDController rightRotatorPID = new PIDController(.001, 0, 0);
+    // Control
+    private SimpleMotorFeedforward extenderLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_LEFT_KS,
+            EXTENDER_LEFT_KV);
+    private SimpleMotorFeedforward extenderRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
+            EXTENDER_RIGHT_KV);
+    private SimpleMotorFeedforward rotatorRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
+            EXTENDER_RIGHT_KV);
+    private SimpleMotorFeedforward rotatorLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
+            EXTENDER_RIGHT_KV);
+
+    private PIDController holdElevationLeftPid = new PIDController(.1, 0, 0);
+    private PIDController holdElevationRightPid = new PIDController(.1, 0, 0);
 
     public ClimbingSubsystem() {
-        // extenderLeft.configFactoryDefault();
-        // extenderRight.configFactoryDefault();
-        // rotatorLeft.configFactoryDefault();
-        // rotatorRight.configFactoryDefault();
-        extenderLeft.setInverted(EXTENDER_LEFT_INVERTED);
-        extenderRight.setInverted(EXTENDER_RIGHT_INVERTED);
-        rotatorLeft.setInverted(ROTATOR_LEFT_INVERTED);
-        rotatorRight.setInverted(ROTATOR_RIGHT_INVERTED);
+        extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
+        extenderRightMotor.setInverted(EXTENDER_RIGHT_INVERTED);
+        rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
+        rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
-        extenderRight.setNeutralMode(NeutralMode.Brake);
-        extenderLeft.setNeutralMode(NeutralMode.Brake);
-        rotatorLeft.setNeutralMode(NeutralMode.Brake);
-        rotatorRight.setNeutralMode(NeutralMode.Brake);
+        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
+        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
 
-        tab.addBoolean("left", () -> getLeftRotatorLimit());
-        tab.addBoolean("right", () -> getRightRotatorLimit());
+    }
+
+    @Override
+    public void periodic() {
+    }
+
+    public void log() {
+        tab.addBoolean("left Limit Switch", () -> isLeftAtLimit());
+        tab.addBoolean("right Limit Switch", () -> isRightAtLimit());
+
         tab.addNumber("left Angle", () -> getLeftAngle());
         tab.addNumber("right Angle", () -> getRightAngle());
 
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
+
         tab.add(this);
-        tab.add(leftExtenderPID);
-        
-        leftRotatorPID.enableContinuousInput(-180, 180);
-        rightRotatorPID.enableContinuousInput(-180, 180);
-
-        extenderLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_LEFT_KS, EXTENDER_LEFT_KV);
-        extenderRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS, EXTENDER_RIGHT_KV);
-
-    }
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("left angle", getLeftAngle());
-        SmartDashboard.putNumber("right angle", getRightAngle());
     }
 
     // Getters
-    
-    
     public double getRightLength() {
-        return extenderRight.getSelectedSensorPosition() * LENGTH_PER_CLICK;
+        return extenderRightMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
     }
 
     public double getLeftLength() {
-        return extenderLeft.getSelectedSensorPosition() * LENGTH_PER_CLICK;
+        return extenderLeftMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
     }
 
     public double getRightAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorRight.getSelectedSensorPosition());
+        return GET_DEGREES_FROM_CLICKS(rotatorRightMotor.getSelectedSensorPosition());
     }
 
     public double getLeftAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorLeft.getSelectedSensorPosition());
+        return GET_DEGREES_FROM_CLICKS(rotatorLeftMotor.getSelectedSensorPosition());
     }
-    public boolean getLeftRotatorLimit() {
+
+    public boolean isLeftAtLimit() {
         return !debouncerLeft.calculate(rotatorLeftLimit.get());
     }
-    
-    public boolean getRightRotatorLimit() {
+
+    public boolean isRightAtLimit() {
         return !debouncerRight.calculate(rotatorRightLimit.get());
     }
 
     // Setters
-
     /**
-     * This is used for PID controlling the climber arm extension
-     * 
-     * @param left in meters per second
-     * @param right in meters per second
+     * @param velocity
      */
-    public void setExtensionSpeed(double left, double right) {
-        setExtensionSpeedRight(right); 
-        setExtensionSpeedLeft(left);
-
+    public void setExtensionSpeed(double velocity) {
+        setRightExtensionVolts(extenderRightFeedforward.calculate(velocity));
+        setLeftExtensionVolts(extenderLeftFeedforward.calculate(velocity));
     }
+
     /**
-     * 
-     * @param right in meters per second
+     * @param velocity
      */
-    public void setExtensionSpeedRight(double right) {
-        extenderRight.set(checkBoundsExtensions(right, extenderRight.getSelectedSensorPosition() * LENGTH_PER_CLICK) ? right * ROTATOR_PERCENT_MAX : 0);
-        
+    public void setRotationSpeed(double velocity) {
+        setRightRotationVolts(rotatorRightFeedforward.calculate(velocity));
+        setLeftRotationVolts(rotatorLeftFeedforward.calculate(velocity));
     }
+
     /**
-     * 
-     * @param left in meters per second
+     * Clamps voltage
+     * @param volts
      */
-    public void setExtensionSpeedLeft(double left) {
-        extenderLeft.set(checkBoundsExtensions(left, extenderLeft.getSelectedSensorPosition() * LENGTH_PER_CLICK) ? left * ROTATOR_PERCENT_MAX : 0);
+    public void setLeftRotationVolts(double volts) {
+        volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle()));
     }
-    
-
 
     /**
-     * This is used for PID of the climbing arm rotation
-     * 
-     * 
-     * @param left
-     * @param right
+     * Clamps voltage
+     * @param volts
      */
-
-    public void setRotationSpeed(double left, double right) {
-        rotatorRight.set(right);
-        rotatorLeft.set(left);
+    public void setRightRotationVolts(double volts) {
+        volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getRightAngle()));
     }
 
-    public void setLeftRotationSpeed(double left) {
-        rotatorLeft.set(checkLeftBoundsRotations(left) ? left * ROTATOR_PERCENT_MAX : 0);
+    public void setRightExtensionVolts(double volts) {
+        volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
+        extenderRightMotor.setVoltage(checkBoundsExtensions(volts, getRightLength()));
     }
 
-    public void setRightRotationSpeed(double right) {
-        rotatorRight.set(checkRightBoundsRotations(right) ? right * ROTATOR_PERCENT_MAX : 0);
+    public void setLeftExtensionVolts(double volts) {
+        volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
+        extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
     }
-
 
     /**
-     * Checks if the extender is a
+     * Checks if the extender is at max positions, and which direction is is trying
+     * to move
      * 
-     * t max positions, and which direction is is trying to move
-     * 
-     * @param speed
+     * @param voltage
      * @param currentPos
-     * @return Returns false if extender is not allowed to move, returns true if extender is allowed to move
+     * @return limited voltage output to not hit end stops
      */
-    private boolean checkBoundsExtensions(double speed, double currentPos){
-        if(LENGTH_PER_CLICK * currentPos >= SLACK_LENGTH_METERS && speed > 0){
-            return false;
+    private double checkBoundsExtensions(double voltage, double currentPos) {
 
-        } else if(currentPos <= 0 && speed < 0){
-            return false;
-    
-        } 
+        // TODO check if negative / positive is flipped
+        // Negative is out, positive is in
+        if ((currentPos >= EXTENDER_TOP_LIMIT && voltage < 0) ||
+                (currentPos <= EXTENDER_BOTTOM_LIMIT && voltage > 0)) {
+            return 0;
 
-        return true;
-    } 
-
-
-    /**
-     * Checks if the left rotator is at max positions, and which direction it is trying to move
-     * 
-     * @param speed
-     * @return Returns false if the left rotator is not allowed to move, returns true if it is allowed to move
-     */
-
-    private boolean checkLeftBoundsRotations(double speed){
-    
-        if(getLeftRotatorLimit() && speed < 0){
-            return false;
-
-        } else if(GET_DEGREES_FROM_CLICKS(rotatorLeft.getSelectedSensorPosition()) <= ROTATOR_BACK_LIMIT_DEG && speed > 0){
-            return false;
-
-        } else {
-            return true;
         }
+        return voltage;
     }
 
     /**
-     * Checks if the right rotator is at max positions, and which direction it is trying to move
+     * Checks if the left rotator is at max positions, and which direction it is
+     * trying to move
      * 
-     * @param speed
-     * @return Returns false if the right rotator is not allowed to move, returns true if it is allowed to move
+     * @param voltage
+     * @param angle   angle of target motor
+     * @return limited voltage output to not hit end stops
      */
 
-    private boolean checkRightBoundsRotations(double speed) {
-
-        if (getRightRotatorLimit() && speed < 0) {
-            return false;
-
-        } else if (GET_DEGREES_FROM_CLICKS(rotatorRight.getSelectedSensorPosition()) <= ROTATOR_BACK_LIMIT_DEG
-                && speed > 0) {
-            return false;
-
-        } else {
-            return true;
+    private double checkBoundsRotations(double voltage, double angle) {
+        // TODO check if negative / positive is flipped
+        // Negative is back, positive is forwards
+        if (isLeftAtLimit() && voltage > 0 ||
+                angle <= ROTATOR_BACK_LIMIT_DEG && voltage < 0 ||
+                angle >= ROTATOR_FRONT_LIMIT_DEG && voltage > 0) {
+            return 0;
         }
+        return voltage;
     }
-
-    public boolean checkInThreshold(DoubleSupplier input) {
-        return Math.abs(input.getAsDouble()) < JoystickConstants.JOYSTICK_THRESHOLD;
-    }
-
-    private double leftExtenderMemory;
-    private double rightExtenderMemory;
-    private double leftRotatorMemory;
-    private double rightRotatorMemory;
-
-    private boolean leftExtenderFlag = false;
-    private boolean leftRotatorFlag = false;
-    private boolean rightExtenderFlag = false;
-    private boolean rightRotatorFlag = false;
-
-    
-
-    /**
-     * Used for setting all of the speeds for the robot climber
-     * 
-     * @param leftExtender Speed of the left extender
-     * @param rightExtender Speed of the right extender
-     * @param leftRot Speed of the left rotator
-     * @param rightRot Speed of the right rotator
-     */
-
-    public void setClimberSpeeds(DoubleSupplier leftExtender, DoubleSupplier rightExtender, DoubleSupplier leftRot, DoubleSupplier rightRot){
-
-        if(checkInThreshold(leftExtender)) {
-            if(!leftExtenderFlag) {
-                leftExtenderMemory = getLeftLength();
-                leftExtenderFlag = true;
-            }
-            extenderLeft.set(leftExtenderPID.calculate(leftExtenderMemory));
-        } else {
-
-            leftExtenderFlag = false;
-            extenderLeft.set(leftExtender.getAsDouble() * EXTENDER_PERCENT_MAX);
-
-        }
-        // if(checkInThreshold(leftRot)) {
-            
-        //     if(!leftRotatorFlag) {
-        //         leftRotatorMemory = getLeftAngle();
-        //         leftRotatorFlag = true;
-        //     }
-        //     rotatorLeft.set(leftRotatorPID.calculate(-leftRotatorMemory));
-        //     SmartDashboard.putNumber("PID", leftRotatorPID.calculate(leftRotatorMemory));
-        // } else {
-
-        //     leftRotatorFlag = false;
-        //     rotatorLeft.set(leftRot.getAsDouble() * ROTATOR_PERCENT_MAX);
-
-        // }
-        // SmartDashboard.putBoolean("Check in treshhold", checkInThreshold(leftExtender));
-        if(checkInThreshold(rightRot)) {
-            
-            if(!rightRotatorFlag) {
-                rightRotatorMemory = getLeftAngle();
-                rightRotatorFlag = true;
-            }
-            //rotatorLeft.set(leftRotatorPID.calculate(-leftRotatorMemory));
-            SmartDashboard.putNumber("LeftRotPID", rightRotatorPID.calculate(-rightRotatorMemory));
-        } else {
-
-            rightRotatorFlag = false;
-            SmartDashboard.putNumber("LeftRotNoPID", rightRot.getAsDouble() * ROTATOR_PERCENT_MAX);
-            //rotatorLeft.set(leftRot.getAsDouble() * ROTATOR_PERCENT_MAX);
-
-        }
-        SmartDashboard.putBoolean("Check in treshhold", checkInThreshold(leftExtender));
-
-
-        //setRightRotationSpeed(rightRot.getAsDouble());
-        //setLeftRotationSpeed(leftRot.getAsDouble());
-        //rotatorLeft.set(leftRot.getAsDouble() * ROTATOR_PERCENT_MAX);
-        rotatorRight.set(rightRot.getAsDouble() * ROTATOR_PERCENT_MAX);
-        //setExtensionSpeedRight(rightExtender.getAsDouble());
-        //setExtensionSpeedLeft(leftExtender.getAsDouble());
-        extenderRight.set(rightExtender.getAsDouble() * EXTENDER_PERCENT_MAX);
-        
-    }
-
-   
-   
-
-   
 }

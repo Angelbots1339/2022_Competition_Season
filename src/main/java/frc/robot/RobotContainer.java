@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
 import frc.robot.commands.RevShooter;
@@ -22,7 +23,7 @@ import frc.robot.commands.Intake.LoadShooter;
 import frc.robot.commands.Intake.RevShooterSimple;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
-import frc.robot.commands.climber.ExtendArms;
+import frc.robot.commands.climber.MoveArms;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -114,16 +115,20 @@ public class RobotContainer {
     //driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     Command climbCommand = new RunCommand(() -> {
-      climbingSubsystem.setClimberSpeeds(
-          () ->joystick.getRightX(),
-          () -> joystick.getLeftX(), 
-          () ->joystick.getRightY(), 
-          () ->joystick.getLeftY());
+      
+      climbingSubsystem.setExtensionSpeed(joystick.getLeftY() * ClimberConstants.MAX_EXTENDER_SPEED);
+      climbingSubsystem.setRotationSpeed(joystick.getRightY() * ClimberConstants.MAX_ROTATOR_SPEED);
+
     } , climbingSubsystem);
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
     new JoystickButton(joystick, BUTTON_A).toggleWhenPressed(climbCommand).whenHeld(stopDrive);
-    climbingSubsystem.setDefaultCommand(new RunCommand(()->climbingSubsystem.setClimberSpeeds(()->0,()->0,()->0,()->0), climbingSubsystem));
+    climbingSubsystem.setDefaultCommand(new RunCommand(()-> {
+
+      climbingSubsystem.setExtensionSpeed(0);
+      climbingSubsystem.setRotationSpeed(0);
+
+    }, climbingSubsystem));
     
     // Toggle cameras & drive when B is pressed
     //new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(

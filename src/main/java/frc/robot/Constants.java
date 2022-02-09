@@ -5,6 +5,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -19,6 +20,19 @@ import edu.wpi.first.wpilibj.I2C.Port;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    /**
+     * Clamps and scales input
+     * @param in
+     * @param limit Hard limit (0, inf)
+     * @param factor Factor to multiply by result of clamping by
+     * @return
+     */
+    public final static double limitToFactor(double in, double limit, double factor) {
+        return factor * MathUtil.clamp(in, -limit, limit);
+    }
+
+
 
     public final static class JoystickConstants{
 
@@ -147,14 +161,24 @@ public final class Constants {
         public static final boolean ROTATOR_RIGHT_INVERTED = false;
         public static final boolean EXTENDER_LEFT_INVERTED = true;
         public static final boolean EXTENDER_RIGHT_INVERTED = false;
-        public static final double ROTATOR_PERCENT_MAX = 0.3;
-        public static final double EXTENDER_PERCENT_MAX = 0.3;
         
         public static final int ROTATOR_LEFT_LIMIT_PORT = 1;
         public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
-        public static final double SLACK_LENGTH_METERS = 0.8;
+        public static final double EXTENDER_TOP_LIMIT = 0.8;
+        public static final double EXTENDER_BOTTOM_LIMIT = 0;
+        public final static double ROTATOR_BACK_LIMIT_DEG = 0;
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 20;
+
+
+        public final static double MAX_ROTATOR_VOLTS = 3;
+        public final static double MAX_EXTENDER_VOLTS = 3;
+        public final static double MAX_ROTATOR_SPEED = .5; // m/s
+        public final static double MAX_EXTENDER_SPEED = .5; // m/s
+
+        public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
+
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
@@ -168,17 +192,24 @@ public final class Constants {
 
         }
 
-        public final static double EXTENDER_FOLLOWER_KP = .05;
-        public final static double EXTENDER_FOLLOWER_KI = 0;
-        public final static double EXTENDER_FOLLOWER_KD = 0;
+        // public final static double EXTENDER_FOLLOWER_KP = .05;
+        // public final static double EXTENDER_FOLLOWER_KI = 0;
+        // public final static double EXTENDER_FOLLOWER_KD = 0;
+
         public final static double EXTENDER_LEFT_KS = .05; // Volts
         public final static double EXTENDER_LEFT_KV = .05; // Volt seconds per meter
         public final static double EXTENDER_RIGHT_KS = .05; // Volts
         public final static double EXTENDER_RIGHT_KV = .05; // Volt seconds per meter
+        public final static double ROTATOR_LEFT_KS = .05; // Volts
+        public final static double ROTATOR_LEFT_KV = .05; // Volt seconds per meter
+        public final static double ROTATOR_RIGHT_KS = .05; // Volts
+        public final static double ROTATOR_RIGHT_KV = .05; // Volt seconds per meter
 
 
+        public final static double LEFT_EXTENDER_HOLD_KP = .005;
+        public final static double RIGHT_EXTENDER_HOLD_KP = .005;
 
-        public final static double ROTATOR_BACK_LIMIT_DEG = -20;
+        
 
     }
 
