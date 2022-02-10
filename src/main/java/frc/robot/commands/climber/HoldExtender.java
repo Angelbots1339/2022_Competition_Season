@@ -5,6 +5,7 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
 import static frc.robot.Constants.ClimberConstants.*;
@@ -24,6 +25,7 @@ public class HoldExtender extends CommandBase {
     addRequirements(climbingSubsystem);
 
     this.climbingSubsystem = climbingSubsystem;
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -41,14 +43,19 @@ public class HoldExtender extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // TODO up/down sanity test
+    double leftVolts = leftController.calculate(climbingSubsystem.getLeftLength());
+    climbingSubsystem.setLeftExtensionVolts(-leftVolts);
+    climbingSubsystem.setRightExtensionVolts(-rightController.calculate(climbingSubsystem.getRightLength()));
 
-    climbingSubsystem.setLeftExtensionVolts(leftController.calculate(climbingSubsystem.getLeftLength()));
-    climbingSubsystem.setRightExtensionVolts(rightController.calculate(climbingSubsystem.getRightLength()));
+    SmartDashboard.putNumber("LeftExtendPIDout", leftVolts);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climbingSubsystem.setExtensionSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -23,6 +23,7 @@ import frc.robot.commands.Intake.LoadShooter;
 import frc.robot.commands.Intake.RevShooterSimple;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
+import frc.robot.commands.climber.HoldExtender;
 import frc.robot.commands.climber.MoveArms;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -114,21 +115,26 @@ public class RobotContainer {
     DoubleSupplier rot = () -> -joystick.getRightX();
     //driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
-    Command climbCommand = new RunCommand(() -> {
+    // Manual climb with joysticks
+    // Command climbCommand = new RunCommand(() -> {
       
-      climbingSubsystem.setExtensionSpeed(joystick.getLeftY() * ClimberConstants.MAX_EXTENDER_SPEED);
-      climbingSubsystem.setRotationSpeed(joystick.getRightY() * ClimberConstants.MAX_ROTATOR_SPEED);
+    //   climbingSubsystem.setExtensionSpeed(joystick.getLeftY() * ClimberConstants.MAX_EXTENDER_SPEED);
+    //   climbingSubsystem.setRotationSpeed(joystick.getRightY() * ClimberConstants.MAX_ROTATOR_SPEED);
 
-    } , climbingSubsystem);
+    // } , climbingSubsystem);
+
+    // Feed drive watchdog when idle
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
+    new JoystickButton(joystick, BUTTON_B).whileActiveOnce(new HoldExtender(climbingSubsystem));
 
-    new JoystickButton(joystick, BUTTON_A).toggleWhenPressed(climbCommand).whenHeld(stopDrive);
-    climbingSubsystem.setDefaultCommand(new RunCommand(()-> {
+    // Bind A to swap between driving and climbing
+    // new JoystickButton(joystick, BUTTON_A).toggleWhenPressed(climbCommand).whenHeld(stopDrive);
+    // climbingSubsystem.setDefaultCommand(new RunCommand(()-> {
 
-      climbingSubsystem.setExtensionSpeed(0);
-      climbingSubsystem.setRotationSpeed(0);
+    //   climbingSubsystem.setExtensionSpeed(0);
+    //   climbingSubsystem.setRotationSpeed(0);
 
-    }, climbingSubsystem));
+    // }, climbingSubsystem));
     
     // Toggle cameras & drive when B is pressed
     //new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
