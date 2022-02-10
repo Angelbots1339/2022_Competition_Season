@@ -159,8 +159,8 @@ public final class Constants {
         public static final int EXTENDER_RIGHT_PORT = 15; // 15
         public static final boolean ROTATOR_LEFT_INVERTED = true;
         public static final boolean ROTATOR_RIGHT_INVERTED = false;
-        public static final boolean EXTENDER_LEFT_INVERTED = true;
-        public static final boolean EXTENDER_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_LEFT_INVERTED = false;
+        public static final boolean EXTENDER_RIGHT_INVERTED = true;
         
         public static final int ROTATOR_LEFT_LIMIT_PORT = 1;
         public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
@@ -176,9 +176,9 @@ public final class Constants {
         public final static double MAX_EXTENDER_VOLTS = 3;
         public final static double MAX_ROTATOR_SPEED = .5; // m/s
         public final static double MAX_EXTENDER_SPEED = .5; // m/s
-
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
 
+        public static final boolean LEFT_IS_LEADER = true;
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
@@ -192,9 +192,12 @@ public final class Constants {
 
         }
 
-        // public final static double EXTENDER_FOLLOWER_KP = .05;
-        // public final static double EXTENDER_FOLLOWER_KI = 0;
-        // public final static double EXTENDER_FOLLOWER_KD = 0;
+        public final static double EXTENDER_FOLLOWER_KP = .05;
+        public final static double EXTENDER_FOLLOWER_KI = 0;
+        public final static double EXTENDER_FOLLOWER_KD = 0;
+        public final static double ROTATOR_FOLLOWER_KP = .05;
+        public final static double ROTATOR_FOLLOWER_KI = 0;
+        public final static double ROTATOR_FOLLOWER_KD = 0;
 
         public final static double EXTENDER_LEFT_KS = .05; // Volts
         public final static double EXTENDER_LEFT_KV = .05; // Volt seconds per meter

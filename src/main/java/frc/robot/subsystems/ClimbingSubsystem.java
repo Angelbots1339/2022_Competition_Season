@@ -35,22 +35,20 @@ public class ClimbingSubsystem extends SubsystemBase {
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
 
+    //Control
+    private PIDController rotatorFollowerController = new PIDController(ROTATOR_FOLLOWER_KP, ROTATOR_FOLLOWER_KI, 
+            ROTATOR_FOLLOWER_KD);
+    private PIDController extenderFollowerController = new PIDController(EXTENDER_FOLLOWER_KP, EXTENDER_FOLLOWER_KI, 
+            EXTENDER_FOLLOWER_KD);
+
+   
+
     // Encoders
     private Encoder rotatorLeftEncoder;
     private Encoder rotatorRightEncoder;
 
-    // Control
-    private SimpleMotorFeedforward extenderLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_LEFT_KS,
-            EXTENDER_LEFT_KV);
-    private SimpleMotorFeedforward extenderRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
-            EXTENDER_RIGHT_KV);
-    private SimpleMotorFeedforward rotatorRightFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
-            EXTENDER_RIGHT_KV);
-    private SimpleMotorFeedforward rotatorLeftFeedforward = new SimpleMotorFeedforward(EXTENDER_RIGHT_KS,
-            EXTENDER_RIGHT_KV);
+    
 
-    private PIDController holdElevationLeftPid = new PIDController(.1, 0, 0);
-    private PIDController holdElevationRightPid = new PIDController(.1, 0, 0);
 
     public ClimbingSubsystem() {
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
@@ -62,11 +60,14 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        log();
+
 
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("TestPidFollowerOutput", extenderFollowerController.calculate(getRightLength(), getLeftLength()));
     }
 
     public void log() {
@@ -78,6 +79,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
+
+        tab.add(extenderFollowerController);
 
         tab.add(this);
     }
@@ -109,19 +112,31 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     // Setters
     /**
-     * @param velocity
+     * @param volts
      */
-    public void setExtensionSpeed(double velocity) {
-        setRightExtensionVolts(extenderRightFeedforward.calculate(velocity));
-        setLeftExtensionVolts(extenderLeftFeedforward.calculate(velocity));
+    public void setExtensionSpeedLeaderVolts(double volts) {
+        
+        if(LEFT_IS_LEADER){
+            //setLeftExtensionVolts(volts);
+            //setRightExtensionVolts(volts + extenderFollowerController.calculate(getRightLength(), getLeftLength()));
+            
+        }
+        else{
+            setRightExtensionVolts(volts);
+            setLeftExtensionVolts(volts + extenderFollowerController.calculate(getLeftLength(), getRightAngle()));
+        }
+    }
+    public void setExtensionSpeedSimpleVolts(double volts){
+        setLeftExtensionVolts(volts);
+        setRightExtensionVolts(volts);
     }
 
     /**
      * @param velocity
      */
-    public void setRotationSpeed(double velocity) {
-        setRightRotationVolts(rotatorRightFeedforward.calculate(velocity));
-        setLeftRotationVolts(rotatorLeftFeedforward.calculate(velocity));
+    public void setRotationVolts(double volts) {
+        setLeftRotationVolts(volts);
+        setRightRotationVolts(volts);
     }
 
     /**
@@ -149,7 +164,9 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public void setLeftExtensionVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
+        SmartDashboard.putNumber("point 1", volts);
         extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
+        SmartDashboard.putNumber("Point 2", checkBoundsExtensions(volts, getLeftLength()));
     }
 
     /**
@@ -164,8 +181,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         // TODO check if negative / positive is flipped
         // Negative is out, positive is in
-        if ((currentPos >= EXTENDER_TOP_LIMIT && voltage < 0) ||
-                (currentPos <= EXTENDER_BOTTOM_LIMIT && voltage > 0)) {
+        if ((currentPos <= EXTENDER_TOP_LIMIT && voltage < 0) ||
+                (currentPos >= EXTENDER_BOTTOM_LIMIT && voltage > 0)) {
             return 0;
 
         }

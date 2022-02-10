@@ -30,12 +30,8 @@ public class HoldExtender extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
- 
-
     rightController.setSetpoint(climbingSubsystem.getRightLength());
     leftController.setSetpoint(climbingSubsystem.getLeftLength());
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

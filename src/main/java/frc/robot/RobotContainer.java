@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static frc.robot.Constants.JoystickConstants.*;
+import frc.robot.Constants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -116,17 +117,14 @@ public class RobotContainer {
 
     Command climbCommand = new RunCommand(() -> {
       
-      climbingSubsystem.setExtensionSpeed(joystick.getLeftY() * ClimberConstants.MAX_EXTENDER_SPEED);
-      climbingSubsystem.setRotationSpeed(joystick.getRightY() * ClimberConstants.MAX_ROTATOR_SPEED);
-
     } , climbingSubsystem);
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
     new JoystickButton(joystick, BUTTON_A).toggleWhenPressed(climbCommand).whenHeld(stopDrive);
     climbingSubsystem.setDefaultCommand(new RunCommand(()-> {
 
-      climbingSubsystem.setExtensionSpeed(0);
-      climbingSubsystem.setRotationSpeed(0);
+      climbingSubsystem.setExtensionSpeedSimpleVolts(joystick.getLeftY() * ClimberConstants.MAX_EXTENDER_VOLTS);
+      //climbingSubsystem.setRotationVolts(joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS);
 
     }, climbingSubsystem));
     
