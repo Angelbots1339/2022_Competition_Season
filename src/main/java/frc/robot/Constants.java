@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
+import frc.robot.utils.ShooterProfiles;
 
 
 /**
@@ -20,18 +21,6 @@ import edu.wpi.first.wpilibj.I2C.Port;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
-    /**
-     * Clamps and scales input
-     * @param in
-     * @param limit Hard limit (0, inf)
-     * @param factor Factor to multiply by result of clamping by
-     * @return
-     */
-    public final static double limitToFactor(double in, double limit, double factor) {
-        return factor * MathUtil.clamp(in, -limit, limit);
-    }
-
 
 
     public final static class JoystickConstants{
@@ -64,7 +53,6 @@ public final class Constants {
     public final static class DriveConstants{
         //general 
         public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.25;
-        public final static boolean LOG_DATA = true;
 
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
@@ -91,6 +79,7 @@ public final class Constants {
         */
 
         //PID 
+        //TODO Characterize drive base
         public final static double LEFT_KP = 2.1258;
         public final static double RIGHT_KP = 2.1258;
 
@@ -119,23 +108,16 @@ public final class Constants {
     }
     public final static class IntakeConstants{
 
-        // TODO Make the ports correct
         public final static int INTAKE_MOTOR_PORT = 7; // 7
         public final static int INDEXER_RIGHT_PORT = 9; // 9
         public final static int INDEXER_LEFT_PORT = 8; // 8
         public final static double MAX_INDEXER_PERCENT = 0.5;
-        public final static double MAX_INTAKE_PERCENT = 0.6;
-
-        public final static double MAX_INTAKE_CURRENT = 0;
-        
+        public final static double MAX_INTAKE_PERCENT = 0.6;        
 
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         
         public final static boolean INTAKE_INVERSE = false;
-        
-        public final static int SERVO_RIGHT_PORT = 0;
-        public final static int SERVO_LEFT_PORT = 1;
 
         public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 to 2047
 
@@ -169,16 +151,15 @@ public final class Constants {
         public static final double EXTENDER_TOP_LIMIT = 0.8;
         public static final double EXTENDER_BOTTOM_LIMIT = 0;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
-        public final static double ROTATOR_FRONT_LIMIT_DEG = 20;
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 20; //20
 
 
         public final static double MAX_ROTATOR_VOLTS = 3;
-        public final static double MAX_EXTENDER_VOLTS = 3;
+        public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_ROTATOR_SPEED = .5; // m/s
         public final static double MAX_EXTENDER_SPEED = .5; // m/s
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
 
-        public static final boolean LEFT_IS_LEADER = true;
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
@@ -192,45 +173,8 @@ public final class Constants {
 
         }
 
-        public final static double EXTENDER_FOLLOWER_KP = .05;
-        public final static double EXTENDER_FOLLOWER_KI = 0;
-        public final static double EXTENDER_FOLLOWER_KD = 0;
-        public final static double ROTATOR_FOLLOWER_KP = .05;
-        public final static double ROTATOR_FOLLOWER_KI = 0;
-        public final static double ROTATOR_FOLLOWER_KD = 0;
-
-        public final static double EXTENDER_LEFT_KS = .05; // Volts
-        public final static double EXTENDER_LEFT_KV = .05; // Volt seconds per meter
-        public final static double EXTENDER_RIGHT_KS = .05; // Volts
-        public final static double EXTENDER_RIGHT_KV = .05; // Volt seconds per meter
-        public final static double ROTATOR_LEFT_KS = .05; // Volts
-        public final static double ROTATOR_LEFT_KV = .05; // Volt seconds per meter
-        public final static double ROTATOR_RIGHT_KS = .05; // Volts
-        public final static double ROTATOR_RIGHT_KV = .05; // Volt seconds per meter
-
-
-        public final static double LEFT_EXTENDER_HOLD_KP = .005;
-        public final static double RIGHT_EXTENDER_HOLD_KP = .005;
-
-        
-
     }
 
-    public final static class AutonomousConstants{
-        public final static double MAX_VEL_METERS_PER_SECOND = 1;
-        public final static double MAX_ACC_METERS_PER_SECOND = 0.25;
-        /* Tuning constraints:
-        - DifferentialDriveVoltageConstraint: If your robot accelerates very slowly then
-        it’s possible that the max voltage for this constraint is too low.
-        - DifferentialDriveKinematicsConstraint: If your robot ends up at the wrong heading then
-        it’s possible that the max drivetrain side speed is too low,
-        or that it’s too high. The only way to tell is to tune the max speed and to see what happens.
-        - CentripetalAccelerationConstraint: If your robot ends up at the wrong heading then this could be the culprit.
-        If your robot doesn’t seem to turn enough then you should increase the max centripetal acceleration,
-        but if it seems to go around tight turns to quickly then you should decrease the maximum centripetal acceleration.
-        */
-    }
-    
     public final static class ShooterConstants {
         public final static int LEFT_POWER_WHEEL = 11;  // 11
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
@@ -258,6 +202,9 @@ public final class Constants {
         public final static double AIM_KS = 0;
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
+
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> .4, () -> .5);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> .2, () -> .3);
 
     }
 

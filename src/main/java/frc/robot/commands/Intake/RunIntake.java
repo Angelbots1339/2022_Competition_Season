@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
@@ -40,11 +41,14 @@ public class RunIntake extends CommandBase {
 
     if(!intakeSubsystem.isBallLow()) {
       loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
+      SmartDashboard.putBoolean("Ball at color sensor", false);
     }
     else{
-      loaderSubsystem.disable();
+      SmartDashboard.putBoolean("Ball at color sensor", true);
+      loaderSubsystem.runLoader(0);
     }
 
+    
   }
 
   // Called once the command ends or is interrupted.

@@ -2,10 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -35,12 +32,6 @@ public class ClimbingSubsystem extends SubsystemBase {
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
 
-    //Control
-    private PIDController rotatorFollowerController = new PIDController(ROTATOR_FOLLOWER_KP, ROTATOR_FOLLOWER_KI, 
-            ROTATOR_FOLLOWER_KD);
-    private PIDController extenderFollowerController = new PIDController(EXTENDER_FOLLOWER_KP, EXTENDER_FOLLOWER_KI, 
-            EXTENDER_FOLLOWER_KD);
-
    
 
     // Encoders
@@ -67,7 +58,6 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("TestPidFollowerOutput", extenderFollowerController.calculate(getRightLength(), getLeftLength()));
     }
 
     public void log() {
@@ -80,7 +70,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
 
-        tab.add(extenderFollowerController);
+     
 
         tab.add(this);
     }
@@ -114,25 +104,18 @@ public class ClimbingSubsystem extends SubsystemBase {
     /**
      * @param volts
      */
-    public void setExtensionSpeedLeaderVolts(double volts) {
-        
-        if(LEFT_IS_LEADER){
-            //setLeftExtensionVolts(volts);
-            //setRightExtensionVolts(volts + extenderFollowerController.calculate(getRightLength(), getLeftLength()));
-            
-        }
-        else{
-            setRightExtensionVolts(volts);
-            setLeftExtensionVolts(volts + extenderFollowerController.calculate(getLeftLength(), getRightAngle()));
-        }
-    }
+    
     public void setExtensionSpeedSimpleVolts(double volts){
+        SmartDashboard.putNumber("SimpleVoltInput", volts);
         setLeftExtensionVolts(volts);
         setRightExtensionVolts(volts);
     }
+    public void setExtensionSpeedSimpleVolts(DoubleSupplier volts) {
+        setExtensionSpeedSimpleVolts(volts.getAsDouble());
+    }
 
     /**
-     * @param velocity
+     * @param volts
      */
     public void setRotationVolts(double volts) {
         setLeftRotationVolts(volts);
@@ -145,7 +128,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setLeftRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle()));
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftAtLimit()));
     }
 
     /**
@@ -154,7 +137,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setRightRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getRightAngle()));
+        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightAtLimit()));
     }
 
     public void setRightExtensionVolts(double volts) {
@@ -164,9 +147,9 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public void setLeftExtensionVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
-        SmartDashboard.putNumber("point 1", volts);
+        SmartDashboard.putNumber("left Clamped Volts", volts);
         extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
-        SmartDashboard.putNumber("Point 2", checkBoundsExtensions(volts, getLeftLength()));
+        SmartDashboard.putNumber("left Bounded Volts", checkBoundsExtensions(volts, getLeftLength()));
     }
 
     /**
@@ -178,15 +161,16 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @return limited voltage output to not hit end stops
      */
     private double checkBoundsExtensions(double voltage, double currentPos) {
-
-        // TODO check if negative / positive is flipped
-        // Negative is out, positive is in
-        if ((currentPos <= EXTENDER_TOP_LIMIT && voltage < 0) ||
-                (currentPos >= EXTENDER_BOTTOM_LIMIT && voltage > 0)) {
-            return 0;
+        // Positive voltage is extend out, negative voltage is reel in
+        
+        if ((currentPos <= EXTENDER_TOP_LIMIT && voltage > 0) || // Current position below top 
+                (currentPos >= EXTENDER_BOTTOM_LIMIT && voltage < 0)) {
+            SmartDashboard.putBoolean("ElevatorBoundsTripped", true);
+            return voltage;
 
         }
-        return voltage;
+        SmartDashboard.putBoolean("ElevatorBoundsTripped", false);
+        return 0;
     }
 
     /**
@@ -195,17 +179,19 @@ public class ClimbingSubsystem extends SubsystemBase {
      * 
      * @param voltage
      * @param angle   angle of target motor
+     * @param limit   limit switch of given motor
      * @return limited voltage output to not hit end stops
      */
 
-    private double checkBoundsRotations(double voltage, double angle) {
-        // TODO check if negative / positive is flipped
-        // Negative is back, positive is forwards
-        if (isLeftAtLimit() && voltage > 0 ||
-                angle <= ROTATOR_BACK_LIMIT_DEG && voltage < 0 ||
-                angle >= ROTATOR_FRONT_LIMIT_DEG && voltage > 0) {
-            return 0;
+    private double checkBoundsRotations(double voltage, double angle, boolean limit) {
+        // Negative voltage is rotate towards hard stop, positive voltage is rotate towards intake
+        if ( // check rotate forward (not at limit & forward) or (below front limit & forward)
+            ((!limit && voltage > 0) && (angle <= ROTATOR_FRONT_LIMIT_DEG && voltage > 0)) ||
+            // check rotate back (above back limit & forward)
+            (angle >= ROTATOR_BACK_LIMIT_DEG && voltage < 0)
+            ) {
+            return voltage;
         }
-        return voltage;
+        return 0;
     }
 }

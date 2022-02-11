@@ -17,15 +17,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends RamseteCommand {
 
     private static DifferentialDriveVoltageConstraint voltageConstraint;
-    private static TrajectoryConfig config = new TrajectoryConfig(AutonomousConstants.MAX_VEL_METERS_PER_SECOND,
-            AutonomousConstants.MAX_ACC_METERS_PER_SECOND);
     private final SimpleMotorFeedforward simpleMotorFeedforward;
     private Trajectory trajectory;
 
@@ -51,7 +48,6 @@ public class FollowTrajectory extends RamseteCommand {
         // Constrain the max voltage to 10
         voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
                 DriveConstants.DRIVE_KINEMATICS, 10);
-        config.setKinematics(DriveConstants.DRIVE_KINEMATICS).addConstraint(voltageConstraint);
         
 
         this.trajectory = trajectory;

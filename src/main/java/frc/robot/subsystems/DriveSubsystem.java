@@ -98,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void logData() {
-    if (!LOG_DATA) return;
+   
     tab.addNumber("angle", () -> pose.getRotation().getDegrees());
     tab.addNumber("heading", () -> getHeading().getDegrees());
     tab.add(this);

@@ -24,8 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT);
   
-  private Servo servoRight = new Servo(SERVO_RIGHT_PORT);
-  private Servo servoLeft = new Servo(SERVO_LEFT_PORT); 
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
 
@@ -55,10 +53,6 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void deployIntake() {
-    servoRight.setAngle(90);
-    servoLeft.setAngle(90);
-  }
 
   /**
    * This will spin the intake motor at the given speed
