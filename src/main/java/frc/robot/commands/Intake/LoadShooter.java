@@ -13,10 +13,12 @@ import static frc.robot.Constants.IntakeConstants.*;
 public class LoadShooter extends CommandBase {
 
   LoaderSubsystem loaderSubsystem;
+  IntakeSubsystem intakeSubsystem;
   public LoadShooter(LoaderSubsystem loaderSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
-    addRequirements(loaderSubsystem);
+    this.intakeSubsystem = intakeSubsystem;
+    addRequirements(loaderSubsystem, intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -28,12 +30,14 @@ public class LoadShooter extends CommandBase {
   @Override
   public void execute() {
     loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
+    intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     loaderSubsystem.disable();
+    intakeSubsystem.disable();
   }
 
   // Returns true when the command should end.

@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -20,7 +21,6 @@ public class RunIntake extends CommandBase {
 
   private final IntakeSubsystem intakeSubsystem;
   private final LoaderSubsystem loaderSubsystem;
-
   public RunIntake(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, loaderSubsystem);
@@ -54,7 +54,7 @@ public class RunIntake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.Disable();
+    intakeSubsystem.disable();
     loaderSubsystem.disable();
   }
 

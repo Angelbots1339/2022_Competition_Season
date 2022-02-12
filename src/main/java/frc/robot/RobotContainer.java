@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -50,7 +51,7 @@ public class RobotContainer {
   //Subsystems 
   private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
   private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
-  private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
+  // private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
 
@@ -60,7 +61,14 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
+  private NetworkTableEntry powerShootSpeed = tab.add("Front Power Shoot Speed", 0)
+      .getEntry();
+  private NetworkTableEntry aimShootSpeed = tab.add("Front Aim Shoot Speed", 0)
+      .getEntry();
+    
+
   private boolean isDriveReversed;
+  private ShooterProfiles testProfiles;
 
 
   /**
@@ -70,6 +78,9 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
+    tab.addNumber("Power Wheel Rpm", () -> shooterSubsystem.getPowerRPM());
+    tab.addNumber("Aim Wheel Rpm", () -> shooterSubsystem.getAimRPM());
+    
 
     
   }
@@ -102,28 +113,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Invert drive when using rear camera
+
+    
     DoubleSupplier fwd = () -> (isDriveReversed? -1 : 1) * joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX();
-    //driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
+    driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Feed drive watchdog when idle
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
-    driveSubsystem.setDefaultCommand(stopDrive);
 
     // Bind extension to left axis, rotation to right axis
 
     DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
-    // Bind Menu to swap between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new RunArms(climbingSubsystem, extension, rotation)).whenHeld(stopDrive);
+    // Right Menu to toggle between driving and climbing
+   // new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new RunArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
     
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
        (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
 
-    // Run Intake-in while the right bumper is held
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));
+    // Run Intake-in while the left bumper is held
+    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));
 
     // Shoot high when Y button is pressed
 
@@ -134,8 +146,8 @@ public class RobotContainer {
     new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
 
 
-    // Run reverse intake when left bumper is pressed
-    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new ejectBalls(intakeSubsystem, loaderSubsystem));
+    // Run reverse intake when right bumper is pressed
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new ejectBalls(intakeSubsystem, loaderSubsystem));
 
 
    
@@ -151,8 +163,7 @@ public class RobotContainer {
     System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
-    //return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
-    return null;
+    return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
     
   }
 

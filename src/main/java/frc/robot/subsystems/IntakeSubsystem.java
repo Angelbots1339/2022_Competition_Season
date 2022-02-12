@@ -35,13 +35,12 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
   
-    intakeMotor.configFactoryDefault();
-    indexerLeftMotor.configFactoryDefault();
-    indexerRightMotor.configFactoryDefault();
+  
     
     tab.addNumber("supply current", () -> intakeMotor.getSupplyCurrent());
     tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
     tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
+    tab.addBoolean("At ColorSensor", () -> isBallLow());
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
@@ -84,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * Disables all motors 
    */
-  public void Disable() {
+  public void disable() {
     indexerLeftMotor.set(0);
     indexerRightMotor.set(0);
     intakeMotor.set(0);

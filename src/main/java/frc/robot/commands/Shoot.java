@@ -50,7 +50,6 @@ public class Shoot extends CommandBase {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
 
     }
-
   }
 
   // Called once the command ends or is interrupted.

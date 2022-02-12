@@ -37,14 +37,13 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    powerWheelPID.setTolerance(POWER_WHEEL_KP);
+    powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
 
     tab.add(aimWheelPID);
     tab.add(powerWheelPID);
     tab.addNumber("Aim Wheel Speed", () -> getAimRPM());
     //tab.addNumber("Aim Power Speed", () -> getPowerRPM());
-
 
   }
 
@@ -54,8 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   //TODO add motor feed forward
   public void setPowerWheelRPM(double speed) {
-    SmartDashboard.putNumber("PowerWheelLeftOutput",powerWheelPID.calculate(getPowerRPM(), speed));
-    SmartDashboard.putNumber("PowerWheelRightOutput",powerWheelPID.calculate(getPowerRPM(), speed));
+    SmartDashboard.putNumber("PID Power",powerWheelPID.calculate(getPowerRPM(), speed));
     
     //powerWheelRight.set(powerWheelPID.calculate(getPowerRPM(), speed));
 
@@ -63,12 +61,13 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.set(speed);
   }
   public void setPowerWheelSpeed(double speed){
+      SmartDashboard.putNumber("PID AIM", powerWheelPID.calculate(getPowerRPM(), speed));
+
       powerWheelLeft.set(speed);
       powerWheelRight.set(speed);
   }
 
   public void setAimWheelRPM(double speed) {
-    //aimWheel.set(aimWheelPID.calculate(getAimRPM(), speed));
     aimWheel.set(speed);
   }
   public void setAimWheelSpeed(double speed) {
@@ -90,7 +89,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getPowerRPM(){
-    return 0;//(powerWheelRight.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
+    return (powerWheelRight.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity()/CLICKS_PER_ROT) * 600;

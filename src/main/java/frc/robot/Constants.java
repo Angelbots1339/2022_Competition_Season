@@ -52,7 +52,7 @@ public final class Constants {
      */
     public final static class DriveConstants{
         //general 
-        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.25;
+        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.6;
 
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
@@ -63,7 +63,7 @@ public final class Constants {
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
         
         //Drive base values
-        public final static double TRACK_WIDTH_METERS = Units.inchesToMeters(21.5); // Center of left wheel to center of right wheel
+        public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
         public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.875);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
         public final static double CLICKS_PER_ROT = 2048;
@@ -80,17 +80,17 @@ public final class Constants {
 
         //PID 
         //TODO Characterize drive base
-        public final static double LEFT_KP = 2.1258;
-        public final static double RIGHT_KP = 2.1258;
+        public final static double LEFT_KP = 3.6052;
+        public final static double RIGHT_KP = 3.6052;
 
         /* Checking kP:
         Graph the input motor values from the desired motor values over time
         */
 
-        //Motion profiling
-        public final static double KS = 0.5221; // Volts
-        public final static double KV = 2.1103;  // Volts * Seconds / Meters 
-        public final static double KA = 0.11835; // Volts * Seconds^2 / Meters
+        //Motion profiling New Values
+        public final static double KS = 0.53002; // Volts
+        public final static double KV = 2.4483;  // Volts * Seconds / Meters 
+        public final static double KA = 0.6174; // Volts * Seconds^2 / Meters
 
         
 
@@ -149,7 +149,7 @@ public final class Constants {
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
         public static final double EXTENDER_TOP_LIMIT = 0.8;
-        public static final double EXTENDER_BOTTOM_LIMIT = 0;
+        public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
         public final static double ROTATOR_FRONT_LIMIT_DEG = 20; //20
 
@@ -203,12 +203,13 @@ public final class Constants {
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
 
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> .4, () -> .5);
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> .2, () -> .3);
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> .43, () -> .53);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> .28, () -> .3);
 
     }
 
     public final static class MultiplexerConstants {
+
         public static final byte DEFAULT_ADDRESS = 0x70;
         public static final Port DEFAULT_PORT = Port.kMXP;
     }
