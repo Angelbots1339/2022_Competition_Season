@@ -40,7 +40,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     private Encoder rotatorRightEncoder;
 
     
-    private static boolean autoClimberStarted;
+    private boolean autoClimberStarted;
 
 
     public ClimbingSubsystem() {
@@ -197,7 +197,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         return 0;
     }
 
-    public static boolean getAutoClimbStarted(){
+    public boolean getAutoClimbStarted(){
 
         autoClimberStarted = !autoClimberStarted;
         return autoClimberStarted;
