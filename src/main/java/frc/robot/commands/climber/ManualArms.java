@@ -4,18 +4,19 @@
 
 package frc.robot.commands.climber;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.AddressableLED;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
 
-public class RunArms extends CommandBase {
+public class ManualArms extends CommandBase {
   ClimbingSubsystem climbingSubsystem;
   DoubleSupplier extendVolts;
   DoubleSupplier rotateVolts;
   /** Creates a new RunArms. */
-  public RunArms(ClimbingSubsystem climbingSubsystem, DoubleSupplier extendVolts, DoubleSupplier rotateVolts) {
+  public ManualArms(ClimbingSubsystem climbingSubsystem, DoubleSupplier extendVolts, DoubleSupplier rotateVolts) {
     addRequirements(climbingSubsystem);
     this.climbingSubsystem = climbingSubsystem;
     this.extendVolts = extendVolts;
