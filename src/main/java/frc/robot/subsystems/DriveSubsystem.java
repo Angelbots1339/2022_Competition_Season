@@ -5,6 +5,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.DriveConstants.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -43,6 +45,9 @@ public class DriveSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DifferentialDrive drive;
   private DifferentialDriveOdometry driveOdometry;
+  private SlewRateLimiter suppresiveFwdFilter = new SlewRateLimiter(2);
+  private SlewRateLimiter incitiveFwdFilter = new SlewRateLimiter(3);
+  private double previousPercentage = 0;
 
   // Gyro
   private AHRS gyro;
@@ -62,6 +67,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftMotorControllerGroup.setInverted(LEFT_INVERTED);
     drive.setMaxOutput(MAX_DRIVE_OUTPUT_PERCENT);
     drive.arcadeDrive(0, 0);
+    
 
     tab = Shuffleboard.getTab(this.getName());
 
@@ -77,6 +83,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
     field2d.setRobotPose(pose);
+    SmartDashboard.putNumber("Rotations", rightMotorTop.getSelectedSensorPosition() / 2048 / 6.67);
+    SmartDashboard.putNumber("Clicks", rightMotorTop.getSelectedSensorPosition());
   }
 
   /**
@@ -87,8 +95,18 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd supplier for forward movement
    * @param rot supplier for rotation
    */
-  public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot) {
-    drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble());
+  public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot){
+    double currentPercentage = fwd.getAsDouble();
+    double slewOutput;
+    if(Math.abs(currentPercentage) > previousPercentage) { // Speeding up, incitive slew limier
+      slewOutput = incitiveFwdFilter.calculate(currentPercentage);
+    } else { // Slowing down , supressive slew limiter
+      slewOutput = suppresiveFwdFilter.calculate(currentPercentage);
+    }
+    drive.arcadeDrive(slewOutput, rot.getAsDouble());
+    SmartDashboard.putNumber("Filter", slewOutput);
+    SmartDashboard.putNumber("Drive ", fwd.getAsDouble());
+    previousPercentage = Math.abs(currentPercentage);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {

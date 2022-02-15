@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,7 +25,8 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
-import frc.robot.commands.climber.RunArms;
+import frc.robot.commands.climber.GoToBar;
+import frc.robot.commands.climber.ManualArms;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -35,6 +37,8 @@ import frc.robot.utils.ShooterProfiles;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import static frc.robot.Constants.JoystickConstants.*;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;;
@@ -127,10 +131,18 @@ public class RobotContainer {
 
     DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
+    BooleanSupplier proceed = () -> joystick.getRawButtonPressed(LEFT_MENU_BUTTON);
 
     // Right Menu to toggle between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new RunArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
     
+    ManualArms manualArms = new ManualArms(climbingSubsystem, extension, rotation);
+
+    climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
+
+    
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).whenPressed(new GoToBar(climbingSubsystem, manualArms, proceed));
+
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
        (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
