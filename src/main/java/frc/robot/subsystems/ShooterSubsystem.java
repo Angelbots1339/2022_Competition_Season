@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -84,7 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //GET
 
-  public boolean getAtSetpoint() {
+  public boolean isAtSetpoint() {
     return powerWheelPID.atSetpoint() && aimWheelPID.atSetpoint();
   }
 

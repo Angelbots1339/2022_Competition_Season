@@ -29,7 +29,9 @@
   "cSpell.words": [
     "camtran",
     "Debouncer",
+    "Feedforward",
     "getpipe",
+    "Odometry",
     "setpoint",
     "sidelength",
     "tlong",

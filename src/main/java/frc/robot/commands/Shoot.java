@@ -25,9 +25,10 @@ public class Shoot extends CommandBase {
    * 
    * @param loaderSubsystem  pass in the intake subsystem
    * @param shooterSubsystem pass in the shooter subsystem
-   * @param shooterProfile   pass in a shooter profile 
+   * @param shooterProfile   pass in a shooter profile
    */
-  public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem, ShooterProfiles shooterProfile) {
+  public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
+      ShooterProfiles shooterProfile) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -47,14 +48,12 @@ public class Shoot extends CommandBase {
 
     shooterSubsystem.setPowerWheelSpeed(shooterProfiles.getPowerRPM());
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
-    
+
     shooterSubsystem.setAimWheelSpeed(shooterProfiles.getAimRPM());
 
-    intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
-
-    if (shooterSubsystem.getAtSetpoint()) {
+    if (shooterSubsystem.isAtSetpoint()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
-
+      intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
     }
   }
 

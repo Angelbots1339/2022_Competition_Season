@@ -28,7 +28,7 @@ public class LoaderSubsystem extends SubsystemBase {
   }
   
   /**
-   * This will run the indexer wheel in the shooter
+   * This will load balls into the shooter
    * 
    * @param speed
    */

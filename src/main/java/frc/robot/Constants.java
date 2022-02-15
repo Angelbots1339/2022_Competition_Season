@@ -5,7 +5,6 @@
 package frc.robot;
 
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -80,7 +79,6 @@ public final class Constants {
         */
 
         //PID 
-        //TODO Characterize drive base
         public final static double LEFT_KP = 3.6052;
         public final static double RIGHT_KP = 3.6052;
 
@@ -123,9 +121,6 @@ public final class Constants {
         public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 to 2047
 
         
-        // TODO Fix color sensor ports
-        public final static int COLOR_SENSOR_HIGH_PORT = -1;
-        public final static int COLOR_SENSOR_LOW_PORT = -1;
 
     }
     public static final class LoaderConstants{
@@ -168,7 +163,7 @@ public final class Constants {
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
         
 
-        public static final double AUTO_EXTENTION_SETPOINT = 0.7351;
+        public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         public static final double AUTO_ROTATION_SETPOINT = 21.76;
 
 

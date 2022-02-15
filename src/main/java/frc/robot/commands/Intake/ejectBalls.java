@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
 
-import frc.robot.Constants.LoaderConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 

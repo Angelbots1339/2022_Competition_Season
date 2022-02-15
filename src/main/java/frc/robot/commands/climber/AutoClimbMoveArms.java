@@ -79,7 +79,8 @@ public class AutoClimbMoveArms extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //climbingSubsystem.setExtensionSpeed(0);
+    climbingSubsystem.setRotationVolts(0);
+    climbingSubsystem.setExtensionSpeedSimpleVolts(() -> 0);
   }
 
   private boolean isWithinThreshold(double length, double setpoint) {

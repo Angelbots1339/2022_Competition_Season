@@ -3,7 +3,6 @@ package frc.robot.commands.climber;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import static frc.robot.Constants.ClimberConstants.*;
@@ -28,9 +27,8 @@ public class GoToBar extends SequentialCommandGroup{
 /**
  * 
  * @param climbingSubsystem
- * @param angle
- * @param proceed 
- * @param emergencyStop
+ * @param manualArms
+ * @param proceed When true will move on to the next stage of the climb, when false will pause indefinitely
  */
 
     public GoToBar(ClimbingSubsystem climbingSubsystem, ManualArms manualArms, BooleanSupplier proceed) {
@@ -42,17 +40,17 @@ public class GoToBar extends SequentialCommandGroup{
         addCommands(
 
             // First Bar Transfer
-            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENTION_SETPOINT, AUTO_ROTATION_SETPOINT),
+            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENSION_SETPOINT, AUTO_ROTATION_SETPOINT),
             new WaitUntilCommand(proceed),
-            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENTION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
+            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENSION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
             new WaitUntilCommand(proceed),
             new AutoClimbMoveArms(climbingSubsystem, EXTENDER_BOTTOM_LIMIT, ROTATOR_BACK_LIMIT_DEG),
             new WaitUntilCommand(proceed),
 
             // Second Bar Transfer
-            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENTION_SETPOINT, AUTO_ROTATION_SETPOINT),
+            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENSION_SETPOINT, AUTO_ROTATION_SETPOINT),
             new WaitUntilCommand(proceed),
-            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENTION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
+            new AutoClimbMoveArms(climbingSubsystem, AUTO_EXTENSION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
             new WaitUntilCommand(proceed),
             new AutoClimbMoveArms(climbingSubsystem, EXTENDER_BOTTOM_LIMIT, ROTATOR_BACK_LIMIT_DEG),
             new WaitUntilCommand(proceed)
