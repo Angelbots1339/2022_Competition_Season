@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectorySequence;
@@ -51,7 +52,7 @@ public class RobotContainer {
   //Subsystems 
   private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
   private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
-  // private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
+  private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
 
@@ -116,7 +117,7 @@ public class RobotContainer {
 
     
     DoubleSupplier fwd = () -> (isDriveReversed? -1 : 1) * joystick.getLeftY();
-    DoubleSupplier rot = () -> -joystick.getRightX();
+    DoubleSupplier rot = () -> -joystick.getRightX()  * DriveConstants.ROT_SCALE;
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Feed drive watchdog when idle
@@ -128,7 +129,7 @@ public class RobotContainer {
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
     // Right Menu to toggle between driving and climbing
-   // new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new RunArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new RunArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
     
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
@@ -139,11 +140,11 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
 
-    new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
+    new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
 
     // Shoot low when A button is pressed
 
-    new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
+    new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
 
 
     // Run reverse intake when right bumper is pressed

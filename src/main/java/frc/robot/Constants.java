@@ -52,7 +52,7 @@ public final class Constants {
      */
     public final static class DriveConstants{
         //general 
-        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.6;
+        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
 
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
@@ -61,6 +61,7 @@ public final class Constants {
         public final static int RIGHT_MOTOR_TOP_PORT = 5; 
         public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
+        public final static double ROT_SCALE = 0.65;
         
         //Drive base values
         public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
@@ -143,7 +144,7 @@ public final class Constants {
         public static final boolean ROTATOR_RIGHT_INVERTED = false;
         public static final boolean EXTENDER_LEFT_INVERTED = false;
         public static final boolean EXTENDER_RIGHT_INVERTED = true;
-        
+      
         public static final int ROTATOR_LEFT_LIMIT_PORT = 1;
         public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;

@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.ShooterProfiles;
@@ -14,6 +16,7 @@ public class Shoot extends CommandBase {
 
   private ShooterSubsystem shooterSubsystem;
   private LoaderSubsystem loaderSubsystem;
+  private IntakeSubsystem intakeSubsystem;
   private ShooterProfiles shooterProfiles;
 
   /**
@@ -24,11 +27,12 @@ public class Shoot extends CommandBase {
    * @param shooterSubsystem pass in the shooter subsystem
    * @param shooterProfile   pass in a shooter profile 
    */
-  public Shoot(LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem, ShooterProfiles shooterProfile) {
+  public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem, ShooterProfiles shooterProfile) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
+    this.intakeSubsystem = intakeSubsystem;
     addRequirements(loaderSubsystem, shooterSubsystem);
   }
 
@@ -46,6 +50,8 @@ public class Shoot extends CommandBase {
     
     shooterSubsystem.setAimWheelSpeed(shooterProfiles.getAimRPM());
 
+    intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
+
     if (shooterSubsystem.getAtSetpoint()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
 
@@ -58,7 +64,7 @@ public class Shoot extends CommandBase {
     loaderSubsystem.runLoader(0);
     shooterSubsystem.setPowerWheelRPM(0);
     shooterSubsystem.setAimWheelRPM(0);
-
+    intakeSubsystem.runIndexerLow(0);
   }
 
   // Returns true when the command should end.

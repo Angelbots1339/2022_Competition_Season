@@ -11,7 +11,8 @@ public class ArcadeDrive extends CommandBase {
 
     public ArcadeDrive(DoubleSupplier fwd, DoubleSupplier rot, DriveSubsystem driveSubsystem) {
         this.driveSubsystem = driveSubsystem;
-        this.fwd = fwd; this.rot = rot;
+        this.fwd = fwd;
+        this.rot = rot;
         addRequirements(driveSubsystem);
     }
 
