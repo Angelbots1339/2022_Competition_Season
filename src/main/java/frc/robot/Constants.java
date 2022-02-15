@@ -166,12 +166,19 @@ public final class Constants {
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
         
+
+        public static final double AUTO_EXTENTION_SETPOINT = 0.7351;
+        public static final double AUTO_ROTATION_SETPOINT = 21.76;
+
+
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
             //return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT / MOTOR_ROT_PER_ARM_ROT * 360, 360);
 
         }
+
+
 
     }
 

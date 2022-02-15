@@ -14,6 +14,7 @@ import frc.robot.Constants.JoystickConstants;
 
 import static frc.robot.Constants.ClimberConstants.*;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ClimbingSubsystem extends SubsystemBase {
@@ -39,6 +40,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     private Encoder rotatorRightEncoder;
 
     
+    private static boolean autoClimberStarted;
 
 
     public ClimbingSubsystem() {
@@ -193,5 +195,12 @@ public class ClimbingSubsystem extends SubsystemBase {
             return voltage;
         }
         return 0;
+    }
+
+    public static boolean getAutoClimbStarted(){
+
+        autoClimberStarted = !autoClimberStarted;
+        return autoClimberStarted;
+
     }
 }
