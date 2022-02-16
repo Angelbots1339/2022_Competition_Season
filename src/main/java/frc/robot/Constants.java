@@ -18,6 +18,8 @@ import frc.robot.utils.ShooterProfiles;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ * 
+ * Auto points: <link>https://cad.onshape.com/documents/22cfb86daabd8968995686a8/w/eb0abfda5631fc44d9f905bf/e/ddfc9c84d7e050e02027c18c</link>
  */
 public final class Constants {
 

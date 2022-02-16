@@ -57,9 +57,9 @@ public class ShooterSubsystem extends SubsystemBase {
     tab.addNumber("Power Wheel Speed", () -> getPowerRPM());
     tab.addNumber("Aim PID Out", () -> aimPID);
     tab.addNumber("Power PID Out", () -> powerPID);
+    tab.addNumber("Power FeedForward Out", () -> powerPID);
+    tab.addNumber("Power FeedForward Out", () -> powerPID);
 
-
-    
   }
 
 
@@ -68,17 +68,17 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  //TODO add motor feed forward
+  /**
+   * 
+   * @param speed RPM (Rotations per Minute)
+   */
   public void setPowerWheelRPM(double speed) {
     powerPID = powerWheelPID.calculate(getPowerRPM(), speed);
-    double powerFeedForward = speed / 7000;
+    double powerFeedForward = powerWheelFF.calculate(speed / 60);
     
     setPowerWheelPercentage(powerPID + powerFeedForward);
-
-    //powerWheelRight.set(powerWheelPID.calculate(getPowerRPM(), speed));
-
-    // powerWheelLeft.set(speed);
-    // powerWheelRight.set(speed);
+    powerWheelLeft.setVoltage(powerFeedForward + powerPID);
+    powerWheelRight.setVoltage(powerFeedForward + powerPID);
   }
   public void setPowerWheelPercentage(double speed){
 
@@ -88,9 +88,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
-    double aimFeedForward = speed / 7000;
+    double aimWheelFeedForward = aimWheelFF.calculate(speed / 60);
 
-    aimWheel.set(aimPID + aimFeedForward);
+    aimWheel.set(aimPID + aimWheelFeedForward);
   }
   public void setAimWheelPercentage(double speed) {
     aimWheel.set(speed);
