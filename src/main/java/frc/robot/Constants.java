@@ -21,6 +21,8 @@ import frc.robot.utils.ShooterProfiles;
  */
 public final class Constants {
 
+    public final static String CANIVORE_NAME = "rio";
+
 
     public final static class JoystickConstants{
 
@@ -183,15 +185,15 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KP = 0.0001;
+        public final static double POWER_WHEEL_KP = 0.0;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-        public final static double AIM_WHEEL_KP = 0.0001;
+        public final static double AIM_WHEEL_KP = 0.0;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
-        public final static double AIM_WHEEL_TOLERANCE = 100;
-        public final static double POWER_WHEEL_TOLERANCE = 100;
+        public final static double AIM_WHEEL_TOLERANCE = 50;
+        public final static double POWER_WHEEL_TOLERANCE = 50;
 
         
 
@@ -206,8 +208,8 @@ public final class Constants {
         public final static double AIM_KV = 0;
         public final static double AIM_KA = 0;
 
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> .43, () -> .53);
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> .28, () -> .3);
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900, () -> .43, () -> .53);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520, () -> .28, () -> .3);
 
     }
 

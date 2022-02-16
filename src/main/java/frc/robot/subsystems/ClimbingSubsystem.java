@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.ClimberConstants.*;
 
@@ -18,10 +19,10 @@ import java.util.function.DoubleSupplier;
 public class ClimbingSubsystem extends SubsystemBase {
 
     // Motors
-    private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT);
-    private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT);
-    private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT);
-    private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT);
+    private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT, Constants.CANIVORE_NAME);
+    private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT, Constants.CANIVORE_NAME);
+    private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT, Constants.CANIVORE_NAME);
+    private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT, Constants.CANIVORE_NAME);
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Climber Subsystem");
 
@@ -53,6 +54,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
         log();
 
+        extenderLeftMotor.clearStickyFaults();
+        extenderRightMotor.clearStickyFaults();
+        rotatorLeftMotor.clearStickyFaults();
+        rotatorRightMotor.clearStickyFaults();
 
     }
 

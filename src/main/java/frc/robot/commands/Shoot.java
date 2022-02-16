@@ -46,10 +46,11 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
 
-    shooterSubsystem.setPowerWheelSpeed(shooterProfiles.getPowerRPM());
+    // shooterSubsystem.setPowerWheelPercentage(shooterProfiles.getPowerPercentage());
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
 
-    shooterSubsystem.setAimWheelSpeed(shooterProfiles.getAimRPM());
+   // shooterSubsystem.setAimWheelPercentage(shooterProfiles.getAimPercentage());
+    shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
 
     if (shooterSubsystem.isAtSetpoint()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
@@ -61,8 +62,8 @@ public class Shoot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     loaderSubsystem.runLoader(0);
-    shooterSubsystem.setPowerWheelRPM(0);
-    shooterSubsystem.setAimWheelRPM(0);
+    shooterSubsystem.setPowerWheelPercentage(0);
+    shooterSubsystem.setAimWheelPercentage(0);
     intakeSubsystem.runIndexerLow(0);
   }
 

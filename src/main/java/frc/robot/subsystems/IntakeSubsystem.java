@@ -11,15 +11,18 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.IntakeConstants.*;
 
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT);
-  private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT);
-  private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT);
+  private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT, Constants.CANIVORE_NAME);
+  private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT, Constants.CANIVORE_NAME);
+  private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT, Constants.CANIVORE_NAME);
+
+
   
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
@@ -41,6 +44,10 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     intakeMotor.setInverted(INTAKE_INVERSE);
+
+    indexerLeftMotor.clearStickyFaults();
+    indexerRightMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
   }
 
   @Override

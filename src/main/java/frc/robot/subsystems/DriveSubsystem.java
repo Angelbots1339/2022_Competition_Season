@@ -19,9 +19,13 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import static frc.robot.Constants.DriveConstants.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+
+import org.w3c.dom.events.MouseEvent;
 
 import java.util.function.DoubleSupplier;
 
@@ -100,8 +104,10 @@ public class DriveSubsystem extends SubsystemBase {
     double slewOutput;
     if(Math.abs(currentPercentage) > previousPercentage) { // Speeding up, incitive slew limier
       slewOutput = incitiveFwdFilter.calculate(currentPercentage);
+      suppresiveFwdFilter.calculate(currentPercentage);
     } else { // Slowing down , supressive slew limiter
       slewOutput = suppresiveFwdFilter.calculate(currentPercentage);
+      incitiveFwdFilter.calculate(currentPercentage);
     }
     drive.arcadeDrive(slewOutput, rot.getAsDouble());
     SmartDashboard.putNumber("Filter", slewOutput);
@@ -211,14 +217,16 @@ public class DriveSubsystem extends SubsystemBase {
    * Moves all the ugly instantiation out of the way.
    */
   private void constructorHelper() {
-    leftMotorTop = new WPI_TalonFX(LEFT_MOTOR_TOP_PORT);
-    rightMotorTop = new WPI_TalonFX(RIGHT_MOTOR_TOP_PORT);
+    leftMotorTop = new WPI_TalonFX(LEFT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
+    leftMotorTop.clearStickyFaults();
+    rightMotorTop = new WPI_TalonFX(RIGHT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
+    rightMotorTop.clearStickyFaults();
 
     leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
-        new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT), new WPI_TalonFX(LEFT_MOTOR_BACK_PORT) });
+        clearStickyFault(new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), clearStickyFault(new WPI_TalonFX(LEFT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME)) });
 
     rightMotorControllerGroup = new MotorControllerGroup(new MotorController[] { rightMotorTop,
-        new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT), new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT) });
+        clearStickyFault(new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), clearStickyFault(new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME) )});
 
     drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
 
@@ -232,6 +240,11 @@ public class DriveSubsystem extends SubsystemBase {
     driveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 
     gyro = new AHRS();
+  }
+
+  private WPI_TalonFX clearStickyFault(WPI_TalonFX motor) {
+    motor.clearStickyFaults();
+    return motor;
   }
 
   public void resetPose2D(Pose2d pose) {
