@@ -185,7 +185,11 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KP = 0.0;
+        public final static double POWER_WHEEL_KP = 0.25998;
+        public final static double POWER_WHEEL_KS = 0.88817;
+        public final static double POWER_WHEEL_KV = 0.11587;
+        public final static double POWER_WHEEL_KA = 0.0063216;
+
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
         public final static double AIM_WHEEL_KP = 0.0;
@@ -196,7 +200,6 @@ public final class Constants {
         public final static double POWER_WHEEL_TOLERANCE = 50;
 
         
-
         public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
         public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
 
