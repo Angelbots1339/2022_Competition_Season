@@ -114,16 +114,14 @@ public class RobotContainer {
     DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
     
-    ManualArms manualArms = new ManualArms(climbingSubsystem, extension, rotation);
-    climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
+    climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, rotation));
 
     // Right Menu to toggle between driving and climbing
     // TODO Fix not being able to raise arms while driving
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
 
-    // Start climb when left menu is pressed. Continue climbing while X is held
-    BooleanSupplier proceed = () -> joystick.getRawButtonPressed(BUTTON_X);
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).whenPressed(new AutoClimb(climbingSubsystem, proceed));
+    // Start auto climb when X button pressed, and release to stop.
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).whileActiveOnce(new AutoClimb(climbingSubsystem));
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
