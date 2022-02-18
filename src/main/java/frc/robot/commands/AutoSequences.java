@@ -38,7 +38,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
           FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1Meter"),
           new RunIntake(intakeSubsystem, loaderSubsystem)
         ),
-        new InstantCommand(null, intakeSubsystem, loaderSubsystem),
         new ParallelDeadlineGroup(
           new WaitCommand(2),
           new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)
