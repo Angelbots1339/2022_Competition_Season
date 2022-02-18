@@ -8,9 +8,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -22,8 +20,6 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends RamseteCommand {
 
-    private static DifferentialDriveVoltageConstraint voltageConstraint;
-    private final SimpleMotorFeedforward simpleMotorFeedforward;
     private Trajectory trajectory;
 
     /**
@@ -44,12 +40,7 @@ public class FollowTrajectory extends RamseteCommand {
         
 
         addRequirements(driveSubsystem);
-        simpleMotorFeedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV, DriveConstants.KA);
-        // Constrain the max voltage to 10
-        voltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
-                DriveConstants.DRIVE_KINEMATICS, 10);
-        
-
+        new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV, DriveConstants.KA);    
         this.trajectory = trajectory;
     }
 

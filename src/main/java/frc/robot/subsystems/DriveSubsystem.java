@@ -25,8 +25,6 @@ import static frc.robot.Constants.DriveConstants.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
-import org.w3c.dom.events.MouseEvent;
-
 import java.util.function.DoubleSupplier;
 
 /** Add your docs here. */
@@ -49,8 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DifferentialDrive drive;
   private DifferentialDriveOdometry driveOdometry;
-  private SlewRateLimiter suppresiveFwdFilter = new SlewRateLimiter(2);
-  private SlewRateLimiter incitiveFwdFilter = new SlewRateLimiter(3);
+  private SlewRateLimiter decelFilter = new SlewRateLimiter(2);
+  private SlewRateLimiter accelFilter = new SlewRateLimiter(3);
   private double previousPercentage = 0;
 
   // Gyro
@@ -102,12 +100,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void arcadeDrive(DoubleSupplier fwd, DoubleSupplier rot){
     double currentPercentage = fwd.getAsDouble();
     double slewOutput;
-    if(Math.abs(currentPercentage) > previousPercentage) { // Speeding up, incitive slew limier
-      slewOutput = incitiveFwdFilter.calculate(currentPercentage);
-      suppresiveFwdFilter.calculate(currentPercentage);
-    } else { // Slowing down , supressive slew limiter
-      slewOutput = suppresiveFwdFilter.calculate(currentPercentage);
-      incitiveFwdFilter.calculate(currentPercentage);
+    if(Math.abs(currentPercentage) > previousPercentage) { // Speeding up, use acceleration slew limier
+      slewOutput = accelFilter.calculate(currentPercentage);
+      decelFilter.calculate(currentPercentage);
+    } else { // Slowing down, use deceleration slew limiter
+      slewOutput = decelFilter.calculate(currentPercentage);
+      accelFilter.calculate(currentPercentage);
     }
     drive.arcadeDrive(slewOutput, rot.getAsDouble());
     SmartDashboard.putNumber("Filter", slewOutput);

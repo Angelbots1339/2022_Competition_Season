@@ -8,7 +8,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -19,12 +18,12 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.FollowTrajectorySequence;
+import frc.robot.commands.AutoSequences;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
-import frc.robot.commands.climber.GoToBar;
+import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -32,13 +31,12 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.utils.ShooterProfiles;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import static frc.robot.Constants.JoystickConstants.*;
-import frc.robot.Constants.ClimberConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -51,11 +49,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   //Subsystems 
-  private final DriveSubsystem driveSubsystem =  new DriveSubsystem();
-  private final IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
-  private final ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
+  private final static DriveSubsystem driveSubsystem =  new DriveSubsystem();
+  private final static IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
+  private final static ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
+  private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
+
+  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem, shooterSubsystem);
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
 
@@ -63,15 +63,7 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
-  private NetworkTableEntry powerShootSpeed = tab.add("Front Power Shoot Speed", 0)
-      .getEntry();
-  private NetworkTableEntry aimShootSpeed = tab.add("Front Aim Shoot Speed", 0)
-      .getEntry();
-    
-
-  private boolean isDriveReversed;
-  private ShooterProfiles testProfiles;
-
+  private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -80,11 +72,6 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
-    tab.addNumber("Power Wheel Rpm", () -> shooterSubsystem.getPowerRPM());
-    tab.addNumber("Aim Wheel Rpm", () -> shooterSubsystem.getAimRPM());
-    
-
-    
   }
 
   public void resetOdometry() {
@@ -96,13 +83,12 @@ public class RobotContainer {
    */
   public void addAutoCommands() {
     // Sequence
-    autoChooser.setDefaultOption("AutoTestPathWeever", new FollowTrajectorySequence(driveSubsystem));
+    autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
 
     // Single
     autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
     autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
     autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
-
     
     SmartDashboard.putData(autoChooser);
   }
@@ -115,29 +101,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Invert drive when using rear camera
-
-    
     DoubleSupplier fwd = () -> (isDriveReversed? -1 : 1) * joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX()  * DriveConstants.ROT_SCALE;
+
+    // Set drive default command to left Y (speed) right x (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Feed drive watchdog when idle
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
-    // Bind extension to left axis, rotation to right axis
 
+    // Bind extension to left axis, rotation to right axis
     DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
-    BooleanSupplier proceed = () -> joystick.getRawButtonPressed(LEFT_MENU_BUTTON);
-
-    // Right Menu to toggle between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
     
     ManualArms manualArms = new ManualArms(climbingSubsystem, extension, rotation);
-
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
-    
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).whenPressed(new GoToBar(climbingSubsystem, manualArms, proceed));
+    // Right Menu to toggle between driving and climbing
+    // TODO Fix not being able to raise arms while driving
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
+
+    // Start climb when left menu is pressed. Continue climbing while X is held
+    BooleanSupplier proceed = () -> joystick.getRawButtonPressed(BUTTON_X);
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).whenPressed(new AutoClimb(climbingSubsystem, proceed));
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
