@@ -79,6 +79,13 @@ public class RobotContainer {
   }
 
   /**
+   * Call in teleop init
+   */
+  public void resetArms() {
+    climbingSubsystem.reset();
+  }
+
+  /**
    * Populate auto chooser in SmartDashboard with auto commands
    */
   public void addAutoCommands() {
@@ -114,14 +121,14 @@ public class RobotContainer {
     DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
     
-    climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, rotation));
+    climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
     // Right Menu to toggle between driving and climbing
     // TODO Fix not being able to raise arms while driving
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
 
-    // Start auto climb when X button pressed, and release to stop.
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).whileActiveOnce(new AutoClimb(climbingSubsystem));
+    // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).whileActiveOnce(new AutoClimb(climbingSubsystem, () -> joystick.getXButton()));
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
@@ -162,6 +169,10 @@ public class RobotContainer {
 
   public void printColorSensor() {
     SmartDashboard.putBoolean("Color Sensor Tripped", intakeSubsystem.isBallLow());
+  }
+
+  public void testModeRunArms() {
+    climbingSubsystem.setExtensionVolts(-joystick.getRightY() / 4);
   }
 
 }

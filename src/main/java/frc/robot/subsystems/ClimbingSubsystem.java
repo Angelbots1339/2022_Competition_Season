@@ -43,10 +43,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
         log();
 
-        extenderLeftMotor.clearStickyFaults();
-        extenderRightMotor.clearStickyFaults();
-        rotatorLeftMotor.clearStickyFaults();
-        rotatorRightMotor.clearStickyFaults();
+        // extenderLeftMotor.clearStickyFaults();
+        // extenderRightMotor.clearStickyFaults();
+        // rotatorLeftMotor.clearStickyFaults();
+        // rotatorRightMotor.clearStickyFaults();
 
     }
 
@@ -72,6 +72,16 @@ public class ClimbingSubsystem extends SubsystemBase {
     
 
     // Setters
+
+    /**
+     * Resets rotation/extension to 0
+     */
+    public void reset() {
+        extenderLeftMotor.setSelectedSensorPosition(0);
+        extenderRightMotor.setSelectedSensorPosition(0);
+        rotatorRightMotor.setSelectedSensorPosition(0);
+        rotatorLeftMotor.setSelectedSensorPosition(0);
+    }
     
     /**
      * Sets both extension to the same voltage.

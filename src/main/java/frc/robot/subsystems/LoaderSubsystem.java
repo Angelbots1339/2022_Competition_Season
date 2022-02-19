@@ -21,7 +21,7 @@ public class LoaderSubsystem extends SubsystemBase {
     //loaderMotor.configFactoryDefault();
     loaderMotor.setInverted(LOADER_INVERSE);
     loaderMotor.setNeutralMode(NeutralMode.Brake);
-    loaderMotor.clearStickyFaults();
+    // loaderMotor.clearStickyFaults();
   }
 
   @Override

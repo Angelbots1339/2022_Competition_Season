@@ -111,7 +111,7 @@ public final class Constants {
         public final static int INDEXER_RIGHT_PORT = 9; // 9
         public final static int INDEXER_LEFT_PORT = 8; // 8
         public final static double MAX_INDEXER_PERCENT = 0.5;
-        public final static double MAX_INTAKE_PERCENT = 0.6;        
+        public final static double MAX_INTAKE_PERCENT = 1;        
 
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;

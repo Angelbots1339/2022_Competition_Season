@@ -45,9 +45,9 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     intakeMotor.setInverted(INTAKE_INVERSE);
 
-    indexerLeftMotor.clearStickyFaults();
-    indexerRightMotor.clearStickyFaults();
-    intakeMotor.clearStickyFaults();
+    // indexerLeftMotor.clearStickyFaults();
+    // indexerRightMotor.clearStickyFaults();
+    // intakeMotor.clearStickyFaults();
   }
 
   @Override

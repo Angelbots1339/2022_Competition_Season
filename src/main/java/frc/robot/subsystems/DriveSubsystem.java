@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.*;
+
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -216,15 +218,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   private void constructorHelper() {
     leftMotorTop = new WPI_TalonFX(LEFT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
-    leftMotorTop.clearStickyFaults();
+    // leftMotorTop.clearStickyFaults();
     rightMotorTop = new WPI_TalonFX(RIGHT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
-    rightMotorTop.clearStickyFaults();
+    // rightMotorTop.clearStickyFaults();
 
     leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
-        clearStickyFault(new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), clearStickyFault(new WPI_TalonFX(LEFT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME)) });
+        updateGeneralStatusFrame(new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), updateGeneralStatusFrame(new WPI_TalonFX(LEFT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME)) });
 
     rightMotorControllerGroup = new MotorControllerGroup(new MotorController[] { rightMotorTop,
-        clearStickyFault(new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), clearStickyFault(new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME) )});
+        updateGeneralStatusFrame(new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), updateGeneralStatusFrame(new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME) )});
 
     drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
 
@@ -240,8 +242,8 @@ public class DriveSubsystem extends SubsystemBase {
     gyro = new AHRS();
   }
 
-  private WPI_TalonFX clearStickyFault(WPI_TalonFX motor) {
-    motor.clearStickyFaults();
+  private WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
+    motor.setStatusFramePeriod(StatusFrame.Status_1_General, 50);
     return motor;
   }
 

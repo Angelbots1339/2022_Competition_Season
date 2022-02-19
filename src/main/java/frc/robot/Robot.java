@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
     }
 
     robotContainer.resetOdometry();
+    robotContainer.resetArms();
   }
 
   /** This function is called periodically during operator control. */
@@ -100,5 +101,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    robotContainer.testModeRunArms();
+  }
 }

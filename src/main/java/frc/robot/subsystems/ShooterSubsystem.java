@@ -44,9 +44,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    powerWheelLeft.clearStickyFaults();
-    powerWheelRight.clearStickyFaults();
-    aimWheel.clearStickyFaults();
+    // powerWheelLeft.clearStickyFaults();
+    // powerWheelRight.clearStickyFaults();
+    // aimWheel.clearStickyFaults();
 
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
