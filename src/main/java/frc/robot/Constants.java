@@ -31,9 +31,6 @@ public final class Constants {
          public final static int mainJoystick = 0;
          //public final static int secondaryJoystick = 0; //This is optional
 
-
-    
-
         public final static int BUTTON_A = 1;
         public final static int BUTTON_B = 2;
         public final static int BUTTON_X = 3;
@@ -56,6 +53,7 @@ public final class Constants {
     public final static class DriveConstants{
         //general 
         public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
+        public final static boolean USE_LIMELIGHT_FIRST = false;
 
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
@@ -95,8 +93,6 @@ public final class Constants {
         public final static double KV = 2.4483;  // Volts * Seconds / Meters 
         public final static double KA = 0.6174; // Volts * Seconds^2 / Meters
 
-        
-
         //Ramsete
         public final static double KB = 2;
         public final static double ZETA = 0.7;
@@ -123,9 +119,6 @@ public final class Constants {
         public final static boolean INTAKE_INVERSE = false;
 
         public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 to 2047
-
-        
-
     }
     public static final class LoaderConstants{
         public final static int LOADER_PORT = 10; // 10
@@ -148,38 +141,32 @@ public final class Constants {
         public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
+        // TODO New hard & soft stops (Ask about frame perimeter limit while climbing)
         public static final double EXTENDER_TOP_LIMIT = 0.8;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
         public final static double ROTATOR_FRONT_LIMIT_DEG = 20; //20
-
 
         public final static double MAX_ROTATOR_VOLTS = 3;
         public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_ROTATOR_SPEED = .5; // m/s
         public final static double MAX_EXTENDER_SPEED = .5; // m/s
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
+        public final static double ROTATION_SETPOINT_THRESHOLD = .5; // deg
 
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
-        
 
         public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         public static final double AUTO_ROTATION_SETPOINT = 21.76;
-
-
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
             //return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT / MOTOR_ROT_PER_ARM_ROT * 360, 360);
-
         }
-
-
-
     }
 
     public final static class ShooterConstants {
@@ -187,11 +174,11 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KP = 0.25998;
         public final static double POWER_WHEEL_KS = 0.88817;
         public final static double POWER_WHEEL_KV = 0.11587;
         public final static double POWER_WHEEL_KA = 0.0063216;
 
+        public final static double POWER_WHEEL_KP = 0.25998;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
         public final static double AIM_WHEEL_KP = 0.0;
@@ -200,7 +187,6 @@ public final class Constants {
 
         public final static double AIM_WHEEL_TOLERANCE = 50;
         public final static double POWER_WHEEL_TOLERANCE = 50;
-
         
         public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
         public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
@@ -215,7 +201,6 @@ public final class Constants {
 
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900, () -> .43, () -> .53);
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520, () -> .28, () -> .3);
-
     }
 
     public final static class MultiplexerConstants {
@@ -271,7 +256,5 @@ public final class Constants {
             }
         }
     }
-
-    
 }
 

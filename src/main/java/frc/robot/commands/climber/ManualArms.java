@@ -4,7 +4,6 @@
 
 package frc.robot.commands.climber;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 
@@ -33,14 +32,14 @@ public class ManualArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climbingSubsystem.setExtensionSpeedSimpleVolts(extendVolts.getAsDouble());
+    climbingSubsystem.setExtensionVolts(extendVolts.getAsDouble());
     climbingSubsystem.setRotationVolts(rotateVolts.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climbingSubsystem.setExtensionSpeedSimpleVolts(0);
+    climbingSubsystem.setExtensionVolts(0);
     climbingSubsystem.setRotationVolts(0);
   }
 

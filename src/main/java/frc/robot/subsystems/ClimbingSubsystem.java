@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.ClimberConstants.*;
-
-import java.util.function.DoubleSupplier;
 
 public class ClimbingSubsystem extends SubsystemBase {
 
@@ -31,16 +28,8 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
-
-   
-
-    // Encoders
-    private Encoder rotatorLeftEncoder;
-    private Encoder rotatorRightEncoder;
-
     
-    private boolean autoClimberStarted;
-
+    private boolean autoClimbStarted = false;
 
     public ClimbingSubsystem() {
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
@@ -80,47 +69,22 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.add(this);
     }
 
-    // Getters
-    public double getRightLength() {
-        return extenderRightMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
-    }
-
-    public double getLeftLength() {
-        return extenderLeftMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
-    }
-
-    public double getRightAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorRightMotor.getSelectedSensorPosition());
-    }
-
-    public double getLeftAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorLeftMotor.getSelectedSensorPosition());
-    }
-
-    public boolean isLeftAtLimit() {
-        return !debouncerLeft.calculate(rotatorLeftLimit.get());
-    }
-
-    public boolean isRightAtLimit() {
-        return !debouncerRight.calculate(rotatorRightLimit.get());
-    }
+    
 
     // Setters
-    /**
-     * @param volts
-     */
     
-    public void setExtensionSpeedSimpleVolts(double volts){
-        SmartDashboard.putNumber("SimpleVoltInput", volts);
+    /**
+     * Sets both extension to the same voltage.
+     * @param volts Input voltage (will be clamped)
+     */
+    public void setExtensionVolts(double volts){
         setLeftExtensionVolts(volts);
         setRightExtensionVolts(volts);
     }
-    public void setExtensionSpeedSimpleVolts(DoubleSupplier volts) {
-        setExtensionSpeedSimpleVolts(volts.getAsDouble());
-    }
 
     /**
-     * @param volts
+     * Sets both rotation to the same voltage.
+     * @param volts Input voltage (will be clamped)
      */
     public void setRotationVolts(double volts) {
         setLeftRotationVolts(volts);
@@ -128,8 +92,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Clamps voltage
-     * @param volts
+     * @param volts Input voltage (will be clamped)
      */
     public void setLeftRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
@@ -137,24 +100,27 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     /**
-     * Clamps voltage
-     * @param volts
+     * @param volts Input voltage (will be clamped)
      */
     public void setRightRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightAtLimit()));
     }
 
+    /**
+     * @param volts Input voltage (will be clamped)
+     */
     public void setRightExtensionVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
         extenderRightMotor.setVoltage(checkBoundsExtensions(volts, getRightLength()));
     }
 
+    /** 
+     * @param volts Input voltage (will be clamped)
+     */
     public void setLeftExtensionVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_EXTENDER_VOLTS, MAX_EXTENDER_VOLTS);
-        SmartDashboard.putNumber("left Clamped Volts", volts);
         extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
-        SmartDashboard.putNumber("left Bounded Volts", checkBoundsExtensions(volts, getLeftLength()));
     }
 
     /**
@@ -177,6 +143,8 @@ public class ClimbingSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("ElevatorBoundsTripped", false);
         return 0;
     }
+    
+    // Getters
 
     /**
      * Checks if the left rotator is at max positions, and which direction it is
@@ -200,10 +168,34 @@ public class ClimbingSubsystem extends SubsystemBase {
         return 0;
     }
 
-    public boolean getAutoClimbStarted(){
+    public boolean isAutoClimbStarted(){
+        // TODO: This is a getter, should not be editing variables.
+        // autoClimberStarted = !autoClimberStarted;
+        return autoClimbStarted;
 
-        autoClimberStarted = !autoClimberStarted;
-        return autoClimberStarted;
+    }
 
+    public double getRightLength() {
+        return extenderRightMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
+    }
+
+    public double getLeftLength() {
+        return extenderLeftMotor.getSelectedSensorPosition() * LENGTH_PER_CLICK;
+    }
+
+    public double getRightAngle() {
+        return GET_DEGREES_FROM_CLICKS(rotatorRightMotor.getSelectedSensorPosition());
+    }
+
+    public double getLeftAngle() {
+        return GET_DEGREES_FROM_CLICKS(rotatorLeftMotor.getSelectedSensorPosition());
+    }
+
+    public boolean isLeftAtLimit() {
+        return !debouncerLeft.calculate(rotatorLeftLimit.get());
+    }
+
+    public boolean isRightAtLimit() {
+        return !debouncerRight.calculate(rotatorRightLimit.get());
     }
 }
