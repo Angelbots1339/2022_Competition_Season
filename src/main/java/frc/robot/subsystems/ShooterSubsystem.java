@@ -58,7 +58,6 @@ public class ShooterSubsystem extends SubsystemBase {
     tab.addNumber("Aim PID Out", () -> aimPID);
     tab.addNumber("Power PID Out", () -> powerPID);
     tab.addNumber("Power FeedForward Out", () -> powerPID);
-    tab.addNumber("Power FeedForward Out", () -> powerPID);
 
   }
 

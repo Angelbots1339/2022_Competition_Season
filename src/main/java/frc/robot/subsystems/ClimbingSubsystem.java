@@ -76,11 +76,13 @@ public class ClimbingSubsystem extends SubsystemBase {
     /**
      * Resets rotation/extension to 0
      */
-    public void reset() {
+    public void reset(boolean resetAngle) {
         extenderLeftMotor.setSelectedSensorPosition(0);
         extenderRightMotor.setSelectedSensorPosition(0);
-        rotatorRightMotor.setSelectedSensorPosition(0);
-        rotatorLeftMotor.setSelectedSensorPosition(0);
+        if(resetAngle) {
+            rotatorRightMotor.setSelectedSensorPosition(0);
+            rotatorLeftMotor.setSelectedSensorPosition(0);
+        }
     }
     
     /**
@@ -133,6 +135,15 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
     }
 
+    public void setTestVoltsExtender(double left, double right){
+        extenderRightMotor.set(right);
+        extenderLeftMotor.set(left);
+    }
+
+    public void setTestVoltsRotator(double left, double right) {
+        rotatorLeftMotor.set(left);
+        rotatorRightMotor.set(right);
+    }
     /**
      * Checks if the extender is at max positions, and which direction is is trying
      * to move

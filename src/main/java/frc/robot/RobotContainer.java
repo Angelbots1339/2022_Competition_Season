@@ -82,7 +82,7 @@ public class RobotContainer {
    * Call in teleop init
    */
   public void resetArms() {
-    climbingSubsystem.reset();
+    climbingSubsystem.reset(false);
   }
 
   /**
@@ -118,7 +118,7 @@ public class RobotContainer {
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
+    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS_RETRACT;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
     
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
@@ -128,7 +128,7 @@ public class RobotContainer {
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).whileActiveOnce(new AutoClimb(climbingSubsystem, () -> joystick.getXButton()));
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, driveSubsystem, () -> joystick.getXButton(), extension, rotation)).toggleWhenPressed(stopDrive);
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
@@ -172,7 +172,14 @@ public class RobotContainer {
   }
 
   public void testModeRunArms() {
-    climbingSubsystem.setExtensionVolts(-joystick.getRightY() / 4);
+    climbingSubsystem.setTestVoltsExtender(joystick.getLeftY() * 0.4, joystick.getRightY() *0.4);
+    climbingSubsystem.setTestVoltsRotator(-joystick.getLeftTriggerAxis() * 0.1, -joystick.getRightTriggerAxis() * 0.1);
+    if(joystick.getXButton()) {
+      climbingSubsystem.reset(false);
+    }
+    if(joystick.getBButton()) {
+      climbingSubsystem.reset(true);
+    }
   }
 
 }

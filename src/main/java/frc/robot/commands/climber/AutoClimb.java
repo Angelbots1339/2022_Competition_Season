@@ -1,42 +1,63 @@
 package frc.robot.commands.climber;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
+import org.w3c.dom.views.DocumentView;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import static frc.robot.Constants.ClimberConstants.*;
+
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
 
 public class AutoClimb extends SequentialCommandGroup{
 
     BooleanSupplier proceed;
+    ClimbingSubsystem climbingSubsystem;
+    DriveSubsystem driveSubsystem;
+    DoubleSupplier extendVolts, rotateVolts;
 
     /**
      * @param climbingSubsystem
      */
-    public AutoClimb(ClimbingSubsystem climbingSubsystem, BooleanSupplier proceed) {
+    public AutoClimb(ClimbingSubsystem climbingSubsystem, DriveSubsystem driveSubsystem, BooleanSupplier proceed, DoubleSupplier extendVolts, DoubleSupplier rotateVolts) {
+        this.climbingSubsystem = climbingSubsystem;
+        this.driveSubsystem = driveSubsystem;
         this.proceed = proceed;
+        this.rotateVolts = rotateVolts;
+        this.extendVolts = extendVolts;
+
         addRequirements(climbingSubsystem);
         addCommands(
 
             // First Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, AUTO_EXTENSION_SETPOINT, AUTO_ROTATION_SETPOINT),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 26),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, AUTO_EXTENSION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 15),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, EXTENDER_BOTTOM_LIMIT, ROTATOR_BACK_LIMIT_DEG),
+            new ArmsToSetpoints(climbingSubsystem, 0, 0),
             new WaitUntilCommand(proceed),
 
             // Second Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, AUTO_EXTENSION_SETPOINT, AUTO_ROTATION_SETPOINT),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 26),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, AUTO_EXTENSION_SETPOINT, ROTATOR_BACK_LIMIT_DEG),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 15),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, EXTENDER_BOTTOM_LIMIT, ROTATOR_BACK_LIMIT_DEG),
+            new ArmsToSetpoints(climbingSubsystem, 0, 0),
             new WaitUntilCommand(proceed)
         );
     }
+
+    // @Override
+    // public void end(boolean interrupted) {
+    //     CommandScheduler.getInstance().schedule(new ManualArms(climbingSubsystem, extendVolts, rotateVolts));
+    //     CommandScheduler.getInstance().schedule(new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem));
+    // }
 
 }

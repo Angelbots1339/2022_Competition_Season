@@ -1,9 +1,14 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism",
-    "AnalyzerJSONLocation": "C:\\Users\\AngelBots\\Desktop\\sysid_data20220215-193201.json",
+    "Analysis Type": "Drivetrain",
+    "AnalyzerJSONLocation": "C:\\Users\\AngelBots\\Desktop\\2022CompBot\\2022_Competition_Season\\characterization\\DriveTrain\\sysid_data20220115-133726.json",
     "NetworkTables Settings": {
       "serverTeam": "1339"
+    },
+    "Program Log": {
+      "window": {
+        "visible": false
+      }
     },
     "mode": "Client",
     "serverTeam": "1339"

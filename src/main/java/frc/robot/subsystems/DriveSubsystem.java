@@ -243,7 +243,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   private WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
-    motor.setStatusFramePeriod(StatusFrame.Status_1_General, 50);
+    motor.setStatusFramePeriod(StatusFrame.Status_1_General, 255);
+    motor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 255);
     return motor;
   }
 

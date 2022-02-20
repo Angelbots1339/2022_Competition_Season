@@ -142,13 +142,14 @@ public final class Constants {
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
         // TODO New hard & soft stops (Ask about frame perimeter limit while climbing)
-        public static final double EXTENDER_TOP_LIMIT = 0.8;
+        public static final double EXTENDER_TOP_LIMIT = 0.70;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
-        public final static double ROTATOR_FRONT_LIMIT_DEG = 20; //20
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5; //20
 
-        public final static double MAX_ROTATOR_VOLTS = 3;
+        public final static double MAX_ROTATOR_VOLTS = 2;
         public final static double MAX_EXTENDER_VOLTS = 5;
+        public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
         public final static double MAX_ROTATOR_SPEED = .5; // m/s
         public final static double MAX_EXTENDER_SPEED = .5; // m/s
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
@@ -162,6 +163,7 @@ public final class Constants {
 
         public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         public static final double AUTO_ROTATION_SETPOINT = 21.76;
+        public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
