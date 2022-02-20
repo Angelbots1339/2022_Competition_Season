@@ -3,15 +3,8 @@ package frc.robot.commands.climber;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import org.w3c.dom.views.DocumentView;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import static frc.robot.Constants.ClimberConstants.*;
-
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 

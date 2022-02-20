@@ -32,7 +32,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
 
-  //TODO delete 
   private double aimPID = 0;
   private double powerPID = 0;
 

@@ -28,8 +28,6 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
-    
-    private boolean autoClimbStarted = false;
 
     public ClimbingSubsystem() {
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
@@ -187,13 +185,6 @@ public class ClimbingSubsystem extends SubsystemBase {
             return voltage;
         }
         return 0;
-    }
-
-    public boolean isAutoClimbStarted(){
-        // TODO: This is a getter, should not be editing variables.
-        // autoClimberStarted = !autoClimberStarted;
-        return autoClimbStarted;
-
     }
 
     public double getRightLength() {

@@ -12,11 +12,6 @@ import static frc.robot.Constants.ClimberConstants.*;
 
 public class ArmsToSetpoints extends CommandBase {
   private ClimbingSubsystem climbingSubsystem;
-  private double currentRightExtender = 0;
-  private double currentRightRotator = 0;
-  private double currentLeftExtender = 0;
-  private double currentLeftRotator = 0;
-
   private final double angleSetpoint;
   private final double lengthSetpoint;
 
