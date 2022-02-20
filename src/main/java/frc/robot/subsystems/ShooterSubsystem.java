@@ -25,8 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PIDController aimWheelPID = new PIDController(AIM_WHEEL_KP, AIM_WHEEL_KI, AIM_WHEEL_KD);
 
-  private SimpleMotorFeedforward powerWheelFF = new SimpleMotorFeedforward(POWER_KS, POWER_KV, POWER_KA);
-  private SimpleMotorFeedforward aimWheelFF = new SimpleMotorFeedforward(AIM_KS, AIM_KV, AIM_KA);
+  private SimpleMotorFeedforward powerWheelFF = new SimpleMotorFeedforward(POWER_WHEEL_KS, POWER_WHEEL_KV, POWER_WHEEL_KA);
+  private SimpleMotorFeedforward aimWheelFF = new SimpleMotorFeedforward(AIM_WHEEL_KS, AIM_WHEEL_KV, AIM_WHEEL_KA);
   
   //private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
 
@@ -61,8 +61,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -74,26 +72,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setPowerWheelRPM(double speed) {
     powerPID = powerWheelPID.calculate(getPowerRPM(), speed);
     double powerFeedForward = powerWheelFF.calculate(speed / 60);
-    
-    setPowerWheelPercentage(powerPID + powerFeedForward);
     powerWheelLeft.setVoltage(powerFeedForward + powerPID);
     powerWheelRight.setVoltage(powerFeedForward + powerPID);
-  }
-  public void setPowerWheelPercentage(double speed){
-
-      powerWheelLeft.set(speed);
-      powerWheelRight.set(speed);
   }
 
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
     double aimWheelFeedForward = aimWheelFF.calculate(speed / 60);
-
     aimWheel.set(aimPID + aimWheelFeedForward);
   }
-  public void setAimWheelPercentage(double speed) {
-    aimWheel.set(speed);
-  }
+
   /**
    * Disable all motors
    */
@@ -117,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return (powerWheelRight.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
   public double getAimRPM(){
-    return (aimWheel.getSelectedSensorVelocity()/CLICKS_PER_ROT) * 600;
+    return (aimWheel.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
 
 

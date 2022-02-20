@@ -108,7 +108,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Invert drive when using rear camera
-    DoubleSupplier fwd = () -> (isDriveReversed? -1 : 1) * joystick.getLeftY();
+    DoubleSupplier fwd = () -> (isDriveReversed? 1 : -1) * joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX()  * DriveConstants.ROT_SCALE;
 
     // Set drive default command to left Y (speed) right x (turn)

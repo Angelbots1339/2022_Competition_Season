@@ -49,10 +49,10 @@ public class ArmsToSetpoints extends CommandBase {
     // Stop individual movement once arms reach setpoints.
     // Restart movement if arms have moved out of setpoints.
     // Only call when changed to avoid high traffic.
-    double leftExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getLeftLength(), MAX_EXTENDER_VOLTS, EXTENDER_SETPOINT_THRESHOLD);
-    double rightExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getRightLength(), MAX_EXTENDER_VOLTS, EXTENDER_SETPOINT_THRESHOLD);
-    double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle(), MAX_ROTATOR_VOLTS, ROTATION_SETPOINT_THRESHOLD);
-    double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle(), MAX_ROTATOR_VOLTS, ROTATION_SETPOINT_THRESHOLD);
+    double leftExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getLeftLength());
+    double rightExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getRightLength());
+    double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle());
+    double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
     climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
     climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
     climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
@@ -61,18 +61,20 @@ public class ArmsToSetpoints extends CommandBase {
     SmartDashboard.putNumber("Auto Rotator Output", leftRotateDesired);
   }
 
-  private double rotatorDesiredOutput(double setpoint, double position, double maxOutput, double threshold) {
-    if(isWithinThreshold(setpoint, position, threshold)) return 0;
-    return maxOutput * Math.signum(setpoint - position);
+  private double rotatorDesiredOutput(double setpoint, double position) {
+    if(isWithinThreshold(setpoint, position, ROTATION_SETPOINT_THRESHOLD)) return 0;
+    return MAX_ROTATOR_VOLTS * Math.signum(setpoint - position);
   }
 
-  private double extenderDesiredOutput(double setpoint, double position, double maxOutput, double threshold) {
-    if(isWithinThreshold(setpoint, position, threshold)) return 0;
-    if(Math.signum(setpoint-position) < 0){
-      return MAX_EXTENDER_VOLTS_RETRACT * Math.signum(setpoint - position);
-
+  private double extenderDesiredOutput(double setpoint, double position) {
+    if(isWithinThreshold(setpoint, position, EXTENDER_SETPOINT_THRESHOLD)) return 0;
+    double maxVoltage;
+    if(setpoint - position < 0){
+      maxVoltage = MAX_EXTENDER_VOLTS_RETRACT;
+    } else {
+      maxVoltage = MAX_EXTENDER_VOLTS;
     }
-    return MAX_EXTENDER_VOLTS * Math.signum(setpoint - position);
+    return maxVoltage * Math.signum(setpoint - position);
   }
 
   // Called once the command ends or is interrupted.

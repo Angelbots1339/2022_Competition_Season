@@ -45,11 +45,7 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // shooterSubsystem.setPowerWheelPercentage(shooterProfiles.getPowerPercentage());
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
-
-   // shooterSubsystem.setAimWheelPercentage(shooterProfiles.getAimPercentage());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
 
     if (shooterSubsystem.isAtSetpoint()) {
@@ -62,8 +58,7 @@ public class Shoot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     loaderSubsystem.runLoader(0);
-    shooterSubsystem.setPowerWheelPercentage(0);
-    shooterSubsystem.setAimWheelPercentage(0);
+    shooterSubsystem.disable();
     intakeSubsystem.runIndexerLow(0);
   }
 

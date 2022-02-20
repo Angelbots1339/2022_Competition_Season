@@ -28,9 +28,7 @@ public final class Constants {
 
     public final static class JoystickConstants{
 
-         public final static int mainJoystick = 0;
-         //public final static int secondaryJoystick = 0; //This is optional
-
+        public final static int mainJoystick = 0;
         public final static int BUTTON_A = 1;
         public final static int BUTTON_B = 2;
         public final static int BUTTON_X = 3;
@@ -41,11 +39,6 @@ public final class Constants {
         public final static int RIGHT_MENU_BUTTON = 8;
         public final static int LEFT_JOYSTICK_BUTTON = 9;
         public final static int RIGHT_JOYSTICK_BUTTON = 10;
-
-        public final static double JOYSTICK_THRESHOLD = .1;
-        
-        
-
     }
     /**
      * All length units in meters 
@@ -66,7 +59,7 @@ public final class Constants {
         
         //Drive base values
         public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
-        public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.8);
+        public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
         public final static double CLICKS_PER_ROT = 2048;
         public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
@@ -118,7 +111,7 @@ public final class Constants {
         
         public final static boolean INTAKE_INVERSE = false;
 
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 to 2047
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 (closest) to 2047 (furthest)
     }
     public static final class LoaderConstants{
         public final static int LOADER_PORT = 10; // 10
@@ -141,17 +134,14 @@ public final class Constants {
         public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
-        // TODO New hard & soft stops (Ask about frame perimeter limit while climbing)
         public static final double EXTENDER_TOP_LIMIT = 0.70;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
-        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5; //20
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5;
 
         public final static double MAX_ROTATOR_VOLTS = 2;
         public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
-        public final static double MAX_ROTATOR_SPEED = .5; // m/s
-        public final static double MAX_EXTENDER_SPEED = .5; // m/s
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = .5; // deg
 
@@ -179,11 +169,15 @@ public final class Constants {
         public final static double POWER_WHEEL_KS = 0.88817;
         public final static double POWER_WHEEL_KV = 0.11587;
         public final static double POWER_WHEEL_KA = 0.0063216;
+        public final static double AIM_WHEEL_KS = 0.0;
+        public final static double AIM_WHEEL_KV = 0.0;
+        public final static double AIM_WHEEL_KA = 0.0;
 
         public final static double POWER_WHEEL_KP = 0.25998;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-        public final static double AIM_WHEEL_KP = 0.0;
+
+        public final static double AIM_WHEEL_KP = 0.001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
@@ -192,14 +186,6 @@ public final class Constants {
         
         public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
         public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
-
-        public final static double POWER_KS = 0;
-        public final static double POWER_KV = 0;
-        public final static double POWER_KA = 0;
-
-        public final static double AIM_KS = 0;
-        public final static double AIM_KV = 0;
-        public final static double AIM_KA = 0;
 
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900, () -> .43, () -> .53);
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520, () -> .28, () -> .3);
