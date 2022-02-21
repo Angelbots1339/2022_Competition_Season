@@ -39,8 +39,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new WaitCommand(2),
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
 
-
-                
     // Shoots ball and drives past line
     this.add(
         "1 Ball",
@@ -49,8 +47,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1B")
 
         ));
-
-
 
     // Grabs second ball and shoots
     this.add(
@@ -66,8 +62,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
         ));
 
-
-
     // Grabs a different second ball and shoots
     this.add(
         "2 Ball Alt 1",
@@ -79,8 +73,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot1stSet"),
 
             new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)));
-
-
 
     // Grabs another different second ball and shoots
     this.add(
@@ -96,12 +88,13 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
         ));
 
-
-
     // Shoots first ball, grabs second and third, then shoots
     this.add(
         "3 Ball",
         new SequentialCommandGroup(
+
+            new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH),
+
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallGrab"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
@@ -111,8 +104,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)
 
         ));
-
-
 
     // Grabs second ball and shoots, then grabs third and fourth balls and shoots
     this.add(
@@ -132,11 +123,11 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot2ndSet"),
 
             new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)
-            
-            ));
 
+        ));
 
-    // Grabs second ball and shoots, then grabs third and a different fourth ball and shoots
+    // Grabs second ball and shoots, then grabs third and a different fourth ball
+    // and shoots
     this.add(
         "4 Ball Alt 1",
         new SequentialCommandGroup(
@@ -154,8 +145,34 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BAlt1Shoot2ndSet"),
 
             new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)
+
             
-            ));
+
+        ));
+
+    // Shoots first ball, grabs second and third, then shoots
+    this.add(
+        "4 Ball Alt 2",
+        new SequentialCommandGroup(
+
+            new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH),
+
+            new ParallelDeadlineGroup(
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallGrab"),
+                new RunIntake(intakeSubsystem, loaderSubsystem)),
+
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallShoot"),
+
+            new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH),
+
+            new ParallelDeadlineGroup(
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab2ndSet"),
+                new RunIntake(intakeSubsystem, loaderSubsystem)),
+
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot2ndSet"),
+
+            new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)
+        ));
 
   }
 
