@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -41,12 +42,14 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
     // Shoots ball and drives past line
     this.add(
-        "1 Ball",
-        new SequentialCommandGroup(
-            new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH),
-            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1B")
-
-        ));
+      "1 Ball",
+      new SequentialCommandGroup(
+        new ParallelDeadlineGroup(
+          FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1B"), 
+          new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)
+        )
+      )
+    );
 
     // Grabs second ball and shoots
     this.add(
