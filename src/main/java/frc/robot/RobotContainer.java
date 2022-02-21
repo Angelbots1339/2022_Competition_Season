@@ -143,19 +143,16 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
 
-    new JoystickButton(joystick, BUTTON_Y).whenHeld(new RunCommand(shooterSubsystem::testWheels, shooterSubsystem));
-    //new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
+   
+    new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
 
     // Shoot low when A button is pressed
 
-   // new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
+    new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
 
 
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new ejectBalls(intakeSubsystem, loaderSubsystem));
-
-
-   
   }
 
   /**

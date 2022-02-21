@@ -176,12 +176,14 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KF = 0.0;
-        public final static double POWER_WHEEL_KP = 0.25998;
+        public final static double POWER_WHEEL_KF = 0.00172528;
+        public final static double POWER_WHEEL_KB = 0.823253;
+        public final static double POWER_WHEEL_KP = 0.001;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
 
-        public final static double AIM_WHEEL_KF = 0.0;
+        public final static double AIM_WHEEL_KF = 0.00181965;
+        public final static double AIM_WHEEL_KB = 0.5523;
         public final static double AIM_WHEEL_KP = 0.001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
