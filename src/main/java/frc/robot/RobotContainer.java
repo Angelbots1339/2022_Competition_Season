@@ -173,8 +173,8 @@ public class RobotContainer {
   }
 
   public void testModeRunArms() {
-    climbingSubsystem.setTestVoltsExtender(joystick.getLeftY() * 0.4, joystick.getRightY() *0.4);
-    climbingSubsystem.setTestVoltsRotator(-joystick.getLeftTriggerAxis() * 0.1, -joystick.getRightTriggerAxis() * 0.1);
+    climbingSubsystem.setTestExtenderPercent(joystick.getLeftY() * 0.4, joystick.getRightY() *0.4);
+    climbingSubsystem.setTestRotatorPercent(-joystick.getLeftTriggerAxis() * 0.1, -joystick.getRightTriggerAxis() * 0.1);
     if(joystick.getXButton()) {
       climbingSubsystem.reset(false);
     }
