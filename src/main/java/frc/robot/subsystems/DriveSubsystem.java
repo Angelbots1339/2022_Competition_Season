@@ -49,8 +49,8 @@ public class DriveSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DifferentialDrive drive;
   private DifferentialDriveOdometry driveOdometry;
-  private SlewRateLimiter decelFilter = new SlewRateLimiter(2);
-  private SlewRateLimiter accelFilter = new SlewRateLimiter(3);
+  private SlewRateLimiter decelFilter = new SlewRateLimiter(DECELERATION_SLEW_RATE_LIMITER);
+  private SlewRateLimiter accelFilter = new SlewRateLimiter(ACCELERATION_SLEW_RATE_LIMITER);
   private double previousPercentage = 0;
 
   // Gyro
@@ -87,8 +87,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
     field2d.setRobotPose(pose);
-    SmartDashboard.putNumber("Rotations", rightMotorTop.getSelectedSensorPosition() / 2048 / 6.67);
-    SmartDashboard.putNumber("Clicks", rightMotorTop.getSelectedSensorPosition());
   }
 
   /**
@@ -110,8 +108,6 @@ public class DriveSubsystem extends SubsystemBase {
       accelFilter.calculate(currentPercentage);
     }
     drive.arcadeDrive(slewOutput, rot.getAsDouble());
-    SmartDashboard.putNumber("Filter", slewOutput);
-    SmartDashboard.putNumber("Drive ", fwd.getAsDouble());
     previousPercentage = Math.abs(currentPercentage);
   }
 
@@ -194,6 +190,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   // --- Setters ---
+
+
+  public void disable(){
+    tankDriveVolts(0, 0);
+  }
 
   private void resetEncoders() {
     leftMotorTop.setSelectedSensorPosition(0);

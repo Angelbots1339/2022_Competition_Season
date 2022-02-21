@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +15,8 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
+
+import java.util.function.DoubleSupplier;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -25,12 +28,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PIDController aimWheelPID = new PIDController(AIM_WHEEL_KP, AIM_WHEEL_KI, AIM_WHEEL_KD);
 
-  private SimpleMotorFeedforward powerWheelFF = new SimpleMotorFeedforward(POWER_WHEEL_KS, POWER_WHEEL_KV, POWER_WHEEL_KA);
-  private SimpleMotorFeedforward aimWheelFF = new SimpleMotorFeedforward(AIM_WHEEL_KS, AIM_WHEEL_KV, AIM_WHEEL_KA);
-  
   //private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
 
   private ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
+
+  private NetworkTableEntry powerPresentsTest = tab.add("Power Presents Test", 0)
+      .getEntry();
+  private NetworkTableEntry aimPercentTest = tab.add("Aim Percent Test", 0)
+      .getEntry();
 
   private double aimPID = 0;
   private double powerPID = 0;
@@ -52,11 +57,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     tab.add(aimWheelPID);
     tab.add(powerWheelPID);
+
     tab.addNumber("Aim Wheel Speed", () -> getAimRPM());
     tab.addNumber("Power Wheel Speed", () -> getPowerRPM());
+
     tab.addNumber("Aim PID Out", () -> aimPID);
     tab.addNumber("Power PID Out", () -> powerPID);
-    tab.addNumber("Power FeedForward Out", () -> powerPID);
+
+
 
   }
 
@@ -70,15 +78,21 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setPowerWheelRPM(double speed) {
     powerPID = powerWheelPID.calculate(getPowerRPM(), speed);
-    double powerFeedForward = powerWheelFF.calculate(speed / 60);
+    double powerFeedForward = speed * POWER_WHEEL_KF;
     powerWheelLeft.setVoltage(powerFeedForward + powerPID);
     powerWheelRight.setVoltage(powerFeedForward + powerPID);
   }
 
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
-    double aimWheelFeedForward = aimWheelFF.calculate(speed / 60);
+    double aimWheelFeedForward = speed * AIM_WHEEL_KF;
     aimWheel.set(aimPID + aimWheelFeedForward);
+  }
+  public void testWheels(){
+
+    aimWheel.set(aimPercentTest.getDouble(0));
+    powerWheelLeft.set(powerPresentsTest.getDouble(0));
+    powerWheelRight.set(powerPresentsTest.getDouble(0));
   }
 
   /**
@@ -93,9 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
   //GET
 
   public boolean isAtSetpoint() {
-    
-    SmartDashboard.putBoolean("Power at Setpoing", powerWheelPID.atSetpoint());
-    SmartDashboard.putBoolean("Aim at Setpoint", aimWheelPID.atSetpoint());
+
     return powerWheelPID.atSetpoint() && aimWheelPID.atSetpoint();
 
   }

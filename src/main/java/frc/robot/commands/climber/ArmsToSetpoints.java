@@ -52,8 +52,6 @@ public class ArmsToSetpoints extends CommandBase {
     climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
     climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
     climbingSubsystem.setRightRotationVolts(rightRotateDesired);
-    SmartDashboard.putNumber("Auto Extend Output", leftExtendDesired);
-    SmartDashboard.putNumber("Auto Rotator Output", leftRotateDesired);
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {

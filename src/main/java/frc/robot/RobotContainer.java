@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -55,11 +56,13 @@ public class RobotContainer {
 
   private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem, shooterSubsystem);
 
-  private final XboxController joystick = new XboxController(Constants.JoystickConstants.mainJoystick);
+  private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
+
+ 
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
@@ -70,6 +73,7 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
+    
   }
 
   public void resetOdometry() {
@@ -95,8 +99,11 @@ public class RobotContainer {
     autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
     autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
     
-    SmartDashboard.putData(autoChooser);
+    tab.add(autoChooser);
   }
+
+
+ 
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -136,11 +143,12 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
 
-    new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
+    new JoystickButton(joystick, BUTTON_Y).whenHeld(new RunCommand(shooterSubsystem::testWheels, shooterSubsystem));
+    //new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH));
 
     // Shoot low when A button is pressed
 
-    new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
+   // new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW));
 
 
     // Run reverse intake when right bumper is pressed
@@ -160,12 +168,8 @@ public class RobotContainer {
     System.out.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
-    return autoChooser.getSelected().andThen(() -> driveSubsystem.tankDriveVolts(0.0, 0.0));
+    return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
     
-  }
-
-  public void printColorSensor() {
-    SmartDashboard.putBoolean("Color Sensor Tripped", intakeSubsystem.isBallLow());
   }
 
   public void testModeRunArms() {

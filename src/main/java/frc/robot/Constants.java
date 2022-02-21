@@ -28,7 +28,7 @@ public final class Constants {
 
     public final static class JoystickConstants{
 
-        public final static int mainJoystick = 0;
+        public final static int MAIN_JOYSTICK = 0;
         public final static int BUTTON_A = 1;
         public final static int BUTTON_B = 2;
         public final static int BUTTON_X = 3;
@@ -47,6 +47,7 @@ public final class Constants {
         //general 
         public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
         public final static boolean USE_LIMELIGHT_FIRST = false;
+        public final static double ROT_SCALE = 0.65;
 
         //Motor ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
@@ -55,7 +56,7 @@ public final class Constants {
         public final static int RIGHT_MOTOR_TOP_PORT = 5; 
         public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
         public final static int RIGHT_MOTOR_BACK_PORT = 6; 
-        public final static double ROT_SCALE = 0.65;
+        
         
         //Drive base values
         public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
@@ -68,6 +69,11 @@ public final class Constants {
         public final static double CLICKS_TO_METERS = 1 / CLICKS_PER_ROT
                 * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER_METERS * Math.PI;
         public final static boolean GYRO_INVERTED = true;
+
+
+        //Slew Rate Limiters
+        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; //max speed percent change per second
+        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; //max speed percent change per second
 
         /* Checking robot kinematics:
         Origin of the robot is the center of rotation when leftVelocity = -rightVelocity
@@ -136,6 +142,7 @@ public final class Constants {
 
         public static final double EXTENDER_TOP_LIMIT = 0.70;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
+
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
         public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5;
 
@@ -157,7 +164,6 @@ public final class Constants {
         
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
-            //return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT / MOTOR_ROT_PER_ARM_ROT * 360, 360);
         }
 
         public final static int LEFT_ENCODER_PORT = 0; 
@@ -170,17 +176,12 @@ public final class Constants {
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
-        public final static double POWER_WHEEL_KS = 0.88817;
-        public final static double POWER_WHEEL_KV = 0.11587;
-        public final static double POWER_WHEEL_KA = 0.0063216;
-        public final static double AIM_WHEEL_KS = 0.0;
-        public final static double AIM_WHEEL_KV = 0.0;
-        public final static double AIM_WHEEL_KA = 0.0;
-
+        public final static double POWER_WHEEL_KF = 0.0;
         public final static double POWER_WHEEL_KP = 0.25998;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
 
+        public final static double AIM_WHEEL_KF = 0.0;
         public final static double AIM_WHEEL_KP = 0.001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
