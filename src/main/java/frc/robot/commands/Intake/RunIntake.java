@@ -40,10 +40,8 @@ public class RunIntake extends CommandBase {
 
     if(!intakeSubsystem.isBallLow()) {
       loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
-      SmartDashboard.putBoolean("Ball at color sensor", false);
     }
     else{
-      SmartDashboard.putBoolean("Ball at color sensor", true);
       loaderSubsystem.runLoader(0);
     }
 

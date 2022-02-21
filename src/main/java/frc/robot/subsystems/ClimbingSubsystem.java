@@ -155,11 +155,9 @@ public class ClimbingSubsystem extends SubsystemBase {
         
         if ((currentPos <= EXTENDER_TOP_LIMIT && voltage > 0) || // Current position below top 
                 (currentPos >= EXTENDER_BOTTOM_LIMIT && voltage < 0)) {
-            SmartDashboard.putBoolean("ElevatorBoundsTripped", true);
             return voltage;
 
         }
-        SmartDashboard.putBoolean("ElevatorBoundsTripped", false);
         return 0;
     }
     
