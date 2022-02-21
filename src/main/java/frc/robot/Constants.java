@@ -166,8 +166,8 @@ public final class Constants {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
         }
 
-        public final static int LEFT_ENCODER_PORT = 0; 
-        public final static int RIGHT_ENCODER_PORT = 0; 
+        public final static int LEFT_ENCODER_PORT = 5; 
+        public final static int RIGHT_ENCODER_PORT = 4; 
 
     }
 
@@ -202,6 +202,12 @@ public final class Constants {
 
         public static final byte DEFAULT_ADDRESS = 0x70;
         public static final Port DEFAULT_PORT = Port.kMXP;
+    }
+
+    public final static class AutoConstants {
+
+        public static final double SHOOT_TIME = 1;
+
     }
     public final static class LimelightConstants{
         public static enum entryType{

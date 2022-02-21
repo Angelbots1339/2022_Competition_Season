@@ -90,9 +90,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   public void testWheels(){
 
-    aimWheel.set(aimPercentTest.getDouble(0));
-    powerWheelLeft.set(powerPresentsTest.getDouble(0));
-    powerWheelRight.set(powerPresentsTest.getDouble(0));
+    aimWheel.setVoltage(aimPercentTest.getDouble(0));
+    powerWheelLeft.setVoltage(powerPresentsTest.getDouble(0));
+    powerWheelRight.setVoltage(powerPresentsTest.getDouble(0));
   }
 
   /**

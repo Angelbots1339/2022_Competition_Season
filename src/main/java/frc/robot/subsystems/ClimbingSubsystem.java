@@ -43,8 +43,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
         log();
 
         // extenderLeftMotor.clearStickyFaults();
@@ -69,7 +69,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("left Length", () -> getLeftLength());
 
      
-
+        
         tab.add(this);
     }
 
@@ -200,12 +200,12 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getRightAngle() {
-        return rightEncoder.get() % 360;
+        return rightEncoder.get() * 360;
 
     }
 
     public double getLeftAngle() {
-        return leftEncoder.get() % 360;
+        return leftEncoder.get() * -360;
     }
 
     public boolean isLeftAtLimit() {
