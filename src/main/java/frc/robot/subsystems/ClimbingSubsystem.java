@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +29,11 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
     private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
     private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+
+    //Through bore encoders
+    private DutyCycleEncoder leftEncoder = new DutyCycleEncoder(LEFT_ENCODER_PORT);
+    private DutyCycleEncoder rightEncoder = new DutyCycleEncoder(RIGHT_ENCODER_PORT);
+
 
     public ClimbingSubsystem() {
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
@@ -78,8 +84,8 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setSelectedSensorPosition(0);
         extenderRightMotor.setSelectedSensorPosition(0);
         if(resetAngle) {
-            rotatorRightMotor.setSelectedSensorPosition(0);
-            rotatorLeftMotor.setSelectedSensorPosition(0);
+            leftEncoder.reset();
+            rightEncoder.reset();
         }
     }
     
@@ -133,12 +139,12 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setVoltage(checkBoundsExtensions(volts, getLeftLength()));
     }
 
-    public void setTestVoltsExtender(double left, double right){
+    public void setTestExtenderPercent(double left, double right){
         extenderRightMotor.set(right);
         extenderLeftMotor.set(left);
     }
 
-    public void setTestVoltsRotator(double left, double right) {
+    public void setTestRotatorPercent(double left, double right) {
         rotatorLeftMotor.set(left);
         rotatorRightMotor.set(right);
     }
@@ -196,11 +202,12 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getRightAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorRightMotor.getSelectedSensorPosition());
+        return rightEncoder.get() % 360;
+
     }
 
     public double getLeftAngle() {
-        return GET_DEGREES_FROM_CLICKS(rotatorLeftMotor.getSelectedSensorPosition());
+        return leftEncoder.get() % 360;
     }
 
     public boolean isLeftAtLimit() {

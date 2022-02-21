@@ -159,6 +159,10 @@ public final class Constants {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
             //return Math.IEEEremainder(Clicks / DriveConstants.CLICKS_PER_ROT / MOTOR_ROT_PER_ARM_ROT * 360, 360);
         }
+
+        public final static int LEFT_ENCODER_PORT = 0; 
+        public final static int RIGHT_ENCODER_PORT = 0; 
+
     }
 
     public final static class ShooterConstants {
