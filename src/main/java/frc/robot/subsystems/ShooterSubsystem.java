@@ -78,16 +78,19 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setPowerWheelRPM(double speed) {
     powerPID = powerWheelPID.calculate(getPowerRPM(), speed);
-    double powerFeedForward = speed * POWER_WHEEL_KF + POWER_WHEEL_KB;
+    double powerFeedForward = (speed * POWER_WHEEL_KF) + POWER_WHEEL_KB;
+    SmartDashboard.putNumber("power feed foward", powerFeedForward);
     powerWheelLeft.setVoltage(powerFeedForward + powerPID);
     powerWheelRight.setVoltage(powerFeedForward + powerPID);
   }
 
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
-    double aimWheelFeedForward = speed * AIM_WHEEL_KF + AIM_WHEEL_KB;
-    aimWheel.set(aimPID + aimWheelFeedForward);
+    double aimWheelFeedForward = (speed * AIM_WHEEL_KF) + AIM_WHEEL_KB;
+    SmartDashboard.putNumber("aim feed foward", aimWheelFeedForward);
+    aimWheel.setVoltage(aimPID + aimWheelFeedForward);
   }
+
   public void testWheels(){
 
     aimWheel.setVoltage(aimPercentTest.getDouble(0));

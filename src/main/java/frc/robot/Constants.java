@@ -122,7 +122,7 @@ public final class Constants {
     public static final class LoaderConstants{
         public final static int LOADER_PORT = 10; // 10
         public final static boolean LOADER_INVERSE = true;
-        public final static double MAX_LOADER_SPEED = 0.6;
+        public final static double MAX_LOADER_SPEED = 0.5;
 
     }
 
