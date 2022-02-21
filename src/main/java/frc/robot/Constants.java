@@ -200,6 +200,12 @@ public final class Constants {
         public static final byte DEFAULT_ADDRESS = 0x70;
         public static final Port DEFAULT_PORT = Port.kMXP;
     }
+
+    public final static class AutoConstants {
+
+        public static final double SHOOT_TIME = 1;
+
+    }
     public final static class LimelightConstants{
         public static enum entryType{
             VALID_TARGETS, HORIZONTAL_OFFSET, VERTICAL_OFFSET, TARGET_AREA, SKEW, LATENCY, SHORTEST_SIDE, LONGEST_SIDE, HORIZONTAL_BOUNDS, VERTICAL_BOUNDS, ACTIVE_PIPELINE, POSE_3D, LED_MODE, CAM_MODE, PIPELINE, STREAM, SNAPSHOT;
