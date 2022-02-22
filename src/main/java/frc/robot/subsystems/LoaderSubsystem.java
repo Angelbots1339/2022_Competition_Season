@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,8 +16,6 @@ import static frc.robot.Constants.LoaderConstants.*;
 public class LoaderSubsystem extends SubsystemBase {
   
   private WPI_TalonFX loaderMotor = new WPI_TalonFX(LOADER_PORT, Constants.CANIVORE_NAME);
-  private WPI_TalonFX[] motors = new WPI_TalonFX[]{loaderMotor};
-
   /** Creates a new LoaderSubsystem. */
   public LoaderSubsystem() {
     //loaderMotor.configFactoryDefault();

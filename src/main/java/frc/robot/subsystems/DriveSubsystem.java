@@ -17,15 +17,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.*;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -43,7 +40,6 @@ public class DriveSubsystem extends SubsystemBase {
   private WPI_TalonFX rightMotorBack;
   private WPI_TalonFX leftMotorBack;
   private WPI_TalonFX rightMotorFront;
-  private WPI_TalonFX[] motors = new WPI_TalonFX[]{leftMotorTop, rightMotorTop, leftMotorFront, rightMotorFront, leftMotorBack, rightMotorBack};
   private MotorControllerGroup leftMotorControllerGroup;
   private MotorControllerGroup rightMotorControllerGroup;
 

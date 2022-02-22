@@ -3,10 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,15 +15,11 @@ import frc.robot.Constants;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-import java.util.function.DoubleSupplier;
-
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new Shooter. */
   private WPI_TalonFX powerWheelRight = new WPI_TalonFX(RIGHT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX powerWheelLeft = new WPI_TalonFX(LEFT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX aimWheel = new WPI_TalonFX(AIM_WHEEL, Constants.CANIVORE_NAME);
-  private WPI_TalonFX[] motors = new WPI_TalonFX[]{powerWheelRight, powerWheelLeft, aimWheel};
-
   private PIDController powerWheelPID = new PIDController(POWER_WHEEL_KP,POWER_WHEEL_KI, POWER_WHEEL_KD);
 
   private PIDController aimWheelPID = new PIDController(AIM_WHEEL_KP, AIM_WHEEL_KI, AIM_WHEEL_KD);
