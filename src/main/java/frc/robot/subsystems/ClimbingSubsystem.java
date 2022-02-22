@@ -25,17 +25,24 @@ public class ClimbingSubsystem extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Climber Subsystem");
 
     // Limit Switches
-    private DigitalInput rotatorLeftLimit = new DigitalInput(ROTATOR_LEFT_LIMIT_PORT);
-    private DigitalInput rotatorRightLimit = new DigitalInput(ROTATOR_RIGHT_LIMIT_PORT);
-    private Debouncer debouncerLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
-    private Debouncer debouncerRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    private DigitalInput rotatorLeftFrontLimit = new DigitalInput(ROTATOR_LEFT_FRONT_LIMIT_PORT);
+    private DigitalInput rotatorRightFrontLimit = new DigitalInput(ROTATOR_RIGHT_FRONT_LIMIT_PORT);
+    private DigitalInput rotatorRightBackLimit = new DigitalInput(ROTATOR_LEFT_BACK_LIMIT_PORT);
+    private DigitalInput rotatorLeftBackLimit = new DigitalInput(ROTATOR_RIGHT_BACK_LIMIT_PORT);
 
+    private Debouncer debouncerFrontLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    private Debouncer debouncerBackLeft = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    private Debouncer debouncerFrontRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    private Debouncer debounceBackRight = new Debouncer(LIMIT_SWITCH_DEBOUNCE_SECONDS, Debouncer.DebounceType.kBoth);
+    
     //Through bore encoders
     private DutyCycleEncoder leftEncoder = new DutyCycleEncoder(LEFT_ENCODER_PORT);
     private DutyCycleEncoder rightEncoder = new DutyCycleEncoder(RIGHT_ENCODER_PORT);
 
 
     public ClimbingSubsystem() {
+
+        
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
         extenderRightMotor.setInverted(EXTENDER_RIGHT_INVERTED);
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
@@ -43,14 +50,11 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        
+       reset(true);
         log();
-
-        // extenderLeftMotor.clearStickyFaults();
-        // extenderRightMotor.clearStickyFaults();
-        // rotatorLeftMotor.clearStickyFaults();
-        // rotatorRightMotor.clearStickyFaults();
 
     }
 
@@ -59,15 +63,12 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public void log() {
-        tab.addBoolean("left Limit Switch", () -> isLeftAtLimit());
-        tab.addBoolean("right Limit Switch", () -> isRightAtLimit());
 
         tab.addNumber("left Angle", () -> getLeftAngle());
         tab.addNumber("right Angle", () -> getRightAngle());
 
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
-
      
         
         tab.add(this);
@@ -84,7 +85,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setSelectedSensorPosition(0);
         extenderRightMotor.setSelectedSensorPosition(0);
         if(resetAngle) {
-            leftEncoder.reset();
+            leftEncoder.reset();;
             rightEncoder.reset();
         }
     }
@@ -112,7 +113,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setLeftRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftAtLimit()));
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit()));
     }
 
     /**
@@ -120,7 +121,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setRightRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightAtLimit()));
+        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit()));
     }
 
     /**
@@ -205,14 +206,21 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getLeftAngle() {
-        return leftEncoder.get() * -360;
+        return -leftEncoder.get() * 360;
     }
 
-    public boolean isLeftAtLimit() {
-        return !debouncerLeft.calculate(rotatorLeftLimit.get());
+    public boolean isLeftFrontAtLimit() {
+        return !debouncerFrontLeft.calculate(rotatorLeftFrontLimit.get());
     }
 
-    public boolean isRightAtLimit() {
-        return !debouncerRight.calculate(rotatorRightLimit.get());
+    public boolean isRightFrontAtLimit() {
+        return !debouncerFrontRight.calculate(rotatorRightFrontLimit.get());
     }
+    public boolean isRightBackAtLimit() {
+        return !debounceBackRight.calculate(rotatorRightBackLimit.get());
+    }
+    public boolean isLeftBackAtLimit() {
+        return !debouncerBackLeft.calculate(rotatorLeftBackLimit.get());
+    }
+    
 }

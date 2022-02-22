@@ -3,6 +3,7 @@ package frc.robot.commands.climber;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -34,7 +35,10 @@ public class AutoClimb extends SequentialCommandGroup{
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.69, 15),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0, 0),
+            new ArmsToSetpoints(climbingSubsystem, 0.4),
+            new ArmsToSetpoints(climbingSubsystem, 0.02, 0),
+            new WaitUntilCommand(proceed),
+            new ArmsToSetpoints(climbingSubsystem, 0.25, 0),
             new WaitUntilCommand(proceed),
 
             // Second Bar Transfer
@@ -42,7 +46,8 @@ public class AutoClimb extends SequentialCommandGroup{
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.69, 15),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0, 0),
+            new ArmsToSetpoints(climbingSubsystem, 0.4),
+            new ArmsToSetpoints(climbingSubsystem, 0.02, 0),
             new WaitUntilCommand(proceed)
         );
     }

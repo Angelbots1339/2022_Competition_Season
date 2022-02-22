@@ -136,8 +136,11 @@ public final class Constants {
         public static final boolean EXTENDER_LEFT_INVERTED = false;
         public static final boolean EXTENDER_RIGHT_INVERTED = true;
       
-        public static final int ROTATOR_LEFT_LIMIT_PORT = 1;
-        public static final int ROTATOR_RIGHT_LIMIT_PORT = 0;
+        public static final int ROTATOR_LEFT_FRONT_LIMIT_PORT = 1;
+        public static final int ROTATOR_RIGHT_FRONT_LIMIT_PORT = 0;
+        public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 2;
+        public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
+
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
 
         public static final double EXTENDER_TOP_LIMIT = 0.70;
@@ -150,7 +153,7 @@ public final class Constants {
         public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
-        public final static double ROTATION_SETPOINT_THRESHOLD = .5; // deg
+        public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
 
        
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;

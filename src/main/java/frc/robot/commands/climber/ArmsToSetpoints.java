@@ -14,6 +14,7 @@ public class ArmsToSetpoints extends CommandBase {
   private ClimbingSubsystem climbingSubsystem;
   private final double angleSetpoint;
   private final double lengthSetpoint;
+  private boolean stopRoatator = false;
 
   /** Creates a new ExtendArms. */
   /**
@@ -28,6 +29,10 @@ public class ArmsToSetpoints extends CommandBase {
     this.climbingSubsystem = climbingSubsystem;
     this.angleSetpoint = angleSetpoint;
     this.lengthSetpoint = lengthSetpoint;
+  }
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
+   this(climbingSubsystem, lengthSetpoint, 0);
+   stopRoatator = true;
   }
 
   
@@ -50,8 +55,17 @@ public class ArmsToSetpoints extends CommandBase {
     double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
     climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
     climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
-    climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
-    climbingSubsystem.setRightRotationVolts(rightRotateDesired);
+
+    if(!stopRoatator){
+      climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
+      climbingSubsystem.setRightRotationVolts(rightRotateDesired);
+    }
+    else{
+    
+      climbingSubsystem.setLeftRotationVolts(0);
+      climbingSubsystem.setRightRotationVolts(0);
+    }
+   
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {
@@ -84,9 +98,16 @@ public class ArmsToSetpoints extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
-        && isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD)
-        && isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD)
-        && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD);
+    if(stopRoatator){
+      return isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
+    && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD);
+    }
+    else{
+      return isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
+          && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
+          && isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD)
+          && isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD);
+    }
+    
   }
 }
