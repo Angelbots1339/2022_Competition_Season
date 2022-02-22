@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -16,14 +15,11 @@ import frc.robot.Constants;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-import java.util.function.DoubleSupplier;
-
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new Shooter. */
   private WPI_TalonFX powerWheelRight = new WPI_TalonFX(RIGHT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX powerWheelLeft = new WPI_TalonFX(LEFT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX aimWheel = new WPI_TalonFX(AIM_WHEEL, Constants.CANIVORE_NAME);
-
   private PIDController powerWheelPID = new PIDController(POWER_WHEEL_KP,POWER_WHEEL_KI, POWER_WHEEL_KD);
 
   private PIDController aimWheelPID = new PIDController(AIM_WHEEL_KP, AIM_WHEEL_KI, AIM_WHEEL_KD);
@@ -48,9 +44,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    // powerWheelLeft.clearStickyFaults();
-    // powerWheelRight.clearStickyFaults();
-    // aimWheel.clearStickyFaults();
+    powerWheelLeft.clearStickyFaults();
+    powerWheelRight.clearStickyFaults();
+    aimWheel.clearStickyFaults();
 
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
@@ -121,6 +117,4 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
-
-
 }

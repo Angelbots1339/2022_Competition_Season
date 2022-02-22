@@ -7,13 +7,11 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -73,7 +71,6 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
-    
   }
 
   public void resetOdometry() {
@@ -162,7 +159,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     driveSubsystem.resetOdometry(new Pose2d());
-    System.out.println(autoChooser.getSelected().getName());
+    System.err.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
@@ -179,5 +176,4 @@ public class RobotContainer {
       climbingSubsystem.reset(true);
     }
   }
-
 }

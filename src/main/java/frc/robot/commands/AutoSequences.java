@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -48,7 +47,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         "1 Ball",
         new SequentialCommandGroup(
             new ParallelDeadlineGroup(
-                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1B"),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1BForward"),
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))));
 
     // Grabs second ball and shoots
@@ -104,10 +103,10 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
 
             new ParallelDeadlineGroup(
-                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallGrab"),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
 
-            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallShoot"),
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BShoot"),
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
@@ -169,10 +168,10 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new WaitCommand(SHOOT_TIME),
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
             new ParallelDeadlineGroup(
-                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallGrab"),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
 
-            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BallShoot"),
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BShoot"),
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),

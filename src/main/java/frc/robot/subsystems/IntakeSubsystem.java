@@ -21,10 +21,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT, Constants.CANIVORE_NAME);
-
-
-  
-
   private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
 
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
@@ -43,11 +39,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
-    intakeMotor.setInverted(INTAKE_INVERSE);
+    intakeMotor.setInverted(INTAKE_INVERTED);
 
-    // indexerLeftMotor.clearStickyFaults();
-    // indexerRightMotor.clearStickyFaults();
-    // intakeMotor.clearStickyFaults();
+    indexerLeftMotor.clearStickyFaults();
+    indexerRightMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
   }
 
   @Override

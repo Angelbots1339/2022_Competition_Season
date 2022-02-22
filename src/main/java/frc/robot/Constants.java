@@ -27,8 +27,10 @@ public final class Constants {
 
 
     public final static class JoystickConstants{
-
+        // USB Controller Ports
         public final static int MAIN_JOYSTICK = 0;
+
+        // Button mappings
         public final static int BUTTON_A = 1;
         public final static int BUTTON_B = 2;
         public final static int BUTTON_X = 3;
@@ -44,21 +46,24 @@ public final class Constants {
      * All length units in meters 
      */
     public final static class DriveConstants{
-        //general 
+        // General 
         public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
         public final static boolean USE_LIMELIGHT_FIRST = false;
         public final static double ROT_SCALE = 0.65;
+        
+        // Slew Rate Limiters
+        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; //max speed percent change per second
+        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; //max speed percent change per second
 
-        //Motor ports
+        // Ports
         public final static int LEFT_MOTOR_TOP_PORT = 2; 
         public final static int LEFT_MOTOR_FRONT_PORT = 1; 
         public final static int LEFT_MOTOR_BACK_PORT = 3;
         public final static int RIGHT_MOTOR_TOP_PORT = 5; 
         public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
-        public final static int RIGHT_MOTOR_BACK_PORT = 6; 
+        public final static int RIGHT_MOTOR_BACK_PORT = 6;
         
-        
-        //Drive base values
+        // Config
         public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
         public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
@@ -70,31 +75,18 @@ public final class Constants {
                 * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER_METERS * Math.PI;
         public final static boolean GYRO_INVERTED = true;
 
-
-        //Slew Rate Limiters
-        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; //max speed percent change per second
-        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; //max speed percent change per second
-
-        /* Checking robot kinematics:
-        Origin of the robot is the center of rotation when leftVelocity = -rightVelocity
-        */
-
-        //PID 
+        // PID / Motion Profiling
         public final static double LEFT_KP = 3.6052;
         public final static double RIGHT_KP = 3.6052;
-
-        /* Checking kP:
-        Graph the input motor values from the desired motor values over time
-        */
-
-        //Motion profiling New Values
         public final static double KS = 0.53002; // Volts
         public final static double KV = 2.4483;  // Volts * Seconds / Meters 
         public final static double KA = 0.6174; // Volts * Seconds^2 / Meters
-
-        //Ramsete
         public final static double KB = 2;
         public final static double ZETA = 0.7;
+        
+        /* Checking kP:
+        Graph the input motor values from the desired motor values over time
+        */
         
         /* Checking kV:
         kV = voltage / free speed (meters per second)
@@ -102,114 +94,125 @@ public final class Constants {
         kV = 12v / (5380rpm / 60s * 0.1016m * pi / 6.67)
         kV (theoretical) ~ 2.797
         */
-
     }
     public final static class IntakeConstants{
 
-        public final static int INTAKE_MOTOR_PORT = 7; // 7
-        public final static int INDEXER_RIGHT_PORT = 9; // 9
-        public final static int INDEXER_LEFT_PORT = 8; // 8
+        // General
         public final static double MAX_INDEXER_PERCENT = 0.5;
-        public final static double MAX_INTAKE_PERCENT = 1;        
+        public final static double MAX_INTAKE_PERCENT = 1;   
 
+        // Ports
+        public final static int INTAKE_MOTOR_PORT = 7;
+        public final static int INDEXER_RIGHT_PORT = 9;
+        public final static int INDEXER_LEFT_PORT = 8;
+             
+        // Config
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
-        
-        public final static boolean INTAKE_INVERSE = false;
-
+        public final static boolean INTAKE_INVERTED = false;
         public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 (closest) to 2047 (furthest)
     }
     public static final class LoaderConstants{
-        public final static int LOADER_PORT = 10; // 10
-        public final static boolean LOADER_INVERSE = true;
+
+        // General
         public final static double MAX_LOADER_SPEED = 0.5;
 
+        // Ports
+        public final static int LOADER_PORT = 10;
+
+        // Config
+        public final static boolean LOADER_INVERSE = true;
+        
     }
 
     public static final class ClimberConstants{
-        public static final int ROTATOR_LEFT_PORT = 16;  // 16 
-        public static final int ROTATOR_RIGHT_PORT = 17; // 17
-        public static final int EXTENDER_LEFT_PORT = 14; // 14
-        public static final int EXTENDER_RIGHT_PORT = 15; // 15
-        public static final boolean ROTATOR_LEFT_INVERTED = true;
-        public static final boolean ROTATOR_RIGHT_INVERTED = false;
-        public static final boolean EXTENDER_LEFT_INVERTED = false;
-        public static final boolean EXTENDER_RIGHT_INVERTED = true;
-      
-        public static final int ROTATOR_LEFT_FRONT_LIMIT_PORT = 1;
-        public static final int ROTATOR_RIGHT_FRONT_LIMIT_PORT = 0;
-        public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 2;
-        public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
 
-        public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
-
-        public static final double EXTENDER_TOP_LIMIT = 0.70;
-        public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
-
-        public final static double ROTATOR_BACK_LIMIT_DEG = 0;
-        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5;
-
+        // General
         public final static double MAX_ROTATOR_VOLTS = 2;
         public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
+        // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
+        // public static final double AUTO_ROTATION_SETPOINT = 21.76;
+        // public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
 
-       
+        // Ports
+        public static final int ROTATOR_LEFT_PORT = 16; 
+        public static final int ROTATOR_RIGHT_PORT = 17;
+        public static final int EXTENDER_LEFT_PORT = 14;
+        public static final int EXTENDER_RIGHT_PORT = 15;
+        public static final int ROTATOR_LEFT_FRONT_LIMIT_PORT = 1;
+        public static final int ROTATOR_RIGHT_FRONT_LIMIT_PORT = 0;
+        public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 2;
+        public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
+        public final static int LEFT_ENCODER_PORT = 5; 
+        public final static int RIGHT_ENCODER_PORT = 4; 
+
+        // Soft stops
+        public static final double EXTENDER_TOP_LIMIT = 0.70;
+        public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
+        public final static double ROTATOR_BACK_LIMIT_DEG = 0;
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5;
+
+        // Config
+        public static final boolean ROTATOR_LEFT_INVERTED = true;
+        public static final boolean ROTATOR_RIGHT_INVERTED = false;
+        public static final boolean EXTENDER_LEFT_INVERTED = false;
+        public static final boolean EXTENDER_RIGHT_INVERTED = true;
+        public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
 
-        public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
-        public static final double AUTO_ROTATION_SETPOINT = 21.76;
-        public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
-        
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
         }
-
-        public final static int LEFT_ENCODER_PORT = 5; 
-        public final static int RIGHT_ENCODER_PORT = 4; 
-
     }
 
     public final static class ShooterConstants {
+
+        // General
+        public final static double AIM_WHEEL_TOLERANCE = 50; // rpm
+        public final static double POWER_WHEEL_TOLERANCE = 50; // rpm
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520);
+
+        // Ports
         public final static int LEFT_POWER_WHEEL = 11;  // 11
         public final static int RIGHT_POWER_WHEEL = 12; // 12 
         public final static int AIM_WHEEL = 13;  // 13
 
+        // PID / Motion Profiling
         public final static double POWER_WHEEL_KF = 0.00172528;
         public final static double POWER_WHEEL_KB = 0.823253;
         public final static double POWER_WHEEL_KP = 0.001;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-
         public final static double AIM_WHEEL_KF = 0.00181965;
         public final static double AIM_WHEEL_KB = 0.5523;
         public final static double AIM_WHEEL_KP = 0.001;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
-        public final static double AIM_WHEEL_TOLERANCE = 50;
-        public final static double POWER_WHEEL_TOLERANCE = 50;
         
+        // Config
         public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
         public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
-
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900, () -> .43, () -> .53);
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520, () -> .28, () -> .3);
     }
 
     public final static class MultiplexerConstants {
 
+        // Ports
         public static final byte DEFAULT_ADDRESS = 0x70;
         public static final Port DEFAULT_PORT = Port.kMXP;
     }
 
     public final static class AutoConstants {
 
-        public static final double SHOOT_TIME = 1;
+        // General
+        public static final double SHOOT_TIME = 1; // s
 
     }
     public final static class LimelightConstants{

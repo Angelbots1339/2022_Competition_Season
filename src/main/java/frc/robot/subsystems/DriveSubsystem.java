@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -37,6 +36,10 @@ public class DriveSubsystem extends SubsystemBase {
   // Motors
   private WPI_TalonFX leftMotorTop;
   private WPI_TalonFX rightMotorTop;
+  private WPI_TalonFX leftMotorFront;
+  private WPI_TalonFX rightMotorBack;
+  private WPI_TalonFX leftMotorBack;
+  private WPI_TalonFX rightMotorFront;
   private MotorControllerGroup leftMotorControllerGroup;
   private MotorControllerGroup rightMotorControllerGroup;
 
@@ -219,15 +222,17 @@ public class DriveSubsystem extends SubsystemBase {
    */
   private void constructorHelper() {
     leftMotorTop = new WPI_TalonFX(LEFT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
-    // leftMotorTop.clearStickyFaults();
     rightMotorTop = new WPI_TalonFX(RIGHT_MOTOR_TOP_PORT, Constants.CANIVORE_NAME);
-    // rightMotorTop.clearStickyFaults();
+    leftMotorFront = new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME);
+    rightMotorFront = new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME);
+    leftMotorBack = new WPI_TalonFX(LEFT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME);
+    rightMotorBack = new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME);
 
     leftMotorControllerGroup = new MotorControllerGroup(new MotorController[] { leftMotorTop,
-        updateGeneralStatusFrame(new WPI_TalonFX(LEFT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), updateGeneralStatusFrame(new WPI_TalonFX(LEFT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME)) });
+        updateGeneralStatusFrame(leftMotorFront), updateGeneralStatusFrame(leftMotorBack) });
 
     rightMotorControllerGroup = new MotorControllerGroup(new MotorController[] { rightMotorTop,
-        updateGeneralStatusFrame(new WPI_TalonFX(RIGHT_MOTOR_FRONT_PORT, Constants.CANIVORE_NAME)), updateGeneralStatusFrame(new WPI_TalonFX(RIGHT_MOTOR_BACK_PORT, Constants.CANIVORE_NAME) )});
+        updateGeneralStatusFrame(rightMotorFront), updateGeneralStatusFrame(rightMotorBack)});
 
     drive = new DifferentialDrive(rightMotorControllerGroup, leftMotorControllerGroup);
 
@@ -241,6 +246,13 @@ public class DriveSubsystem extends SubsystemBase {
     driveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 
     gyro = new AHRS();
+
+    leftMotorTop.clearStickyFaults();
+    rightMotorTop.clearStickyFaults();
+    leftMotorFront.clearStickyFaults();
+    rightMotorFront.clearStickyFaults();
+    leftMotorBack.clearStickyFaults();
+    rightMotorBack.clearStickyFaults();
   }
 
   private WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
@@ -255,6 +267,6 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
     driveOdometry.resetPosition(pose, getHeading());
-
   }
+
 }
