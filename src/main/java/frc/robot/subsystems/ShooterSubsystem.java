@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -23,6 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private WPI_TalonFX powerWheelRight = new WPI_TalonFX(RIGHT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX powerWheelLeft = new WPI_TalonFX(LEFT_POWER_WHEEL, Constants.CANIVORE_NAME);
   private WPI_TalonFX aimWheel = new WPI_TalonFX(AIM_WHEEL, Constants.CANIVORE_NAME);
+  private WPI_TalonFX[] motors = new WPI_TalonFX[]{powerWheelRight, powerWheelLeft, aimWheel};
 
   private PIDController powerWheelPID = new PIDController(POWER_WHEEL_KP,POWER_WHEEL_KI, POWER_WHEEL_KD);
 
@@ -120,6 +122,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
+  }
+
+  public StickyFaults[] clearStickies() {
+    StickyFaults[] stickies = new StickyFaults[motors.length];
+    for(int i = 0; i < motors.length; i++) {
+        //motors[i].getStickyFaults(stickies[i]);
+        motors[i].clearStickyFaults();
+    }
+    return stickies;
   }
 
 

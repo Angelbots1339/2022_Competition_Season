@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.StickyFaults;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -73,7 +75,6 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
-    
   }
 
   public void resetOdometry() {
@@ -162,7 +163,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     driveSubsystem.resetOdometry(new Pose2d());
-    System.out.println(autoChooser.getSelected().getName());
+    System.err.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
@@ -180,4 +181,23 @@ public class RobotContainer {
     }
   }
 
+  // public void clearStickies() {
+  //   ///climbingSubsystem.clearStickies();
+  //   for(StickyFaults s : climbingSubsystem.clearStickies()) {
+  //     // System.err.println(s.toString());
+  //   }
+  //   for(StickyFaults s : driveSubsystem.clearStickies()) {
+  //     // System.err.println(s.toString());
+  //   }
+  //   for(StickyFaults s : intakeSubsystem.clearStickies()) {
+  //     // System.err.println(s.toString());
+  //   }
+  //   for(StickyFaults s : loaderSubsystem.clearStickies()) {
+  //     // System.err.println(s.toString());
+  //   }
+  //   for(StickyFaults s : shooterSubsystem.clearStickies()) {
+  //     // System.err.println(s.toString());
+  //   }
+  //   System.out.println("Finished clearing stickies");
+  // }
 }

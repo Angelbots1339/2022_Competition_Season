@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motorcontrol.StickyFaults;
+import com.ctre.phoenix.motorcontrol.WPI_AutoFeedEnable;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorSensorV3;
 
@@ -21,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT, Constants.CANIVORE_NAME);
+  private WPI_TalonFX[] motors = new WPI_TalonFX[]{intakeMotor, indexerLeftMotor, indexerRightMotor};
 
 
   
@@ -91,5 +95,14 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.set(0);
     intakeMotor.set(0);
   }
+
+  public StickyFaults[] clearStickies() {
+    StickyFaults[] stickies = new StickyFaults[motors.length];
+    for(int i = 0; i < motors.length; i++) {
+        //motors[i].getStickyFaults(stickies[i]);
+        motors[i].clearStickyFaults();
+    }
+    return stickies;
+}
 
 }
