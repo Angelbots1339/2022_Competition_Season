@@ -64,8 +64,9 @@ public final class Constants {
         public final static int RIGHT_MOTOR_BACK_PORT = 6;
         
         // Config
-        public final static double TRACK_WIDTH_METERS = 0.55128; // Center of left wheel to center of right wheel
-        public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
+        public final static double CENTER_DIST_BACK_BUMPER = 31.85541;
+        public final static double TRACK_WIDTH_METERS = 0.5470525; // Center of left wheel to center of right wheel
+        public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4.18);
         public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
         public final static double CLICKS_PER_ROT = 2048;
         public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
@@ -76,11 +77,11 @@ public final class Constants {
         public final static boolean GYRO_INVERTED = true;
 
         // PID / Motion Profiling
-        public final static double LEFT_KP = 3.6052;
-        public final static double RIGHT_KP = 3.6052;
-        public final static double KS = 0.53002; // Volts
-        public final static double KV = 2.4483;  // Volts * Seconds / Meters 
-        public final static double KA = 0.6174; // Volts * Seconds^2 / Meters
+        public final static double LEFT_KP = 2.8639;
+        public final static double RIGHT_KP = 2.8639;
+        public final static double KS = 0.73816; // Volts
+        public final static double KV = 2.1836;  // Volts * Seconds / Meters 
+        public final static double KA = 0.25419; // Volts * Seconds^2 / Meters
         public final static double KB = 2;
         public final static double ZETA = 0.7;
         
@@ -91,8 +92,8 @@ public final class Constants {
         /* Checking kV:
         kV = voltage / free speed (meters per second)
         free speed = free speed of the motor times the wheel circumference divided by the gear reduction
-        kV = 12v / (5380rpm / 60s * 0.1016m * pi / 6.67)
-        kV (theoretical) ~ 2.797
+        kV = 12v / (6380rpm / 60s * 0.1016m * pi / 6.67)
+        kV (theoretical) ~ 2.36
         */
     }
     public final static class IntakeConstants{
@@ -212,7 +213,7 @@ public final class Constants {
     public final static class AutoConstants {
 
         // General
-        public static final double SHOOT_TIME = 1; // s
+        public static final double SHOOT_TIME = 2; // s
 
     }
     public final static class LimelightConstants{

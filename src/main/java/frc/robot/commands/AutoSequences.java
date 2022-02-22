@@ -34,7 +34,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         "Example",
         new SequentialCommandGroup(
             new ParallelDeadlineGroup(
-                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1Meter"),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
@@ -110,6 +110,31 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+
+    // Grabs first ball, shoots, grabs 2nd ball, shoots
+    this.add(
+        "3 Ball Alt1",
+        new SequentialCommandGroup(
+
+            new ParallelDeadlineGroup(
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab1stSet"),
+                new RunIntake(intakeSubsystem, loaderSubsystem)),
+
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot1stSet"),
+
+            new ParallelDeadlineGroup(
+                new WaitCommand(SHOOT_TIME), 
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+
+            new ParallelDeadlineGroup(
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BAltGrab2ndSet"),
+                new RunIntake(intakeSubsystem, loaderSubsystem)),
+                
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2BAlt2Shoot"),
+            
+            new ParallelDeadlineGroup(
+                new WaitCommand(SHOOT_TIME), 
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
 
     // Grabs second ball and shoots, then grabs third and fourth balls and shoots

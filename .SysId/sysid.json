@@ -1,6 +1,16 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism",
-    "AnalyzerJSONLocation": ""
+    "Analysis Type": "Drivetrain",
+    "AnalyzerJSONLocation": "C:\\Users\\AngelBots\\Documents\\VSCode\\2022_Competition_Season\\characterization\\DriveTrain\\sysid_data20220222-105847.json",
+    "NetworkTables Settings": {
+      "serverTeam": "1339"
+    },
+    "Program Log": {
+      "window": {
+        "visible": false
+      }
+    },
+    "mode": "Client",
+    "serverTeam": "1339"
   }
 }
