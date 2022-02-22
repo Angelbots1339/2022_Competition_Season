@@ -24,7 +24,7 @@ public class LoaderSubsystem extends SubsystemBase {
     //loaderMotor.configFactoryDefault();
     loaderMotor.setInverted(LOADER_INVERSE);
     loaderMotor.setNeutralMode(NeutralMode.Brake);
-    // loaderMotor.clearStickyFaults();
+    loaderMotor.clearStickyFaults();
   }
 
   @Override
@@ -43,14 +43,5 @@ public class LoaderSubsystem extends SubsystemBase {
 
   public void disable() {
     loaderMotor.set(0);
-  }
-
-  public StickyFaults[] clearStickies() {
-    StickyFaults[] stickies = new StickyFaults[motors.length];
-    for(int i = 0; i < motors.length; i++) {
-        //motors[i].getStickyFaults(stickies[i]);
-        motors[i].clearStickyFaults();
-    }
-    return stickies;
   }
 }

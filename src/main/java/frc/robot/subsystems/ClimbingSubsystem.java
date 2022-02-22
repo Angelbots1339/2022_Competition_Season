@@ -55,6 +55,11 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+
+        extenderRightMotor.clearStickyFaults();
+        extenderLeftMotor.clearStickyFaults();
+        rotatorLeftMotor.clearStickyFaults();
+        rotatorRightMotor.clearStickyFaults();
         
        reset(true);
         log();
@@ -226,14 +231,4 @@ public class ClimbingSubsystem extends SubsystemBase {
         return !debouncerBackLeft.calculate(rotatorLeftBackLimit.get());
     }
     
-
-    public StickyFaults[] clearStickies() {
-        StickyFaults[] stickies = new StickyFaults[motors.length];
-        for(int i = 0; i < motors.length; i++) {
-            System.out.println(motors.length);
-            //motors[i].getStickyFaults(stickies[i]);
-            motors[i].clearStickyFaults();
-        }
-        return stickies;
-    }
 }

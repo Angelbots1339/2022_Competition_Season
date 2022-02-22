@@ -49,9 +49,9 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     intakeMotor.setInverted(INTAKE_INVERSE);
 
-    // indexerLeftMotor.clearStickyFaults();
-    // indexerRightMotor.clearStickyFaults();
-    // intakeMotor.clearStickyFaults();
+    indexerLeftMotor.clearStickyFaults();
+    indexerRightMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
   }
 
   @Override
@@ -95,14 +95,5 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.set(0);
     intakeMotor.set(0);
   }
-
-  public StickyFaults[] clearStickies() {
-    StickyFaults[] stickies = new StickyFaults[motors.length];
-    for(int i = 0; i < motors.length; i++) {
-        //motors[i].getStickyFaults(stickies[i]);
-        motors[i].clearStickyFaults();
-    }
-    return stickies;
-}
 
 }

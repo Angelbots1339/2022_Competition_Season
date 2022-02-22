@@ -180,24 +180,4 @@ public class RobotContainer {
       climbingSubsystem.reset(true);
     }
   }
-
-  // public void clearStickies() {
-  //   ///climbingSubsystem.clearStickies();
-  //   for(StickyFaults s : climbingSubsystem.clearStickies()) {
-  //     // System.err.println(s.toString());
-  //   }
-  //   for(StickyFaults s : driveSubsystem.clearStickies()) {
-  //     // System.err.println(s.toString());
-  //   }
-  //   for(StickyFaults s : intakeSubsystem.clearStickies()) {
-  //     // System.err.println(s.toString());
-  //   }
-  //   for(StickyFaults s : loaderSubsystem.clearStickies()) {
-  //     // System.err.println(s.toString());
-  //   }
-  //   for(StickyFaults s : shooterSubsystem.clearStickies()) {
-  //     // System.err.println(s.toString());
-  //   }
-  //   System.out.println("Finished clearing stickies");
-  // }
 }

@@ -50,9 +50,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    // powerWheelLeft.clearStickyFaults();
-    // powerWheelRight.clearStickyFaults();
-    // aimWheel.clearStickyFaults();
+    powerWheelLeft.clearStickyFaults();
+    powerWheelRight.clearStickyFaults();
+    aimWheel.clearStickyFaults();
 
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
@@ -123,15 +123,4 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
-
-  public StickyFaults[] clearStickies() {
-    StickyFaults[] stickies = new StickyFaults[motors.length];
-    for(int i = 0; i < motors.length; i++) {
-        //motors[i].getStickyFaults(stickies[i]);
-        motors[i].clearStickyFaults();
-    }
-    return stickies;
-  }
-
-
 }

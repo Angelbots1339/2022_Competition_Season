@@ -250,11 +250,18 @@ public class DriveSubsystem extends SubsystemBase {
     driveOdometry = new DifferentialDriveOdometry(new Rotation2d(), pose);
 
     gyro = new AHRS();
+
+    leftMotorTop.clearStickyFaults();
+    rightMotorTop.clearStickyFaults();
+    leftMotorFront.clearStickyFaults();
+    rightMotorFront.clearStickyFaults();
+    leftMotorBack.clearStickyFaults();
+    rightMotorBack.clearStickyFaults();
   }
 
   private WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
-    motor.setStatusFramePeriod(StatusFrame.Status_1_General, 20);
-    motor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
+    motor.setStatusFramePeriod(StatusFrame.Status_1_General, 255);
+    motor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 255);
     return motor;
   }
 
@@ -266,12 +273,4 @@ public class DriveSubsystem extends SubsystemBase {
     driveOdometry.resetPosition(pose, getHeading());
   }
 
-  public StickyFaults[] clearStickies() {
-    StickyFaults[] stickies = new StickyFaults[motors.length];
-    for(int i = 0; i < motors.length; i++) {
-        //motors[i].getStickyFaults(stickies[i]);
-        motors[i].clearStickyFaults();
-    }
-    return stickies;
-}
 }

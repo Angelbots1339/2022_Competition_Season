@@ -12,7 +12,7 @@
     "TalonFX",
     "TalonFX"
   ],
-  "number of samples per average": 5,
+  "number of samples per average": 1,
   "primary encoder inverted": false,
   "primary encoder ports": [
     0,
