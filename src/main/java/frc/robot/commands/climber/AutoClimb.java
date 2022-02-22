@@ -51,10 +51,4 @@ public class AutoClimb extends SequentialCommandGroup{
         );
     }
 
-    // @Override
-    // public void end(boolean interrupted) {
-    //     CommandScheduler.getInstance().schedule(new ManualArms(climbingSubsystem, extendVolts, rotateVolts));
-    //     CommandScheduler.getInstance().schedule(new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem));
-    // }
-
 }
