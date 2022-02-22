@@ -33,6 +33,7 @@
     "getpipe",
     "Odometry",
     "setpoint",
+    "Setpoints",
     "sidelength",
     "tlong",
     "tshort",
