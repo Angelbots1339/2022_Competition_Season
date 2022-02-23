@@ -57,6 +57,10 @@ public class Shoot extends CommandBase {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
       intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
     }
+    else{
+      loaderSubsystem.runLoader(0);
+      intakeSubsystem.runIndexerLow(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
