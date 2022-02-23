@@ -30,23 +30,23 @@ public class AutoClimb extends SequentialCommandGroup{
         addCommands(
 
             // First Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 26),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 24),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 8),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 17),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
-            new ArmsToSetpoints(climbingSubsystem, 0.02, 0),
+            new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0),
             new WaitUntilCommand(proceed),
 
             // Second Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 26),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 24),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 8),
+            new ArmsToSetpoints(climbingSubsystem, 0.69, 17),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
-            new ArmsToSetpoints(climbingSubsystem, 0.02, 0),
+            new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
             new WaitUntilCommand(proceed)
         );
     }

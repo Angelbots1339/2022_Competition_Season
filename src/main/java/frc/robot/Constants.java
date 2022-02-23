@@ -82,8 +82,8 @@ public final class Constants {
         public final static double KS = 0.73816; // Volts
         public final static double KV = 2.1836;  // Volts * Seconds / Meters 
         public final static double KA = 0.25419; // Volts * Seconds^2 / Meters
-        public final static double KB = 2;
-        public final static double ZETA = 0.7;
+        public final static double KB = 3;
+        public final static double ZETA = 1.5;
         
         /* Checking kP:
         Graph the input motor values from the desired motor values over time
@@ -116,7 +116,7 @@ public final class Constants {
     public static final class LoaderConstants{
 
         // General
-        public final static double MAX_LOADER_SPEED = 0.5;
+        public final static double MAX_LOADER_SPEED = 0.3;
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -154,7 +154,7 @@ public final class Constants {
         public static final double EXTENDER_TOP_LIMIT = 0.70;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
-        public final static double ROTATOR_FRONT_LIMIT_DEG = 28.5;
+        public final static double ROTATOR_FRONT_LIMIT_DEG = 25.5;
 
         // Config
         public static final boolean ROTATOR_LEFT_INVERTED = true;
@@ -175,10 +175,10 @@ public final class Constants {
     public final static class ShooterConstants {
 
         // General
-        public final static double AIM_WHEEL_TOLERANCE = 50; // rpm
-        public final static double POWER_WHEEL_TOLERANCE = 50; // rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2260, () -> 2900);
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1300, () -> 1520);
+        public final static double AIM_WHEEL_TOLERANCE = 25; // rpm
+        public final static double POWER_WHEEL_TOLERANCE = 25; // rpm
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2100, () -> 2400);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1000);
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11;  // 11
@@ -213,7 +213,7 @@ public final class Constants {
     public final static class AutoConstants {
 
         // General
-        public static final double SHOOT_TIME = 2; // s
+        public static final double SHOOT_TIME = 3; // s
 
     }
     public final static class LimelightConstants{

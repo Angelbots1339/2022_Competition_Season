@@ -6,6 +6,9 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -22,9 +25,12 @@ import frc.robot.utils.NamedSequentialCommandGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> {
+
+    private final DriveSubsystem driveSubsystem;
   public AutoSequences(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem,
       ShooterSubsystem shooterSubsystem) {
     super();
+    this.driveSubsystem = driveSubsystem;
     // Example auto path
     // Turns on intake
     // Drives 1 meter
@@ -38,17 +44,20 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))
 
-        ));
+        ),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter").getStartPose2d());
 
     // Shoots ball and drives past line
     this.add(
         "1 Ball",
         new SequentialCommandGroup(
             new ParallelDeadlineGroup(
-                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1BForward"),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))));
+                new WaitCommand(SHOOT_TIME), 
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1BForward")),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "1BForward").getStartPose2d());
 
     // Grabs second ball and shoots
     this.add(
@@ -62,7 +71,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2BGrab").getStartPose2d());
 
     // Grabs a different second ball and shoots
     this.add(
@@ -76,9 +86,11 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))
 
-        ));
+        ),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab1stSet").getStartPose2d()
+        );
     // Grabs another different second ball and shoots
     this.add(
         "2 Ball Alt 2",
@@ -91,7 +103,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2BAlt2Shoot").getStartPose2d());
 
     // Shoots first ball, grabs second and third, then shoots
     this.add(
@@ -100,7 +113,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
 
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab"),
@@ -110,7 +123,9 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+            
+            FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab").getStartPose2d());
 
     // Grabs first ball, shoots, grabs 2nd ball, shoots
     this.add(
@@ -125,7 +140,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME), 
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
 
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BAltGrab2ndSet"),
@@ -135,7 +150,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME), 
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab1stSet").getStartPose2d());
 
     // Grabs second ball and shoots, then grabs third and fourth balls and shoots
     this.add(
@@ -148,7 +164,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot1stSet"),
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab2ndSet"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
@@ -157,7 +173,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab1stSet").getStartPose2d());
 
     // Grabs second ball and shoots, then grabs third and a different fourth ball
     // and shoots
@@ -171,7 +188,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
             FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BShoot1stSet"),
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BAlt1Grab2ndSet"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
@@ -180,9 +197,10 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))
 
-        ));
+        ),
+        FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab1stSet").getStartPose2d());
 
     // Shoots first ball, grabs second and third, then shoots
     this.add(
@@ -191,7 +209,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
@@ -200,7 +218,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW)),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH)),
             new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "4BGrab2ndSet"),
                 new RunIntake(intakeSubsystem, loaderSubsystem)),
@@ -209,11 +227,17 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
 
             new ParallelDeadlineGroup(
                 new WaitCommand(SHOOT_TIME),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW))));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH))),
+                FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "3BGrab").getStartPose2d());
 
   }
 
-  private void add(String name, SequentialCommandGroup cmd) {
-    this.add(new NamedSequentialCommandGroup(cmd, name));
+  private void add(String name, SequentialCommandGroup cmd, Pose2d startingPose) {
+    this.add(new NamedSequentialCommandGroup(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> driveSubsystem.resetOdometry(startingPose), driveSubsystem),
+            cmd
+        ),
+        name));
   }
 }

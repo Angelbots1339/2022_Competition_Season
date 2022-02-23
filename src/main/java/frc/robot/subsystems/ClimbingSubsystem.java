@@ -73,7 +73,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
      
-        
+        tab.addBoolean("Arms stalling?", () -> false);
         tab.add(this);
     }
 

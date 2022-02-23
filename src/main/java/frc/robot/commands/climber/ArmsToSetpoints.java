@@ -59,11 +59,6 @@ public class ArmsToSetpoints extends CommandBase {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
     }
-    else{
-    
-      climbingSubsystem.setLeftRotationVolts(0);
-      climbingSubsystem.setRightRotationVolts(0);
-    }
    
   }
 

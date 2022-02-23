@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     tab.add(aimWheelPID);
     tab.add(powerWheelPID);
 
-    tab.addNumber("Aim Wheel Speed", () -> getAimRPM());
+    tab.addNumber("Aim Wheel Speeds", () -> getAimRPM());
     tab.addNumber("Power Wheel Speed", () -> getPowerRPM());
 
     tab.addNumber("Aim PID Out", () -> aimPID);
