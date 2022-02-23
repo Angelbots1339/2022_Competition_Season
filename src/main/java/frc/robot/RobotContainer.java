@@ -158,8 +158,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    driveSubsystem.resetOdometry(new Pose2d());
-    System.err.println(autoChooser.getSelected().getName());
+    //driveSubsystem.resetOdometry(new Pose2d());
+    //System.err.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);

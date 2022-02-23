@@ -57,8 +57,8 @@ public class ArmsToSetpoints extends CommandBase {
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
-    } 
-
+    }
+   
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {

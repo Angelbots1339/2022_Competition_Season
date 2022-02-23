@@ -73,7 +73,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
      
-        
+        tab.addBoolean("Arms stalling?", () -> false);
         tab.add(this);
     }
     public boolean areMotorsStalling(){
@@ -119,7 +119,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setLeftRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit()));
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit() && isLeftBackAtLimit()));
     }
 
     /**
@@ -127,7 +127,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      */
     public void setRightRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit()));
+        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit() && isRightBackAtLimit()));
     }
 
     /**

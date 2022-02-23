@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -11,6 +12,8 @@ import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.ShooterProfiles;
 import static frc.robot.Constants.LoaderConstants.*;
+
+import java.time.Instant;
 
 public class Shoot extends CommandBase {
 
@@ -47,8 +50,10 @@ public class Shoot extends CommandBase {
   public void execute() {
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
+    boolean wait = false;
+    // if(timerStarted && timer.get() < .2) wait = true;
 
-    if (shooterSubsystem.isAtSetpoint()) {
+    if (shooterSubsystem.isAtSetpoint() && !wait) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
       intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
     }
