@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.*;
 
 import static frc.robot.Constants.ClimberConstants.*;
 
 public class ClimbingSubsystem extends SubsystemBase {
 
     // Motors
-    private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT, Constants.CANIVORE_NAME);
-    private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT, Constants.CANIVORE_NAME);
-    private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT, Constants.CANIVORE_NAME);
-    private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT, Constants.CANIVORE_NAME);
+    private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT, CANIVORE_NAME);
+    private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT, CANIVORE_NAME);
+    private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT, CANIVORE_NAME);
+    private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT, CANIVORE_NAME);
     private ShuffleboardTab tab = Shuffleboard.getTab("Climber Subsystem");
 
     // Limit Switches
@@ -76,11 +76,14 @@ public class ClimbingSubsystem extends SubsystemBase {
         
         tab.add(this);
     }
-
+    public boolean areMotorsStalling(){
+        return isMotorStalling(extenderLeftMotor) || isMotorStalling(extenderRightMotor) || isMotorStalling(rotatorLeftMotor) || isMotorStalling(rotatorRightMotor);
+    }
     
 
     // Setters
 
+    
     /**
      * Resets rotation/extension to 0
      */

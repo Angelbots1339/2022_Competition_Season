@@ -5,6 +5,10 @@
 package frc.robot;
 
 
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -24,6 +28,11 @@ import frc.robot.utils.ShooterProfiles;
 public final class Constants {
 
     public final static String CANIVORE_NAME = "rio";
+
+    public static boolean isMotorStalling(WPI_TalonFX motor){
+        double voltage = motor.getMotorOutputVoltage();
+        return motor.getStatorCurrent() >= 1.4 * voltage * voltage + 4.26 * voltage;
+    }
 
 
     public final static class JoystickConstants{

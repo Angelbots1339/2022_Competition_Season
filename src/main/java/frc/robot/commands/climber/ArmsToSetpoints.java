@@ -29,12 +29,11 @@ public class ArmsToSetpoints extends CommandBase {
     this.angleSetpoint = angleSetpoint;
     this.lengthSetpoint = lengthSetpoint;
   }
-  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
-   this(climbingSubsystem, lengthSetpoint, 0);
-   stopRoatator = true;
-  }
 
-  
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
+    this(climbingSubsystem, lengthSetpoint, 0);
+    stopRoatator = true;
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -55,27 +54,24 @@ public class ArmsToSetpoints extends CommandBase {
     climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
     climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
 
-    if(!stopRoatator){
+    if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
-    }
-    else{
-    
-      climbingSubsystem.setLeftRotationVolts(0);
-      climbingSubsystem.setRightRotationVolts(0);
-    }
-   
+    } 
+
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {
-    if(isWithinThreshold(setpoint, position, ROTATION_SETPOINT_THRESHOLD)) return 0;
+    if (isWithinThreshold(setpoint, position, ROTATION_SETPOINT_THRESHOLD))
+      return 0;
     return MAX_ROTATOR_VOLTS * Math.signum(setpoint - position);
   }
 
   private double extenderDesiredOutput(double setpoint, double position) {
-    if(isWithinThreshold(setpoint, position, EXTENDER_SETPOINT_THRESHOLD)) return 0;
+    if (isWithinThreshold(setpoint, position, EXTENDER_SETPOINT_THRESHOLD))
+      return 0;
     double maxVoltage;
-    if(setpoint - position < 0){
+    if (setpoint - position < 0) {
       maxVoltage = MAX_EXTENDER_VOLTS_RETRACT;
     } else {
       maxVoltage = MAX_EXTENDER_VOLTS;
@@ -97,16 +93,18 @@ public class ArmsToSetpoints extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(stopRoatator){
-      return isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
-    && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD);
-    }
-    else{
-      return isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
+
+    if (stopRoatator) {
+      return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
+          && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
+          || climbingSubsystem.areMotorsStalling();
+    } else {
+      return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD)
-          && isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD);
+          && isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD))
+          || climbingSubsystem.areMotorsStalling();
     }
-    
+
   }
 }

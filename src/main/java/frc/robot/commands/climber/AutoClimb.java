@@ -39,6 +39,7 @@ public class AutoClimb extends SequentialCommandGroup{
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0),
             new WaitUntilCommand(proceed),
+            
 
             // Second Bar Transfer
             new ArmsToSetpoints(climbingSubsystem, 0.69, 26),
@@ -53,8 +54,13 @@ public class AutoClimb extends SequentialCommandGroup{
 
     // @Override
     // public void end(boolean interrupted) {
-    //     CommandScheduler.getInstance().schedule(new ManualArms(climbingSubsystem, extendVolts, rotateVolts));
-    //     CommandScheduler.getInstance().schedule(new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem));
+        
+
     // }
+    
+    @Override
+    public boolean isFinished() {
+      return climbingSubsystem.areMotorsStalling();
+    }
 
 }
