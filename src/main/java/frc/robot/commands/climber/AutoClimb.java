@@ -30,9 +30,9 @@ public class AutoClimb extends SequentialCommandGroup{
         addCommands(
 
             // First Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 24),
+            new ArmsToSetpoints(climbingSubsystem, 0.76, 24),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 17),
+            new ArmsToSetpoints(climbingSubsystem, 0.76, 17),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
             new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
@@ -42,9 +42,9 @@ public class AutoClimb extends SequentialCommandGroup{
             
 
             // Second Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 24),
+            new ArmsToSetpoints(climbingSubsystem, 0.76, 24),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.69, 17),
+            new ArmsToSetpoints(climbingSubsystem, 0.76, 17),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
             new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
@@ -58,9 +58,9 @@ public class AutoClimb extends SequentialCommandGroup{
 
     // }
     
-    @Override
-    public boolean isFinished() {
-      return climbingSubsystem.areMotorsStalling();
-    }
+    // @Override
+    // public boolean isFinished() {
+    //   return climbingSubsystem.areMotorsStalling();
+    // }
 
 }
