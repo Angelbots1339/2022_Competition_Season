@@ -50,12 +50,12 @@ public class Shoot extends CommandBase {
   public void execute() {
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
-    boolean wait = false;
-    // if(timerStarted && timer.get() < .2) wait = true;
 
-    if (shooterSubsystem.isAtSetpoint() && !wait) {
+    if (shooterSubsystem.isAtSetpoint()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
       intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
+    } else {
+      loaderSubsystem.runLoader(0);
     }
     else{
       loaderSubsystem.runLoader(0);

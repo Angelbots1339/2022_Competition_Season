@@ -86,13 +86,13 @@ public final class Constants {
         public final static boolean GYRO_INVERTED = true;
 
         // PID / Motion Profiling
-        public final static double LEFT_KP = 2.8639;
-        public final static double RIGHT_KP = 2.8639;
+        public final static double LEFT_KP = 3.8;
+        public final static double RIGHT_KP = 3.8; //2.8639
         public final static double KS = 0.73816; // Volts
         public final static double KV = 2.1836;  // Volts * Seconds / Meters 
         public final static double KA = 0.25419; // Volts * Seconds^2 / Meters
-        public final static double KB = 3;
-        public final static double ZETA = 1.5;
+        public final static double KB = 3.8; // 3.5
+        public final static double ZETA = 0.4; //0.4
         
         /* Checking kP:
         Graph the input motor values from the desired motor values over time
@@ -125,7 +125,7 @@ public final class Constants {
     public static final class LoaderConstants{
 
         // General
-        public final static double MAX_LOADER_SPEED = 0.3;
+        public final static double MAX_LOADER_SPEED = 0.6;
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -160,7 +160,7 @@ public final class Constants {
         public final static int RIGHT_ENCODER_PORT = 4; 
 
         // Soft stops
-        public static final double EXTENDER_TOP_LIMIT = 0.70;
+        public static final double EXTENDER_TOP_LIMIT = 0.735;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
         public final static double ROTATOR_FRONT_LIMIT_DEG = 25.5;
@@ -173,7 +173,7 @@ public final class Constants {
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
         private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
         private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
-        private static final double SPOOL_CIRCUM = Units.inchesToMeters(1.25) * Math.PI;
+        private static final double SPOOL_CIRCUM = Units.inchesToMeters(2) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
 
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
@@ -184,8 +184,8 @@ public final class Constants {
     public final static class ShooterConstants {
 
         // General
-        public final static double AIM_WHEEL_TOLERANCE = 25; // rpm
-        public final static double POWER_WHEEL_TOLERANCE = 25; // rpm
+        public final static double AIM_WHEEL_TOLERANCE = 40; // rpm
+        public final static double POWER_WHEEL_TOLERANCE = 60; // rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2100, () -> 2400);
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1000);
 
@@ -202,7 +202,7 @@ public final class Constants {
         public final static double POWER_WHEEL_KD = 0;
         public final static double AIM_WHEEL_KF = 0.00181965;
         public final static double AIM_WHEEL_KB = 0.5523;
-        public final static double AIM_WHEEL_KP = 0.001;
+        public final static double AIM_WHEEL_KP = 0.0015;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 

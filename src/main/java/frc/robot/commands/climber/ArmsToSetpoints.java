@@ -97,13 +97,15 @@ public class ArmsToSetpoints extends CommandBase {
     if (stopRoatator) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
-          || climbingSubsystem.areMotorsStalling();
+          //|| climbingSubsystem.areMotorsStalling();
+          ;
     } else {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD))
-          || climbingSubsystem.areMotorsStalling();
+          //|| climbingSubsystem.areMotorsStalling();
+          ;
     }
 
   }
