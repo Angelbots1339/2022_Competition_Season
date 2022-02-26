@@ -81,7 +81,7 @@ public class RobotContainer {
    * Call in teleop init
    */
   public void resetArms() {
-    climbingSubsystem.reset(false);
+    climbingSubsystem.reset(true);
   }
 
   /**
