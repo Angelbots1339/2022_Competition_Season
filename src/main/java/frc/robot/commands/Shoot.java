@@ -14,6 +14,8 @@ import frc.robot.utils.ShooterProfiles;
 import static frc.robot.Constants.LoaderConstants.*;
 
 import java.time.Instant;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
 
@@ -21,6 +23,7 @@ public class Shoot extends CommandBase {
   private LoaderSubsystem loaderSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private ShooterProfiles shooterProfiles;
+  private BooleanSupplier overide;
 
   /**
    * Revs the flywheels, and when they are at setpoint, it will feed the balls and
@@ -31,13 +34,19 @@ public class Shoot extends CommandBase {
    * @param shooterProfile   pass in a shooter profile
    */
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
-      ShooterProfiles shooterProfile) {
+      ShooterProfiles shooterProfile, BooleanSupplier overide) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
+    this.overide = overide;
     addRequirements(loaderSubsystem, shooterSubsystem);
+  }
+  public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
+      ShooterProfiles shooterProfile){
+        this(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, (() -> false));
+
   }
 
   // Called when the command is initially scheduled.
@@ -51,7 +60,7 @@ public class Shoot extends CommandBase {
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
 
-    if (shooterSubsystem.isAtSetpoint()) {
+    if (shooterSubsystem.isAtSetpoint() || overide.getAsBoolean()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
       intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
     } 

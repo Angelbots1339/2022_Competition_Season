@@ -32,8 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
   
   
     
-    tab.addNumber("supply current", () -> intakeMotor.getSupplyCurrent());
-    tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
+    // tab.addNumber("supply current", () -> intakeMotor.getSupplyCurrent());
+    // tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
     tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
     tab.addBoolean("At ColorSensor", () -> isBallLow());
 

@@ -42,7 +42,7 @@ public class AutoClimb extends SequentialCommandGroup{
             
 
             // Second Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.76, 24),
+            new ArmsToSetpoints(climbingSubsystem, 0.75, 23.5),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.76, 17),
             new WaitUntilCommand(proceed),

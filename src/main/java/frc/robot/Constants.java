@@ -141,7 +141,7 @@ public final class Constants {
         public final static double MAX_ROTATOR_VOLTS = 2;
         public final static double MAX_EXTENDER_VOLTS = 5;
         public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
-        public final static double EXTENDER_SETPOINT_THRESHOLD = .01; // m
+        public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
         // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         // public static final double AUTO_ROTATION_SETPOINT = 21.76;
@@ -186,7 +186,7 @@ public final class Constants {
         // General
         public final static double AIM_WHEEL_TOLERANCE = 40; // rpm
         public final static double POWER_WHEEL_TOLERANCE = 60; // rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2100, () -> 2400);
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2300, () -> 2500);
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1000);
 
         // Ports
@@ -222,7 +222,7 @@ public final class Constants {
     public final static class AutoConstants {
 
         // General
-        public static final double SHOOT_TIME = 3; // s
+        public static final double SHOOT_TIME = 1.8; // s
 
     }
     public final static class LimelightConstants{

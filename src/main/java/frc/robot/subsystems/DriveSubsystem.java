@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
     
 
-    logData();
+    //logData();
 
     LiveWindow.disableAllTelemetry();
   }

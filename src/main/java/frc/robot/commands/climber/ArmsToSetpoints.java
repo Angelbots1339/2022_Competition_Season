@@ -4,6 +4,7 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
 
@@ -58,6 +59,14 @@ public class ArmsToSetpoints extends CommandBase {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
     }
+    SmartDashboard.putBoolean("left ROtator",
+        isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("right rotator",
+        isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("left extender",
+        isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("right extender",
+        isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
    
   }
 
@@ -77,6 +86,9 @@ public class ArmsToSetpoints extends CommandBase {
       maxVoltage = MAX_EXTENDER_VOLTS;
     }
     return maxVoltage * Math.signum(setpoint - position);
+
+    
+ 
   }
 
   // Called once the command ends or is interrupted.

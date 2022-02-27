@@ -51,14 +51,14 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
 
-    tab.add(aimWheelPID);
-    tab.add(powerWheelPID);
+    // tab.add(aimWheelPID);
+    // tab.add(powerWheelPID);
 
-    tab.addNumber("Aim Wheel Speeds", () -> getAimRPM());
-    tab.addNumber("Power Wheel Speed", () -> getPowerRPM());
+    // tab.addNumber("Aim Wheel Speeds", () -> getAimRPM());
+    // tab.addNumber("Power Wheel Speed", () -> getPowerRPM());
 
-    tab.addNumber("Aim PID Out", () -> aimPID);
-    tab.addNumber("Power PID Out", () -> powerPID);
+    // tab.addNumber("Aim PID Out", () -> aimPID);
+    // tab.addNumber("Power PID Out", () -> powerPID);
 
 
 

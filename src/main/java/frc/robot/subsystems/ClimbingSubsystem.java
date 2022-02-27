@@ -57,7 +57,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorRightMotor.clearStickyFaults();
         
        reset(true);
-        log();
+        //log();
 
     }
 
