@@ -14,7 +14,11 @@ public class RejectBall extends CommandBase {
   LoaderSubsystem loaderSubsystem;
   IntakeSubsystem intakeSubsystem;
   boolean isTeamRed;
-  /** Creates a new RejectBall. */
+  /** 
+   * Checks if a ball is at the color sensor, what color it is, and what team the robot is on, then runs the loader to eject any enemy balls
+   * 
+   * @param isTeamRed False if the team is Blue, True if it is Red
+  */
   public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, boolean isTeamRed) {
     this.loaderSubsystem = loaderSubsystem;
     this.intakeSubsystem = intakeSubsystem;
