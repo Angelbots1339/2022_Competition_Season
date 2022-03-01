@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorSensorV3.RawColor;
 
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -77,6 +78,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean isBallLow() {
     return colorSensorLow.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
+  }
+
+  public RawColor getColorSensorRaw(){
+
+    return colorSensorLow.getRawColor();
   }
 
   /**

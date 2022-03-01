@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
     LimeLight.setPipeline(1);
     LimeLight.setStream(2);
     CameraServer.startAutomaticCapture();
+
+    
   }
 
   /**

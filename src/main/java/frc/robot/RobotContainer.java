@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -24,6 +25,8 @@ import frc.robot.commands.Intake.ejectBalls;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
 import frc.robot.commands.FollowTrajectory;
+import frc.robot.commands.IdleShooter;
+import frc.robot.commands.RejectBall;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -60,6 +63,9 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
+  private NetworkTableEntry isTeamRed = tab.add("isTeamRed", false).getEntry();
+  
+
  
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
@@ -71,6 +77,7 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
+
   }
 
   public void resetOdometry() {
@@ -125,11 +132,15 @@ public class RobotContainer {
     
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
+    shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
+
     // Right Menu to toggle between driving and climbing
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, driveSubsystem, () -> joystick.getXButton(), extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, driveSubsystem,  intakeSubsystem, loaderSubsystem, shooterSubsystem, () -> joystick.getXButton(), extension, rotation)).toggleWhenPressed(stopDrive);
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(

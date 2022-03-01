@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -12,10 +11,7 @@ import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.ShooterProfiles;
 import static frc.robot.Constants.LoaderConstants.*;
-
-import java.time.Instant;
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
 
