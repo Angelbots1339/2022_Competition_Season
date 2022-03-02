@@ -8,12 +8,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
 import static frc.robot.Constants.ClimberConstants.*;
 
 public class ClimbingSubsystem extends SubsystemBase {
+
+    private double rotateLeftAcc = 0;
+    private double rotateRightAcc = 0;
 
     // Motors
     private WPI_TalonFX extenderLeftMotor = new WPI_TalonFX(EXTENDER_LEFT_PORT, CANIVORE_NAME);
@@ -57,7 +61,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorRightMotor.clearStickyFaults();
         
        reset(true);
-        //log();
+        log();
 
     }
 
@@ -118,6 +122,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setLeftRotationVolts(double volts) {
+        SmartDashboard.putNumber("leftAcc", rotateLeftAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit() && isLeftBackAtLimit()));
     }
@@ -126,6 +131,7 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setRightRotationVolts(double volts) {
+        SmartDashboard.putNumber("rightAcc", rotateRightAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit() && isRightBackAtLimit()));
     }

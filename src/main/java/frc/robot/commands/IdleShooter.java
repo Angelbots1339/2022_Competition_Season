@@ -36,7 +36,8 @@ public class IdleShooter extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    shooterSubsystem.setPowerWheelRPM(0);
+    shooterSubsystem.setAimWheelRPM(0);
 
   }
 

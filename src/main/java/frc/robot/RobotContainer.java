@@ -132,7 +132,7 @@ public class RobotContainer {
     
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
-    shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+    //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
     loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
 
@@ -140,7 +140,7 @@ public class RobotContainer {
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, driveSubsystem,  intakeSubsystem, loaderSubsystem, shooterSubsystem, () -> joystick.getXButton(), extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton())).toggleWhenPressed(stopDrive);
 
     // Toggle cameras & drive when B is pressed
     new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(

@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -25,39 +26,37 @@ public class AutoClimb extends SequentialCommandGroup{
     /**
      * @param climbingSubsystem
      */
-    public AutoClimb(ClimbingSubsystem climbingSubsystem, DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem, BooleanSupplier proceed, DoubleSupplier extendVolts, DoubleSupplier rotateVolts) {
+    public AutoClimb(ClimbingSubsystem climbingSubsystem, BooleanSupplier proceed) {
         this.climbingSubsystem = climbingSubsystem;
-        this.driveSubsystem = driveSubsystem;
-        this.intakeSubsystem = intakeSubsystem;
-        this.loaderSubsystem = loaderSubsystem;
-        this.shooterSubsystem = shooterSubsystem;
 
         this.proceed = proceed;
-        this.rotateVolts = rotateVolts;
-        this.extendVolts = extendVolts;
 
-        addRequirements(climbingSubsystem, driveSubsystem, intakeSubsystem, loaderSubsystem, shooterSubsystem);
+        addRequirements(climbingSubsystem);
         addCommands(
 
             // First Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.76, 24),
+            new ArmsToSetpoints(24, climbingSubsystem),
+            new ArmsToSetpoints(climbingSubsystem, 0.77, 24),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.76, 17),
+            new ArmsToSetpoints(17, climbingSubsystem),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
-            new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
+            new WaitCommand(.25),
+            new ArmsToSetpoints(climbingSubsystem, 0.01, 0),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0),
             new WaitUntilCommand(proceed),
             
 
             // Second Bar Transfer
-            new ArmsToSetpoints(climbingSubsystem, 0.75, 23.5),
+            new ArmsToSetpoints(23.5, climbingSubsystem),
+            new ArmsToSetpoints(climbingSubsystem, 0.77, 23.5),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.76, 17),
+            new ArmsToSetpoints(17, climbingSubsystem),
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.4),
-            new ArmsToSetpoints(climbingSubsystem, 0.03, 0),
+            new WaitCommand(.25),
+            new ArmsToSetpoints(climbingSubsystem, 0.01, 0),
             new WaitUntilCommand(proceed)
         );
     }

@@ -15,6 +15,7 @@ public class ArmsToSetpoints extends CommandBase {
   private final double angleSetpoint;
   private final double lengthSetpoint;
   private boolean stopRoatator = false;
+  private boolean stopExtender = false;
 
   /** Creates a new ExtendArms. */
   /**
@@ -36,6 +37,11 @@ public class ArmsToSetpoints extends CommandBase {
     stopRoatator = true;
   }
 
+  public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
+    this(climbingSubsystem, 0, angleSetpoint);
+    stopExtender = true;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -52,12 +58,15 @@ public class ArmsToSetpoints extends CommandBase {
     double rightExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getRightLength());
     double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle());
     double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
-    climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
-    climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
+    
 
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
+    }
+    if(!stopExtender) {
+      climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
+      climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
     }
     SmartDashboard.putBoolean("left ROtator",
         isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
@@ -67,6 +76,7 @@ public class ArmsToSetpoints extends CommandBase {
         isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
     SmartDashboard.putBoolean("right extender",
         isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("StopExtender", stopExtender);
    
   }
 
@@ -109,6 +119,11 @@ public class ArmsToSetpoints extends CommandBase {
     if (stopRoatator) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
+          //|| climbingSubsystem.areMotorsStalling();
+          ;
+    } else if(stopExtender) {
+      return (isWithinThreshold(angleSetpoint, climbingSubsystem.getRightAngle(), ROTATION_SETPOINT_THRESHOLD)
+          && isWithinThreshold(angleSetpoint, climbingSubsystem.getLeftAngle(), ROTATION_SETPOINT_THRESHOLD))
           //|| climbingSubsystem.areMotorsStalling();
           ;
     } else {
