@@ -74,6 +74,9 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("left Angle", () -> getLeftAngle());
         tab.addNumber("right Angle", () -> getRightAngle());
 
+        tab.addNumber("left Angle offset", () -> getLeftAngleOffset());
+        tab.addNumber("right Angle offset", () -> getRightAngleOffset());
+
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
         
@@ -217,12 +220,20 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getRightAngle() {
-        return rightEncoder.get() * 360;
+        return Math.IEEEremainder(rightEncoder.get() * 360, 180);
 
     }
 
     public double getLeftAngle() {
-        return -leftEncoder.get() * 360;
+        return Math.IEEEremainder(-leftEncoder.get() * 360, 180);
+    }
+    public double getRightAngleOffset() {
+        return rightEncoder.getPositionOffset() * 360;
+
+    }
+
+    public double getLeftAngleOffset() {
+        return -leftEncoder.getPositionOffset() * 360;
     }
 
     public boolean isLeftFrontAtLimit() {
