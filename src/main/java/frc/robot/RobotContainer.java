@@ -22,6 +22,7 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
+import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
 import frc.robot.commands.FollowTrajectory;
@@ -33,6 +34,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -65,7 +68,7 @@ public class RobotContainer {
 
   private NetworkTableEntry isTeamRed = tab.add("isTeamRed", false).getEntry();
   
-
+  private boolean driveMode = true;
  
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
@@ -137,14 +140,23 @@ public class RobotContainer {
     loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
 
     // Right Menu to toggle between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive).toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton())).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton())).toggleWhenPressed(stopDrive).toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
 
-    // Toggle cameras & drive when B is pressed
-    new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
-       (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
+    // Go to initial climb setpoint when x button is pressed and in drive mode
+    new JoystickButton(joystick, BUTTON_B).whenPressed(
+      new InstantCommand(
+        () -> {
+          if(!driveMode){
+            CommandScheduler.getInstance().schedule(new ArmsToSetpoints(climbingSubsystem, .6, 0));
+          } else {
+            new ToggleCamera((boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed);
+          }
+        }
+      )
+    );
 
     // Run Intake-in while the left bumper is held
     new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));

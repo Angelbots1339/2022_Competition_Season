@@ -77,6 +77,7 @@ public class ArmsToSetpoints extends CommandBase {
    */
   public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
     this(climbingSubsystem, lengthSetpoint, 0, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
+    stopRoatator = true;
   }
 
   /**
@@ -86,7 +87,9 @@ public class ArmsToSetpoints extends CommandBase {
    */
   public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
     this(climbingSubsystem, 0, angleSetpoint, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
+    stopExtender = true;
   }
+
 
   // Called when the command is initially scheduled.
   @Override

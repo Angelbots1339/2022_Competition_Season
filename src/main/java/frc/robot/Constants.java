@@ -160,8 +160,8 @@ public final class Constants {
 
         // General
         public final static double MAX_ROTATOR_VOLTS = 3;
-        public final static double MAX_EXTENDER_VOLTS = 7;
-        public final static double SLOW_EXTENDER_VOLTS = 3;
+        public final static double MAX_EXTENDER_VOLTS = 6;
+        public final static double SLOW_EXTENDER_VOLTS = 4;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 4; // deg
         // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
