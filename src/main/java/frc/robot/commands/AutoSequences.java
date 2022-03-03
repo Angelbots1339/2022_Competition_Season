@@ -50,7 +50,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "2Meter",
                 new SequentialCommandGroup(
                         grab("2Meter"),
-                        shoot(SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
 
         // Shoots ball and drives past line
@@ -58,7 +58,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "1 Ball",
                 "1BForward",
                 new SequentialCommandGroup(
-                        shoot(SHOOT_TIME, SHOOTER_PROFILE_LOW),
+                        shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
                         drive("1BForward")
                 ));
 
@@ -66,20 +66,20 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.add(
                 "2 Ball",
                 "2BGrab",
-                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 );
 
         // Grabs a different second ball and shoots
         this.add(
                 "2 Ball Alt 1",
                 "4BGrab1stSet",
-                grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 );
         // Grabs another different second ball and shoots
         this.add(
                 "2 Ball Alt 2",
                 "2BAlt2Grab",
-                grabDriveShoot("2BAlt2Grab", "2BAlt2Shoot", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                grabDriveShoot("2BAlt2Grab", "2BAlt2Shoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 );
 
         // Shoots first ball, grabs second and third, then shoots
@@ -87,8 +87,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "3 Ball",
                 "3BGrab",
                 new SequentialCommandGroup(
-                        shoot(SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("3BGrab", "3BShoot", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
+                        grabDriveShoot("3BGrab", "3BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
 
         // Grabs first ball, shoots, grabs 2nd ball, shoots
@@ -96,8 +96,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "3 Ball Alt 1",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("3BAltGrab2ndSet", "2BAlt2Shoot", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW),
+                        grabDriveShoot("3BAltGrab2ndSet", "2BAlt2Shoot", SHOOT_TIME_1B, SHOOTER_PROFILE_LOW)
                 ));
 
         // Grabs second ball and shoots, then grabs third and fourth balls and shoots
@@ -105,8 +105,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4 Ball",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW),
+                        grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
 
         // Grabs second ball and shoots, then grabs third and a different fourth ball
@@ -115,27 +115,28 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4 Ball Alt 1",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("4BAlt1Grab2ndSet", "4BAlt1Shoot2ndSet", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW),
+                        grabDriveShoot("4BAlt1Grab2ndSet", "4BAlt1Shoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
 
-        // Shoots first ball, grabs second and third, then shoots
-        this.add(
-                "4 Ball Alt 2",
-                "3BGrab",
-                new SequentialCommandGroup(
-                        grabDriveShoot("3BGrab", "3BShoot", SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME, SHOOTER_PROFILE_LOW)
-                ));
+        
         // Grabs second ball, shoots, grabs far ball + human ball, shoots
         this.add(
                 "4 Ball Alt 3",
                 "2BGrab",
                 new SequentialCommandGroup(
-                        grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME, SHOOTER_PROFILE_LOW),
-                        grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME, SHOOTER_PROFILE_LOW)
+                        grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW),
+                        grabDriveShoot("4BAlt3Grab", "4BAlt3Shoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
-
+        // Shoots first ball, grabs second and third, then shoots, grabs third and fourth, shoots
+        this.add(
+                "5 Ball",
+                "3BGrab",
+                new SequentialCommandGroup(
+                        shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
+                        grabDriveShoot("3BGrab", "3BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW),
+                        grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
+                ));
     }
 
     private void add(String name, String firstPath, SequentialCommandGroup cmd) {
