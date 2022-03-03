@@ -3,39 +3,38 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-
-import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.revrobotics.ColorSensorV3.RawColor;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.utils.ShooterProfiles;
 
-
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  * 
- * Auto points: <link>https://cad.onshape.com/documents/22cfb86daabd8968995686a8/w/eb0abfda5631fc44d9f905bf/e/ddfc9c84d7e050e02027c18c</link>
+ * Auto points:
+ * <link>https://cad.onshape.com/documents/22cfb86daabd8968995686a8/w/eb0abfda5631fc44d9f905bf/e/ddfc9c84d7e050e02027c18c</link>
  */
 public final class Constants {
 
     public final static String CANIVORE_NAME = "rio";
 
-    public static boolean isMotorStalling(WPI_TalonFX motor){
+    public static boolean isMotorStalling(WPI_TalonFX motor) {
         double voltage = motor.getMotorOutputVoltage();
         return motor.getStatorCurrent() >= 1.4 * voltage * voltage + 4.26 * voltage;
     }
 
-
-    public final static class JoystickConstants{
+    public final static class JoystickConstants {
         // USB Controller Ports
         public final static int MAIN_JOYSTICK = 0;
 
@@ -51,34 +50,36 @@ public final class Constants {
         public final static int LEFT_JOYSTICK_BUTTON = 9;
         public final static int RIGHT_JOYSTICK_BUTTON = 10;
     }
+
     /**
-     * All length units in meters 
+     * All length units in meters
      */
-    public final static class DriveConstants{
-        // General 
+    public final static class DriveConstants {
+        // General
         public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
         public final static boolean USE_LIMELIGHT_FIRST = false;
         public final static double ROT_SCALE = 0.65;
-        
+
         // Slew Rate Limiters
-        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; //max speed percent change per second
-        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; //max speed percent change per second
+        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; // max speed percent change per second
+        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; // max speed percent change per second
 
         // Ports
-        public final static int LEFT_MOTOR_TOP_PORT = 2; 
-        public final static int LEFT_MOTOR_FRONT_PORT = 1; 
+        public final static int LEFT_MOTOR_TOP_PORT = 2;
+        public final static int LEFT_MOTOR_FRONT_PORT = 1;
         public final static int LEFT_MOTOR_BACK_PORT = 3;
-        public final static int RIGHT_MOTOR_TOP_PORT = 5; 
-        public final static int RIGHT_MOTOR_FRONT_PORT = 4; 
+        public final static int RIGHT_MOTOR_TOP_PORT = 5;
+        public final static int RIGHT_MOTOR_FRONT_PORT = 4;
         public final static int RIGHT_MOTOR_BACK_PORT = 6;
-        
+
         // Config
         public final static double CENTER_DIST_BACK_BUMPER = 31.85541;
         public final static double TRACK_WIDTH_METERS = 0.5470525; // Center of left wheel to center of right wheel
         public final static double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4.18);
-        public final static double WHEEL_ROT_PER_MOTOR_ROT = 1/6.67;
+        public final static double WHEEL_ROT_PER_MOTOR_ROT = 1 / 6.67;
         public final static double CLICKS_PER_ROT = 2048;
-        public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
+        public final static DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(
+                TRACK_WIDTH_METERS);
         public final static boolean RIGHT_INVERTED = true;
         public final static boolean LEFT_INVERTED = false;
         public final static double CLICKS_TO_METERS = 1 / CLICKS_PER_ROT
@@ -87,42 +88,47 @@ public final class Constants {
 
         // PID / Motion Profiling
         public final static double LEFT_KP = 3.8;
-        public final static double RIGHT_KP = 3.8; //2.8639
+        public final static double RIGHT_KP = 3.8; // 2.8639
         public final static double KS = 0.73816; // Volts
-        public final static double KV = 2.1836;  // Volts * Seconds / Meters 
+        public final static double KV = 2.1836; // Volts * Seconds / Meters
         public final static double KA = 0.25419; // Volts * Seconds^2 / Meters
         public final static double KB = 3.8; // 3.5
-        public final static double ZETA = 0.4; //0.4
-        
-        /* Checking kP:
-        Graph the input motor values from the desired motor values over time
-        */
-        
-        /* Checking kV:
-        kV = voltage / free speed (meters per second)
-        free speed = free speed of the motor times the wheel circumference divided by the gear reduction
-        kV = 12v / (6380rpm / 60s * 0.1016m * pi / 6.67)
-        kV (theoretical) ~ 2.36
-        */
+        public final static double ZETA = 0.4; // 0.4
+
+        /*
+         * Checking kP:
+         * Graph the input motor values from the desired motor values over time
+         */
+
+        /*
+         * Checking kV:
+         * kV = voltage / free speed (meters per second)
+         * free speed = free speed of the motor times the wheel circumference divided by
+         * the gear reduction
+         * kV = 12v / (6380rpm / 60s * 0.1016m * pi / 6.67)
+         * kV (theoretical) ~ 2.36
+         */
     }
-    public final static class IntakeConstants{
+
+    public final static class IntakeConstants {
 
         // General
         public final static double MAX_INDEXER_PERCENT = 0.5;
-        public final static double MAX_INTAKE_PERCENT = 1;   
+        public final static double MAX_INTAKE_PERCENT = 1;
 
         // Ports
         public final static int INTAKE_MOTOR_PORT = 7;
         public final static int INDEXER_RIGHT_PORT = 9;
         public final static int INDEXER_LEFT_PORT = 8;
-             
+
         // Config
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         public final static boolean INTAKE_INVERTED = false;
         public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 (closest) to 2047 (furthest)
     }
-    public static final class LoaderConstants{
+
+    public static final class LoaderConstants {
 
         // General
         public final static double MAX_LOADER_SPEED = 0.6;
@@ -132,23 +138,38 @@ public final class Constants {
 
         // Config
         public final static boolean LOADER_INVERSE = true;
-        
+
+        public final static int BALL_RED_HIGH = 0;
+        public final static int BALL_GREEN_LOW = 0;
+        public final static int BALL_BLUE_LOW = 0;
+
+        public final static int BALL_RED_LOW = 0;
+        public final static int BALL_GREEN_LOW_2 = 0;
+        public final static int BALL_BLUE_HIGH = 0;
+
+        public static final boolean checkColorRed(RawColor raw) {
+            return (raw.blue < BALL_BLUE_LOW && raw.green < BALL_GREEN_LOW && raw.red > BALL_RED_HIGH);
+        }
+
+        public static final boolean checkColorBlue(RawColor raw) {
+            return (raw.red < BALL_RED_LOW && raw.green < BALL_GREEN_LOW_2 && raw.blue > BALL_BLUE_HIGH);
+        }
     }
 
-    public static final class ClimberConstants{
+    public static final class ClimberConstants {
 
         // General
-        public final static double MAX_ROTATOR_VOLTS = 2;
-        public final static double MAX_EXTENDER_VOLTS = 5;
-        public final static double MAX_EXTENDER_VOLTS_RETRACT = 7;
+        public final static double MAX_ROTATOR_VOLTS = 3;
+        public final static double MAX_EXTENDER_VOLTS = 6;
+        public final static double SLOW_EXTENDER_VOLTS = 4;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
-        public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
+        public final static double ROTATION_SETPOINT_THRESHOLD = 4; // deg
         // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         // public static final double AUTO_ROTATION_SETPOINT = 21.76;
         // public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
 
         // Ports
-        public static final int ROTATOR_LEFT_PORT = 16; 
+        public static final int ROTATOR_LEFT_PORT = 16;
         public static final int ROTATOR_RIGHT_PORT = 17;
         public static final int EXTENDER_LEFT_PORT = 14;
         public static final int EXTENDER_RIGHT_PORT = 15;
@@ -156,11 +177,11 @@ public final class Constants {
         public static final int ROTATOR_RIGHT_FRONT_LIMIT_PORT = 0;
         public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 2;
         public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
-        public final static int LEFT_ENCODER_PORT = 5; 
-        public final static int RIGHT_ENCODER_PORT = 4; 
+        public final static int LEFT_ENCODER_PORT = 5;
+        public final static int RIGHT_ENCODER_PORT = 4;
 
         // Soft stops
-        public static final double EXTENDER_TOP_LIMIT = 0.735;
+        public static final double EXTENDER_TOP_LIMIT = 0.75;
         public static final double EXTENDER_BOTTOM_LIMIT = -0.04;
         public final static double ROTATOR_BACK_LIMIT_DEG = 0;
         public final static double ROTATOR_FRONT_LIMIT_DEG = 25.5;
@@ -171,12 +192,13 @@ public final class Constants {
         public static final boolean EXTENDER_LEFT_INVERTED = false;
         public static final boolean EXTENDER_RIGHT_INVERTED = true;
         public static final double LIMIT_SWITCH_DEBOUNCE_SECONDS = 0.02;
-        private static final double MOTOR_ROT_PER_SPOOL_ROT = 16/1;
-        private static final double MOTOR_ROT_PER_ARM_ROT = 30.0/4100.0;
+        private static final double MOTOR_ROT_PER_SPOOL_ROT = 16 / 1;
+        private static final double MOTOR_ROT_PER_ARM_ROT = 30.0 / 4100.0;
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(2) * Math.PI;
-        public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM / MOTOR_ROT_PER_SPOOL_ROT;
+        public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM
+                / MOTOR_ROT_PER_SPOOL_ROT;
 
-        public final static double GET_DEGREES_FROM_CLICKS(double Clicks){
+        public final static double GET_DEGREES_FROM_CLICKS(double Clicks) {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
         }
     }
@@ -188,11 +210,14 @@ public final class Constants {
         public final static double POWER_WHEEL_TOLERANCE = 60; // rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2300, () -> 2500);
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1000);
+        public final static ShooterProfiles SHOOTER_PROFILE_IDLE = new ShooterProfiles(
+                () -> (SHOOTER_PROFILE_HIGH.getPowerRPM() + SHOOTER_PROFILE_LOW.getPowerRPM()) / 2,
+                () -> (SHOOTER_PROFILE_HIGH.getAimRPM() + SHOOTER_PROFILE_LOW.getAimRPM()) / 2);
 
         // Ports
-        public final static int LEFT_POWER_WHEEL = 11;  // 11
-        public final static int RIGHT_POWER_WHEEL = 12; // 12 
-        public final static int AIM_WHEEL = 13;  // 13
+        public final static int LEFT_POWER_WHEEL = 11; // 11
+        public final static int RIGHT_POWER_WHEEL = 12; // 12
+        public final static int AIM_WHEEL = 13; // 13
 
         // PID / Motion Profiling
         public final static double POWER_WHEEL_KF = 0.00172528;
@@ -206,7 +231,6 @@ public final class Constants {
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
-        
         // Config
         public final static boolean LEFT_POWER_WHEEL_INVERTED = true;
         public final static boolean RIGHT_POWER_WHEEL_INVERTED = false;
@@ -225,9 +249,12 @@ public final class Constants {
         public static final double SHOOT_TIME = 1.8; // s
 
     }
-    public final static class LimelightConstants{
-        public static enum entryType{
-            VALID_TARGETS, HORIZONTAL_OFFSET, VERTICAL_OFFSET, TARGET_AREA, SKEW, LATENCY, SHORTEST_SIDE, LONGEST_SIDE, HORIZONTAL_BOUNDS, VERTICAL_BOUNDS, ACTIVE_PIPELINE, POSE_3D, LED_MODE, CAM_MODE, PIPELINE, STREAM, SNAPSHOT;
+
+    public final static class LimelightConstants {
+        public static enum entryType {
+            VALID_TARGETS, HORIZONTAL_OFFSET, VERTICAL_OFFSET, TARGET_AREA, SKEW, LATENCY, SHORTEST_SIDE, LONGEST_SIDE,
+            HORIZONTAL_BOUNDS, VERTICAL_BOUNDS, ACTIVE_PIPELINE, POSE_3D, LED_MODE, CAM_MODE, PIPELINE, STREAM,
+            SNAPSHOT;
 
             @Override
             public String toString() {
@@ -266,7 +293,7 @@ public final class Constants {
                         return "stream";
                     case SNAPSHOT:
                         return "snapshot";
-                
+
                     default:
                         return "";
                 }
@@ -274,4 +301,3 @@ public final class Constants {
         }
     }
 }
-

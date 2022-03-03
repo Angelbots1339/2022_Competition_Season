@@ -11,6 +11,7 @@ public class ColorMUXed {
     private final int deviceNum;
     private final ColorSensorV3 sensor = new ColorSensorV3(MultiplexerConstants.DEFAULT_PORT);
 
+
     public ColorMUXed(int deviceNum) {
         this.deviceNum = deviceNum;
     }

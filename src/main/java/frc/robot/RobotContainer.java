@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -21,15 +22,20 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.ejectBalls;
+import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
 import frc.robot.commands.FollowTrajectory;
+import frc.robot.commands.IdleShooter;
+import frc.robot.commands.RejectBall;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -60,6 +66,9 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
+  private NetworkTableEntry isTeamRed = tab.add("isTeamRed", false).getEntry();
+  
+  private boolean driveMode = true;
  
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
@@ -71,6 +80,7 @@ public class RobotContainer {
     addAutoCommands();
     configureButtonBindings();
     driveSubsystem.resetOdometry(new Pose2d());
+
   }
 
   public void resetOdometry() {
@@ -120,20 +130,33 @@ public class RobotContainer {
     Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS_RETRACT;
+    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
     
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
+    //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
+
     // Right Menu to toggle between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation)).toggleWhenPressed(stopDrive).toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, driveSubsystem, () -> joystick.getXButton(), extension, rotation)).toggleWhenPressed(stopDrive);
+    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton())).toggleWhenPressed(stopDrive).toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
 
-    // Toggle cameras & drive when B is pressed
-    new JoystickButton(joystick, BUTTON_B).toggleWhenPressed(new ToggleCamera(
-       (boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed));
+    // Go to initial climb setpoint when x button is pressed and in drive mode
+    new JoystickButton(joystick, BUTTON_B).whenPressed(
+      new InstantCommand(
+        () -> {
+          if(!driveMode){
+            CommandScheduler.getInstance().schedule(new ArmsToSetpoints(climbingSubsystem, .6, 0));
+          } else {
+            new ToggleCamera((boolean isDriveReversed) -> this.isDriveReversed = isDriveReversed);
+          }
+        }
+      )
+    );
 
     // Run Intake-in while the left bumper is held
     new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));

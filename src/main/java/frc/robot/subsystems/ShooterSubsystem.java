@@ -69,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   /**
-   * 
+   * Updates PID, call once
    * @param speed RPM (Rotations per Minute)
    */
   public void setPowerWheelRPM(double speed) {
@@ -80,6 +80,10 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setVoltage(powerFeedForward + powerPID);
   }
 
+  /**
+   * Updates PID, call once
+   * @param speed RPM (Rotations per Minute)
+   */
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
     double aimWheelFeedForward = (speed * AIM_WHEEL_KF) + AIM_WHEEL_KB;

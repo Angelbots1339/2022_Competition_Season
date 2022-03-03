@@ -14,27 +14,82 @@ public class ArmsToSetpoints extends CommandBase {
   private ClimbingSubsystem climbingSubsystem;
   private final double angleSetpoint;
   private final double lengthSetpoint;
+  private final double extenderVoltage;
+  private final double rotatorVoltage;
   private boolean stopRoatator = false;
+  private boolean stopExtender = false;
 
-  /** Creates a new ExtendArms. */
   /**
-   * 
+   * Fully customized
    * @param climbingSubsystem
-   * @param lengthSetpoint    // m
-   * @param angleSetpoint     // degrees
+   * @param lengthSetpoint Target length
+   * @param angleSetpoint Target rotation
+   * @param extenderVoltage Voltage to drive extension
+   * @param rotatorVoltage Voltage to drive rotation
    */
-  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double angleSetpoint) {
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double angleSetpoint, double extenderVoltage, double rotatorVoltage) {
     addRequirements(climbingSubsystem);
-
     this.climbingSubsystem = climbingSubsystem;
     this.angleSetpoint = angleSetpoint;
     this.lengthSetpoint = lengthSetpoint;
+    this.extenderVoltage = extenderVoltage;
+    this.rotatorVoltage = rotatorVoltage;
   }
 
-  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
-    this(climbingSubsystem, lengthSetpoint, 0);
+  /**
+   * Target length/rotation, use default max voltages
+   * @param climbingSubsystem
+   * @param lengthSetpoint Target length
+   * @param angleSetpoint Target rotation
+   */
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double angleSetpoint) {
+    this(climbingSubsystem, lengthSetpoint, angleSetpoint, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
+  }
+
+  /**
+   * Target length with custom voltage, rotation disabled
+   * @param climbingSubsystem
+   * @param lengthSetpoint
+   * @param extenderVoltage
+   * @param rotatorVoltage
+   */
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double extenderVoltage, double rotatorVoltage) {
+    this(climbingSubsystem, lengthSetpoint, 0, extenderVoltage, rotatorVoltage);
     stopRoatator = true;
   }
+
+  /**
+   * Target angle with custom voltage, extension disabled
+   * @param angleSetpoint
+   * @param climbingSubsystem
+   * @param extenderVoltage
+   * @param rotatorVoltage
+   */
+  public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem, double extenderVoltage, double rotatorVoltage) {
+    this(climbingSubsystem, 0, angleSetpoint, extenderVoltage, rotatorVoltage);
+    stopExtender = true;
+  }
+  
+  /**
+   * Target length with default voltage, rotation disabled
+   * @param climbingSubsystem
+   * @param lengthSetpoint
+   */
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint) {
+    this(climbingSubsystem, lengthSetpoint, 0, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
+    stopRoatator = true;
+  }
+
+  /**
+   * Target angle with default voltage, extension disabled
+   * @param angleSetpoint
+   * @param climbingSubsystem
+   */
+  public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
+    this(climbingSubsystem, 0, angleSetpoint, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
+    stopExtender = true;
+  }
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -52,43 +107,36 @@ public class ArmsToSetpoints extends CommandBase {
     double rightExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getRightLength());
     double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle());
     double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
-    climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
-    climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
+    
 
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
     }
-    SmartDashboard.putBoolean("left ROtator",
-        isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("right rotator",
-        isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("left extender",
-        isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("right extender",
-        isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    if(!stopExtender) {
+      climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
+      climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
+    }
+    // SmartDashboard.putBoolean("left ROtator",
+    //     isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    // SmartDashboard.putBoolean("right rotator",
+    //     isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    // SmartDashboard.putBoolean("left extender",
+    //     isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    // SmartDashboard.putBoolean("right extender",
+    //     isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    // SmartDashboard.putBoolean("StopExtender", stopExtender);
    
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {
-    if (isWithinThreshold(setpoint, position, ROTATION_SETPOINT_THRESHOLD))
-      return 0;
-    return MAX_ROTATOR_VOLTS * Math.signum(setpoint - position);
+    if (isWithinThreshold(setpoint, position, ROTATION_SETPOINT_THRESHOLD)) return 0;
+    return rotatorVoltage * Math.signum(setpoint - position);
   }
 
   private double extenderDesiredOutput(double setpoint, double position) {
-    if (isWithinThreshold(setpoint, position, EXTENDER_SETPOINT_THRESHOLD))
-      return 0;
-    double maxVoltage;
-    if (setpoint - position < 0) {
-      maxVoltage = MAX_EXTENDER_VOLTS_RETRACT;
-    } else {
-      maxVoltage = MAX_EXTENDER_VOLTS;
-    }
-    return maxVoltage * Math.signum(setpoint - position);
-
-    
- 
+    if (isWithinThreshold(setpoint, position, EXTENDER_SETPOINT_THRESHOLD)) return 0;
+    return extenderVoltage * Math.signum(setpoint - position);
   }
 
   // Called once the command ends or is interrupted.
@@ -111,6 +159,11 @@ public class ArmsToSetpoints extends CommandBase {
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
           //|| climbingSubsystem.areMotorsStalling();
           ;
+    } else if(stopExtender) {
+      return (isWithinThreshold(angleSetpoint, climbingSubsystem.getRightAngle(), ROTATION_SETPOINT_THRESHOLD)
+          && isWithinThreshold(angleSetpoint, climbingSubsystem.getLeftAngle(), ROTATION_SETPOINT_THRESHOLD))
+          //|| climbingSubsystem.areMotorsStalling();
+          ;
     } else {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
@@ -119,6 +172,5 @@ public class ArmsToSetpoints extends CommandBase {
           //|| climbingSubsystem.areMotorsStalling();
           ;
     }
-
   }
 }
