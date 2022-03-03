@@ -159,11 +159,11 @@ public final class Constants {
     public static final class ClimberConstants {
 
         // General
-        public final static double MAX_ROTATOR_VOLTS = 3;
+        public final static double MAX_ROTATOR_VOLTS = 2;
         public final static double MAX_EXTENDER_VOLTS = 6;
         public final static double SLOW_EXTENDER_VOLTS = 4;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
-        public final static double ROTATION_SETPOINT_THRESHOLD = 4; // deg
+        public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
         // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
         // public static final double AUTO_ROTATION_SETPOINT = 21.76;
         // public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
@@ -175,8 +175,8 @@ public final class Constants {
         public static final int EXTENDER_RIGHT_PORT = 15;
         public static final int ROTATOR_LEFT_FRONT_LIMIT_PORT = 1;
         public static final int ROTATOR_RIGHT_FRONT_LIMIT_PORT = 0;
-        public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 2;
-        public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
+        public static final int ROTATOR_RIGHT_BACK_LIMIT_PORT = 3;
+        public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 2;
         public final static int LEFT_ENCODER_PORT = 5;
         public final static int RIGHT_ENCODER_PORT = 4;
 

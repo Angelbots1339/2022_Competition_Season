@@ -76,8 +76,12 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
-     
-        tab.addBoolean("Arms stalling?", () -> false);
+        
+        tab.addBoolean("back left limit", () -> isLeftBackAtLimit());
+        tab.addBoolean("back right limit", () -> isRightBackAtLimit());
+        tab.addBoolean("front left limit", () -> isRightFrontAtLimit());
+        tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
+        //tab.addBoolean("Arms stalling?", () -> false);
         tab.add(this);
     }
     public boolean areMotorsStalling(){
@@ -124,7 +128,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setLeftRotationVolts(double volts) {
         SmartDashboard.putNumber("leftAcc", rotateLeftAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit() && isLeftBackAtLimit()));
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit(), isLeftBackAtLimit()));
     }
 
     /**
@@ -133,7 +137,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setRightRotationVolts(double volts) {
         SmartDashboard.putNumber("rightAcc", rotateRightAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
-        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit() && isRightBackAtLimit()));
+        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit(), isRightBackAtLimit()));
     }
 
     /**
@@ -192,12 +196,12 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @return limited voltage output to not hit end stops
      */
 
-    private double checkBoundsRotations(double voltage, double angle, boolean limit) {
+    private double checkBoundsRotations(double voltage, double angle, boolean frontlimit, boolean backlimit) {
         // Negative voltage is rotate towards hard stop, positive voltage is rotate towards intake
+
         if ( // check rotate forward (not at limit & forward) or (below front limit & forward)
-            ((!limit && voltage > 0) && (angle <= ROTATOR_FRONT_LIMIT_DEG && voltage > 0)) ||
-            // check rotate back (above back limit & forward)
-            (angle >= ROTATOR_BACK_LIMIT_DEG && voltage < 0)
+            ((!frontlimit && voltage > 0) && (angle <= ROTATOR_FRONT_LIMIT_DEG && voltage > 0)) ||
+            ((angle >= ROTATOR_BACK_LIMIT_DEG && voltage < 0) && (!backlimit && voltage < 0))
             ) {
             return voltage;
         }

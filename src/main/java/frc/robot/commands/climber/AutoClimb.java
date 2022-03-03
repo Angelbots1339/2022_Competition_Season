@@ -42,8 +42,9 @@ public class AutoClimb extends SequentialCommandGroup{
             new ArmsToSetpoints(17, climbingSubsystem), // Rotate arms to smack high bar @ default speed
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(climbingSubsystem, 0.35, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Pull halfway up high bar @ slow speed
-            new WaitCommand(.25), // Brake mode stops arms from slamming into hard stops
+            new WaitCommand(.5), // Brake mode stops arms from slamming into hard stops
             new ArmsToSetpoints(climbingSubsystem, 0.35, 12, 4, MAX_ROTATOR_VOLTS), // Click hooks onto high bar @ default speed
+            new WaitCommand(.1),
             new ArmsToSetpoints(climbingSubsystem, 0.01, 0, 4, MAX_ROTATOR_VOLTS), // Click hooks onto high bar @ default speed
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Drop high bar into hooks @ slow speed
             new WaitUntilCommand(proceed),
@@ -57,11 +58,9 @@ public class AutoClimb extends SequentialCommandGroup{
             new WaitUntilCommand(proceed),
             new ArmsToSetpoints(17, climbingSubsystem), // Rotate arms to smack high bar @ default speed
             new WaitUntilCommand(proceed),
-            new WaitCommand(.25),
-            new ArmsToSetpoints(10, climbingSubsystem),
             new ArmsToSetpoints(climbingSubsystem, 0.3, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Pull halfway up traverse bar @ slow speed
-            new WaitCommand(.25), // Brake mode stops arms from slamming into hard stops
-            new ArmsToSetpoints(climbingSubsystem, 0.3, 10), // Click hooks onto traverse bar @ default speed
+            new WaitCommand(.5), // Brake mode stops arms from slamming into hard stops
+            new ArmsToSetpoints(climbingSubsystem, 0.3, 6), // Click hooks onto traverse bar @ default speed
             new ArmsToSetpoints(climbingSubsystem, 0.01, 0) // Click hooks onto traverse bar @ default speed
         );
     }
