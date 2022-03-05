@@ -11,11 +11,11 @@ import static frc.robot.Constants.LoaderConstants.*;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 
-public class ejectBalls extends CommandBase {
+public class EjectBalls extends CommandBase {
   /** Creates a new ejectBalls. */
   private IntakeSubsystem intakeSubsystem;
   private LoaderSubsystem loaderSubsystem;
-  public ejectBalls(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {
+  public EjectBalls(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.loaderSubsystem = loaderSubsystem;

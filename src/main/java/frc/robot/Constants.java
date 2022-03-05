@@ -132,6 +132,7 @@ public final class Constants {
 
         // General
         public final static double MAX_LOADER_SPEED = 0.6;
+        public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -206,13 +207,13 @@ public final class Constants {
     public final static class ShooterConstants {
 
         // General
-        public final static double AIM_WHEEL_TOLERANCE = 40; // rpm
-        public final static double POWER_WHEEL_TOLERANCE = 60; // rpm
+        public final static double AIM_WHEEL_TOLERANCE = 80; // rpm
+        public final static double POWER_WHEEL_TOLERANCE = 80; // rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2300, () -> 2500);
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1000);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
         public final static ShooterProfiles SHOOTER_PROFILE_IDLE = new ShooterProfiles(
-                () -> (SHOOTER_PROFILE_HIGH.getPowerRPM() + SHOOTER_PROFILE_LOW.getPowerRPM()) / 2,
-                () -> (SHOOTER_PROFILE_HIGH.getAimRPM() + SHOOTER_PROFILE_LOW.getAimRPM()) / 2);
+                () -> 1750,
+                () -> 1750);
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11; // 11
@@ -222,12 +223,12 @@ public final class Constants {
         // PID / Motion Profiling
         public final static double POWER_WHEEL_KF = 0.00172528;
         public final static double POWER_WHEEL_KB = 0.823253;
-        public final static double POWER_WHEEL_KP = 0.001;
+        public final static double POWER_WHEEL_KP = 0.00005;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
         public final static double AIM_WHEEL_KF = 0.00181965;
         public final static double AIM_WHEEL_KB = 0.5523;
-        public final static double AIM_WHEEL_KP = 0.0015;
+        public final static double AIM_WHEEL_KP = 0.00005;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 
@@ -247,7 +248,7 @@ public final class Constants {
 
         // General
         public static final double SHOOT_TIME_2B = 1.8; // s
-        public static final double SHOOT_TIME_1B = .75; // s
+        public static final double SHOOT_TIME_1B = 1; // s
 
     }
 

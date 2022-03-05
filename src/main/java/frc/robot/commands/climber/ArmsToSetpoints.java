@@ -117,15 +117,15 @@ public class ArmsToSetpoints extends CommandBase {
       climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
       climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
     }
-    // SmartDashboard.putBoolean("left ROtator",
-    //     isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    // SmartDashboard.putBoolean("right rotator",
-    //     isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    // SmartDashboard.putBoolean("left extender",
-    //     isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
-    // SmartDashboard.putBoolean("right extender",
-    //     isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
-    // SmartDashboard.putBoolean("StopExtender", stopExtender);
+    SmartDashboard.putBoolean("left ROtator",
+        isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("right rotator",
+        isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("left extender",
+        isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("right extender",
+        isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+    SmartDashboard.putBoolean("StopExtender", stopExtender);
    
   }
 

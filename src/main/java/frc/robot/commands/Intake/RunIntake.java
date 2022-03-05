@@ -9,6 +9,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 
 import static frc.robot.Constants.IntakeConstants.*;
+import static frc.robot.Constants.LoaderConstants.*;
 
 /**
  * 
@@ -19,6 +20,7 @@ public class RunIntake extends CommandBase {
 
   private final IntakeSubsystem intakeSubsystem;
   private final LoaderSubsystem loaderSubsystem;
+  private double loaderSpeed = MAX_INDEXER_PERCENT;
   public RunIntake(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, loaderSubsystem);
@@ -28,7 +30,10 @@ public class RunIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
+   
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -37,13 +42,9 @@ public class RunIntake extends CommandBase {
     intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
     intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
-    if(!intakeSubsystem.isBallLow()) {
-      loaderSubsystem.runLoader(MAX_INDEXER_PERCENT);
-    }
-    else{
+    if(intakeSubsystem.isBallLow()) {
       loaderSubsystem.runLoader(0);
     }
-
     
   }
 

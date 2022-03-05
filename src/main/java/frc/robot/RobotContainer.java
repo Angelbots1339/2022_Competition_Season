@@ -21,7 +21,7 @@ import frc.robot.commands.AutoSequences;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.Intake.ejectBalls;
+import frc.robot.commands.Intake.EjectBalls;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -126,7 +127,11 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Feed drive watchdog when idle
-    Command stopDrive = new RunCommand(() -> driveSubsystem.tankDriveVolts(0, 0), driveSubsystem);
+    Command stopDrive = new RunCommand(() -> driveSubsystem.disable(), driveSubsystem);
+    Command stopShooter = new RunCommand(() -> shooterSubsystem.disable(), shooterSubsystem);
+    Command stopIntake = new RunCommand(() -> intakeSubsystem.disable(), intakeSubsystem);
+    Command stopLoader = new RunCommand(() -> loaderSubsystem.disable(), loaderSubsystem);
+    Command stopToClimb = new ParallelCommandGroup(stopDrive, stopShooter, stopIntake, stopLoader);
 
 
     /* CLIMBING */
@@ -139,12 +144,12 @@ public class RobotContainer {
 
     // Right Menu to toggle between driving and climbing
     new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation))
-      .toggleWhenPressed(stopDrive)
+      .toggleWhenPressed(stopToClimb)
       .toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
 
     // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
     new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton()))
-      .toggleWhenPressed(stopDrive)
+      .toggleWhenPressed(stopToClimb)
       .toggleWhenPressed(new InstantCommand(() -> {driveMode = false;}));
 
     // Go to initial climb setpoint when x button is pressed and not in drive mode
@@ -170,9 +175,9 @@ public class RobotContainer {
     new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));
 
     // Run reverse intake when right bumper is pressed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new ejectBalls(intakeSubsystem, loaderSubsystem));
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
 
-    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
+    //loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
  
   }
 
@@ -186,6 +191,8 @@ public class RobotContainer {
     //System.err.println(autoChooser.getSelected().getName());
 
      // Follow path, then cut voltage to motors (stop)
+     
+
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
     
   }

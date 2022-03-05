@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.IntakeConstants.*;
+import static frc.robot.Constants.LoaderConstants.*;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -37,6 +38,8 @@ public class IntakeSubsystem extends SubsystemBase {
     // tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
     tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
     tab.addBoolean("At ColorSensor", () -> isBallLow());
+    tab.addBoolean("Is Ball Red", () -> checkColorRed(getColorSensorRaw()));
+    tab.addBoolean("Is Ball Blue", () -> checkColorBlue(getColorSensorRaw()));
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
