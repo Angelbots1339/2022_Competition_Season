@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import java.sql.Time;
+import java.util.Timer;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
@@ -13,13 +17,16 @@ public class RejectBall extends CommandBase {
 
   LoaderSubsystem loaderSubsystem;
   IntakeSubsystem intakeSubsystem;
-  boolean isTeamRed;
-  /** 
-   * Checks if a ball is at the color sensor, what color it is, and what team the robot is on, then runs the loader to eject any enemy balls
+  BooleanSupplier isTeamRed;
+  Timer timer = new Timer();
+
+  /**
+   * Checks if a ball is at the color sensor, what color it is, and what team the
+   * robot is on, then runs the loader to eject any enemy balls
    * 
    * @param isTeamRed False if the team is Blue, True if it is Red
-  */
-  public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, boolean isTeamRed) {
+   */
+  public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier isTeamRed) {
     this.loaderSubsystem = loaderSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.isTeamRed = isTeamRed;
@@ -30,25 +37,32 @@ public class RejectBall extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
+  private double waitTime = 0;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    
-    if(intakeSubsystem.isBallLow() && LoaderConstants.checkColorRed(intakeSubsystem.getColorSensorRaw()) && isTeamRed) { 
+    if (intakeSubsystem.isBallLow()
+        && ((LoaderConstants.checkColorRed(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())
+            || (LoaderConstants.checkColorBlue(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()))) {
       loaderSubsystem.runLoader(LoaderConstants.MAX_LOADER_SPEED);
+      waitTime = System.currentTimeMillis();
+    }
+    else if(System.currentTimeMillis() - waitTime >= LoaderConstants.REJECT_WAIT_TIME){
+      
+      loaderSubsystem.disable();
     }
 
-    if(intakeSubsystem.isBallLow() && LoaderConstants.checkColorBlue(intakeSubsystem.getColorSensorRaw()) && !isTeamRed) { 
-      loaderSubsystem.runLoader(LoaderConstants.MAX_LOADER_SPEED);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    loaderSubsystem.disable();
+  }
 
   // Returns true when the command should end.
   @Override

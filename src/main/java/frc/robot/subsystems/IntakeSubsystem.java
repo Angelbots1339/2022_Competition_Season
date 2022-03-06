@@ -40,6 +40,9 @@ public class IntakeSubsystem extends SubsystemBase {
     tab.addBoolean("At ColorSensor", () -> isBallLow());
     tab.addBoolean("Is Ball Red", () -> checkColorRed(getColorSensorRaw()));
     tab.addBoolean("Is Ball Blue", () -> checkColorBlue(getColorSensorRaw()));
+    tab.addNumber("Blue Value", () -> ((double)getColorSensorRaw().blue));
+    tab.addNumber("Green Value", () -> (double)getColorSensorRaw().green);
+    tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
 
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);

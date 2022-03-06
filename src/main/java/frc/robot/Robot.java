@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
 
     robotContainer.resetOdometry();
     robotContainer.resetArms();
+    robotContainer.setDriveMode();
   }
 
   /** This function is called periodically during operator control. */

@@ -133,6 +133,7 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.6;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
+        public final static double REJECT_WAIT_TIME = 250; //ms
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -140,20 +141,28 @@ public final class Constants {
         // Config
         public final static boolean LOADER_INVERSE = true;
 
-        public final static int BALL_RED_HIGH = 0;
-        public final static int BALL_GREEN_LOW = 0;
-        public final static int BALL_BLUE_LOW = 0;
+        public final static int BALL_R_RED = 30;
+        public final static int BALL_R_GREEN = 12;
+        public final static int BALL_R_BLUE = 2;
 
-        public final static int BALL_RED_LOW = 0;
-        public final static int BALL_GREEN_LOW_2 = 0;
-        public final static int BALL_BLUE_HIGH = 0;
+        public final static int BALL_B_RED = 7;
+        public final static int BALL_B_GREEN = 11;
+        public final static int BALL_B_BLUE = 8;
+        
+        public final static int COLOR_THRESHOLD = 2;
+        public final static int RED_THRESHOLD = 5;
+        public final static int GREEN_THRESHOLD = 5;
 
         public static final boolean checkColorRed(RawColor raw) {
-            return (raw.blue < BALL_BLUE_LOW && raw.green < BALL_GREEN_LOW && raw.red > BALL_RED_HIGH);
+            double redError = Math.abs(raw.blue - BALL_R_BLUE) + Math.abs(raw.red - BALL_R_RED) + Math.abs(raw.green - BALL_R_GREEN);
+            double blueError = Math.abs(raw.blue - BALL_B_BLUE) + Math.abs(raw.red - BALL_B_RED) + Math.abs(raw.green - BALL_B_GREEN);
+            return redError < blueError;
         }
 
         public static final boolean checkColorBlue(RawColor raw) {
-            return (raw.red < BALL_RED_LOW && raw.green < BALL_GREEN_LOW_2 && raw.blue > BALL_BLUE_HIGH);
+            double redError = Math.abs(raw.blue - BALL_R_BLUE) + Math.abs(raw.red - BALL_R_RED) + Math.abs(raw.green - BALL_R_GREEN);
+            double blueError = Math.abs(raw.blue - BALL_B_BLUE) + Math.abs(raw.red - BALL_B_RED) + Math.abs(raw.green - BALL_B_GREEN);
+            return blueError < redError;
         }
     }
 
@@ -207,13 +216,13 @@ public final class Constants {
     public final static class ShooterConstants {
 
         // General
-        public final static double AIM_WHEEL_TOLERANCE = 80; // rpm
-        public final static double POWER_WHEEL_TOLERANCE = 80; // rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 2300, () -> 2500);
+        public final static double AIM_WHEEL_TOLERANCE = 70; // rpm
+        public final static double POWER_WHEEL_TOLERANCE = 70; // rpm
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1450, () -> 3350
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
         public final static ShooterProfiles SHOOTER_PROFILE_IDLE = new ShooterProfiles(
-                () -> 1750,
-                () -> 1750);
+                () -> 1200,
+                () -> 1100);
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11; // 11
@@ -223,12 +232,12 @@ public final class Constants {
         // PID / Motion Profiling
         public final static double POWER_WHEEL_KF = 0.00172528;
         public final static double POWER_WHEEL_KB = 0.823253;
-        public final static double POWER_WHEEL_KP = 0.00005;
+        public final static double POWER_WHEEL_KP = 0.001;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
         public final static double AIM_WHEEL_KF = 0.00181965;
         public final static double AIM_WHEEL_KB = 0.5523;
-        public final static double AIM_WHEEL_KP = 0.00005;
+        public final static double AIM_WHEEL_KP = 0.0008;
         public final static double AIM_WHEEL_KI = 0;
         public final static double AIM_WHEEL_KD = 0;
 

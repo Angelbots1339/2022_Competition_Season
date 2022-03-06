@@ -68,7 +68,7 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
-  private NetworkTableEntry isTeamRed = tab.add("isTeamRed", false).getEntry();
+  private NetworkTableEntry isTeamRed = tab.add("rejectRed", false).getEntry();
   
   private boolean driveMode = true;
 
@@ -152,7 +152,7 @@ public class RobotContainer {
       .toggleWhenPressed(stopToClimb)
       .toggleWhenPressed(new InstantCommand(() -> {driveMode = false;}));
 
-    // Go to initial climb setpoint when x button is pressed and not in drive mode
+    // Go to initial climb setpoint when b button is pressed and not in drive mode
     new JoystickButton(joystick, BUTTON_B).whenPressed(new ConditionalCommand(new InstantCommand(), new ArmsToSetpoints(climbingSubsystem, .6, 0), () -> !driveMode));
 
 
@@ -166,7 +166,7 @@ public class RobotContainer {
     new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW, 
         () -> joystick.getRightStickButton()));
 
-    //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+    shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
 
     /* INTAKE */
@@ -177,7 +177,7 @@ public class RobotContainer {
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
 
-    //loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, isTeamRed.getBoolean(false)));
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, () -> isTeamRed.getBoolean(false)));
  
   }
 
@@ -206,5 +206,9 @@ public class RobotContainer {
     if(joystick.getBButton()) {
       climbingSubsystem.reset(true);
     }
+  }
+
+  public void setDriveMode() {
+    driveMode = false;
   }
 }
