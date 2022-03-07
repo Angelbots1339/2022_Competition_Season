@@ -53,6 +53,13 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         grabTimed("2Meter", 2),
                         shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
+        this.add(
+                "Example 2",
+                "TurnLeft",
+                new SequentialCommandGroup(
+                        grabTimed("TurnLeft", 2),
+                        shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
+                ));
 
         // Shoots ball and drives past line
         this.add(

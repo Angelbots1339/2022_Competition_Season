@@ -87,8 +87,8 @@ public final class Constants {
         public final static boolean GYRO_INVERTED = true;
 
         // PID / Motion Profiling
-        public final static double LEFT_KP = 3.8;
-        public final static double RIGHT_KP = 3.8; // 2.8639
+        public final static double LEFT_KP = 3.5;
+        public final static double RIGHT_KP = 3.5; // 2.8639
         public final static double KS = 0.73816; // Volts
         public final static double KV = 2.1836; // Volts * Seconds / Meters
         public final static double KA = 0.25419; // Volts * Seconds^2 / Meters
