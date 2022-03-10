@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
@@ -71,6 +72,8 @@ public class RobotContainer {
   private NetworkTableEntry isTeamRed = tab.add("rejectRed", false).getEntry();
   
   private boolean driveMode = true;
+
+  private boolean overrideRejectBalls = true;
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
@@ -171,6 +174,8 @@ public class RobotContainer {
 
     shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
+   
+
 
     /* INTAKE */
 
@@ -180,8 +185,10 @@ public class RobotContainer {
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
 
-    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, () -> isTeamRed.getBoolean(false)));
+    loaderSubsystem.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> loaderSubsystem.disable(), loaderSubsystem), 
+        new RejectBall(loaderSubsystem, intakeSubsystem, () -> isTeamRed.getBoolean(false)) ,  () -> overrideRejectBalls));
  
+    new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> overrideRejectBalls = !overrideRejectBalls));
   }
 
   /**
@@ -214,4 +221,9 @@ public class RobotContainer {
   public void setDriveMode() {
     driveMode = false;
   }
+
+  public void setOverrideRejectBalls(boolean overrideRejectBalls){
+    this.overrideRejectBalls = overrideRejectBalls;
+  }
+  
 }
