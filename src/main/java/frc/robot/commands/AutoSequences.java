@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
+
+import frc.robot.commands.Intake.EjectBalls;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -53,13 +55,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         grabTimed("2Meter", 2),
                         shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
                 ));
-        this.add(
-                "Example 2",
-                "TurnLeft",
-                new SequentialCommandGroup(
-                        grabTimed("TurnLeft", 2),
-                        shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
-                ));
+        
 
         // Shoots ball and drives past line
         this.add(
@@ -70,11 +66,26 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         drive("1BForward")
                 ));
 
+        // Shoots ball and hides opponent's
+        this.add(
+                "1 Ball Alt 1", 
+                "1BAlt1Hide", 
+                new SequentialCommandGroup(
+                        shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
+                        grab("1BAlt1Hide"),
+                        eject(3)
+                ));
+
         // Grabs second ball and shoots
         this.add(
                 "2 Ball",
                 "2BGrab",
-                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
+                new SequentialCommandGroup(
+                                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
+                                grab("2BHide"),
+                                eject(3)
+                        )
+                
                 );
 
         // Grabs a different second ball and shoots
@@ -178,6 +189,12 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         return new ParallelDeadlineGroup(
                 new WaitCommand(time),
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile));
+    }
+
+    private ParallelDeadlineGroup eject(double time) {
+        return new ParallelDeadlineGroup(
+                new WaitCommand(time), 
+                new EjectBalls(intakeSubsystem, loaderSubsystem));
     }
 
     private SequentialCommandGroup grabDriveShoot(String grabPath, String drivePath, double time, ShooterProfiles shooterProfile) {
