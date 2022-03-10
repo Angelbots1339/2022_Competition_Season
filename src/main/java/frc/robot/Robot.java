@@ -92,11 +92,16 @@ public class Robot extends TimedRobot {
     robotContainer.resetOdometry();
     robotContainer.resetArms();
     robotContainer.setDriveMode();
+    robotContainer.setOverrideRejectBalls(false);
   }
 
+
+  private int dPadPreviousState  = 2;
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if()
+  }
 
   @Override
   public void testInit() {
