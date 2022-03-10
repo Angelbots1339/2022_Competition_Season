@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.Logging;
 
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
@@ -31,9 +32,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-  
-  
-    
+    indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
+    indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
+    intakeMotor.setInverted(INTAKE_INVERTED);
+
+    indexerLeftMotor.clearStickyFaults();
+    indexerRightMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
+
+    if(Logging.log.getBoolean(false)) {
+      log();
+    }
+  }
+
+  public void log() {
     // tab.addNumber("supply current", () -> intakeMotor.getSupplyCurrent());
     // tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
     tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
@@ -43,14 +55,6 @@ public class IntakeSubsystem extends SubsystemBase {
     tab.addNumber("Blue Value", () -> ((double)getColorSensorRaw().blue));
     tab.addNumber("Green Value", () -> (double)getColorSensorRaw().green);
     tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
-
-    indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
-    indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
-    intakeMotor.setInverted(INTAKE_INVERTED);
-
-    indexerLeftMotor.clearStickyFaults();
-    indexerRightMotor.clearStickyFaults();
-    intakeMotor.clearStickyFaults();
   }
 
   @Override

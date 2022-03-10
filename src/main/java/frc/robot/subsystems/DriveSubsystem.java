@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.Logging;
 
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -80,8 +81,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     gyro.reset();
     
-
-    //logData();
+    if(Logging.log.getBoolean(false)) {
+      logData();
+    }
+    
 
     LiveWindow.disableAllTelemetry();
   }

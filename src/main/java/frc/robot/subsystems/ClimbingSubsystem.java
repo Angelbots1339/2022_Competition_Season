@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.Logging;
+
 import static frc.robot.Constants.*;
 
 import static frc.robot.Constants.ClimberConstants.*;
@@ -60,9 +62,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorLeftMotor.clearStickyFaults();
         rotatorRightMotor.clearStickyFaults();
         
-       reset(true);
-        log();
-
+        reset(true);
+        if(Logging.log.getBoolean(false)) {
+            log();
+        }
     }
 
     @Override
