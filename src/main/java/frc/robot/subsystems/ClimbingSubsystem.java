@@ -52,18 +52,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
-        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
-        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
-
-        extenderRightMotor.clearStickyFaults();
-        extenderLeftMotor.clearStickyFaults();
-        rotatorLeftMotor.clearStickyFaults();
-        rotatorRightMotor.clearStickyFaults();
+        clearStickies();
         
         reset(true);
-        if(Logging.log.getBoolean(false)) {
+        if(Logging.log) {
             log();
         }
     }
@@ -132,7 +124,6 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setLeftRotationVolts(double volts) {
-        SmartDashboard.putNumber("leftAcc", rotateLeftAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit(), isLeftBackAtLimit()));
     }
@@ -141,7 +132,6 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setRightRotationVolts(double volts) {
-        SmartDashboard.putNumber("rightAcc", rotateRightAcc++);
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit(), isRightBackAtLimit()));
     }
@@ -251,6 +241,18 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
     public boolean isLeftBackAtLimit() {
         return !debouncerBackLeft.calculate(rotatorLeftBackLimit.get());
+    }
+
+    public void clearStickies() {
+        extenderRightMotor.clearStickyFaults();
+        extenderLeftMotor.clearStickyFaults();
+        rotatorLeftMotor.clearStickyFaults();
+        rotatorRightMotor.clearStickyFaults();
+
+        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
+        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
     }
     
 }

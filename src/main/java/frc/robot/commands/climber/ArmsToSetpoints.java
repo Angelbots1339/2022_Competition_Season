@@ -85,7 +85,8 @@ public class ArmsToSetpoints extends CommandBase {
    * @param angleSetpoint
    * @param climbingSubsystem
    */
-  public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
+  public 
+  ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
     this(climbingSubsystem, 0, angleSetpoint, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
     stopExtender = true;
   }

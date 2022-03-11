@@ -18,6 +18,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutoSequences;
+import frc.robot.commands.ClearClimbingFaults;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
@@ -54,14 +55,15 @@ import static frc.robot.Constants.JoystickConstants.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  //Subsystems 
-  private final static DriveSubsystem driveSubsystem =  new DriveSubsystem();
-  private final static IntakeSubsystem intakeSubsystem =  new IntakeSubsystem();
-  private final static ClimbingSubsystem climbingSubsystem =  new ClimbingSubsystem();
+  // Subsystems
+  private final static DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final static ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
 
-  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem, shooterSubsystem);
+  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
+      shooterSubsystem);
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
@@ -70,10 +72,10 @@ public class RobotContainer {
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
   private NetworkTableEntry isTeamRed = tab.add("rejectRed", false).getEntry();
-  
+
   private boolean driveMode = true;
 
-  private boolean overrideRejectBalls = true;
+  // private boolean overrideRejectBalls = true;
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
@@ -106,12 +108,13 @@ public class RobotContainer {
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
 
     // Single
-    // autoChooser.addOption("Forward", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
-    // autoChooser.addOption("TurnLeft", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
-    // autoChooser.addOption("2Meter", FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
-    
-   
-   
+    // autoChooser.addOption("Forward",
+    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
+    // autoChooser.addOption("TurnLeft",
+    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
+    // autoChooser.addOption("2Meter",
+    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
+
     tab.add(autoChooser);
   }
 
@@ -125,8 +128,8 @@ public class RobotContainer {
     /* DRIVING */
 
     // Invert drive when using rear camera
-    DoubleSupplier fwd = () -> (isDriveReversed? 1 : -1) * joystick.getLeftY();
-    DoubleSupplier rot = () -> -joystick.getRightX()  * DriveConstants.ROT_SCALE;
+    DoubleSupplier fwd = () -> (isDriveReversed ? 1 : -1) * joystick.getLeftY();
+    DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
@@ -138,44 +141,51 @@ public class RobotContainer {
     Command stopLoader = new RunCommand(() -> loaderSubsystem.disable(), loaderSubsystem);
     Command stopToClimb = new ParallelCommandGroup(stopDrive, stopShooter, stopIntake, stopLoader);
 
-
     /* CLIMBING */
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * ClimberConstants.MAX_EXTENDER_VOLTS;
+    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())
+        * ClimberConstants.MAX_EXTENDER_VOLTS;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
-    
 
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
     // Right Menu to toggle between driving and climbing
-    new JoystickButton(joystick, RIGHT_MENU_BUTTON).toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation))
-      .toggleWhenPressed(stopToClimb)
-      .toggleWhenPressed(new InstantCommand(() -> {driveMode = !driveMode;}));
+    new JoystickButton(joystick, RIGHT_MENU_BUTTON)
+        .toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation))
+        .toggleWhenPressed(stopToClimb)
+        .toggleWhenPressed(new InstantCommand(() -> {
+          driveMode = !driveMode;
+        }));
 
-    // Start auto climb when left menu button pressed, and release to stop. Press X to proceed
-    new JoystickButton(joystick, LEFT_MENU_BUTTON).toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton()))
-      .toggleWhenPressed(stopToClimb)
-      .toggleWhenPressed(new InstantCommand(() -> {driveMode = false;}));
+    // Start auto climb when left menu button pressed, and release to stop. Press X
+    // to proceed
+    new JoystickButton(joystick, LEFT_MENU_BUTTON)
+        .toggleWhenPressed(new AutoClimb(climbingSubsystem, () -> joystick.getXButton()))
+        .toggleWhenPressed(stopToClimb)
+        .toggleWhenPressed(new InstantCommand(() -> {
+          driveMode = false;
+        }));
 
     // Go to initial climb setpoint when b button is pressed and not in drive mode
-    new JoystickButton(joystick, BUTTON_B).whenPressed(new ConditionalCommand(new InstantCommand(), new ArmsToSetpoints(climbingSubsystem, .6, 0), () -> !driveMode));
-
+    new JoystickButton(joystick, BUTTON_B).whenPressed(
+        new ConditionalCommand(
+            new ClearClimbingFaults(climbingSubsystem),
+            new ArmsToSetpoints(climbingSubsystem, .6, 0), () -> !driveMode));
 
     /* SHOOTING */
 
     // Shoot high when Y button is pressed
-    new JoystickButton(joystick, BUTTON_Y).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH, 
-        () -> joystick.getRightStickButton()));
+    new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem)
+        .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
+            () -> joystick.getRightStickButton())));
 
     // Shoot low when A button is pressed
-    new JoystickButton(joystick, BUTTON_A).whileHeld(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW, 
-        () -> joystick.getRightStickButton()));
+    new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem)
+        .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
+            () -> joystick.getRightStickButton())));
 
-    shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
-
-   
-
+    // shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
     /* INTAKE */
 
@@ -185,10 +195,11 @@ public class RobotContainer {
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
 
-    loaderSubsystem.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> loaderSubsystem.disable(), loaderSubsystem), 
-        new RejectBall(loaderSubsystem, intakeSubsystem, () -> isTeamRed.getBoolean(false)) ,  () -> overrideRejectBalls));
- 
-    new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> overrideRejectBalls = !overrideRejectBalls));
+    // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
+    // intakeSubsystem, () -> isTeamRed.getBoolean(false)));
+
+    // new POVButton(joystick, 0).whenPressed(new InstantCommand(() ->
+    // overrideRejectBalls = !overrideRejectBalls));
   }
 
   /**
@@ -197,23 +208,26 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //driveSubsystem.resetOdometry(new Pose2d());
-    //System.err.println(autoChooser.getSelected().getName());
+    // driveSubsystem.resetOdometry(new Pose2d());
+    // System.err.println(autoChooser.getSelected().getName());
 
-     // Follow path, then cut voltage to motors (stop)
-     
+    // Follow path, then cut voltage to motors (stop)
 
-    return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable).andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
-    
+    if (autoChooser.getSelected() == null) {
+      return new InstantCommand();
+    }
+    return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable)
+        .andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
   }
 
   public void testModeRunArms() {
-    climbingSubsystem.setTestExtenderPercent(joystick.getLeftY() * 0.4, joystick.getRightY() *0.4);
-    climbingSubsystem.setTestRotatorPercent(-joystick.getLeftTriggerAxis() * 0.1, -joystick.getRightTriggerAxis() * 0.1);
-    if(joystick.getXButton()) {
+    climbingSubsystem.setTestExtenderPercent(joystick.getLeftY() * 0.4, joystick.getRightY() * 0.4);
+    climbingSubsystem.setTestRotatorPercent(-joystick.getLeftTriggerAxis() * 0.1,
+        -joystick.getRightTriggerAxis() * 0.1);
+    if (joystick.getXButton()) {
       climbingSubsystem.reset(false);
     }
-    if(joystick.getBButton()) {
+    if (joystick.getBButton()) {
       climbingSubsystem.reset(true);
     }
   }
@@ -222,8 +236,12 @@ public class RobotContainer {
     driveMode = false;
   }
 
-  public void setOverrideRejectBalls(boolean overrideRejectBalls){
-    this.overrideRejectBalls = overrideRejectBalls;
+  public void setOverrideRejectBalls(boolean overrideRejectBalls) {
+    // this.overrideRejectBalls = overrideRejectBalls;
   }
-  
+
+  public void clearClimberStickies() {
+    climbingSubsystem.clearStickies();
+  }
+
 }

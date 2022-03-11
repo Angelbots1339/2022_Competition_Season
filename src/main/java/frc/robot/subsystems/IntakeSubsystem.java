@@ -40,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.clearStickyFaults();
     intakeMotor.clearStickyFaults();
 
-    if(Logging.log.getBoolean(false)) {
+    if(Logging.log) {
       log();
     }
   }

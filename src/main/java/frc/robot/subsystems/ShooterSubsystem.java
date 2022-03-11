@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.Logging;
 
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -51,6 +52,12 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
 
+    if(Logging.log) {
+      log();
+    }
+  }
+
+  private void log() {
     tab.add(aimWheelPID);
     tab.add(powerWheelPID);
 
@@ -59,11 +66,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     tab.addNumber("Aim PID Out", () -> aimPID);
     tab.addNumber("Power PID Out", () -> powerPID);
-
-    
-
-
-
   }
 
   @Override

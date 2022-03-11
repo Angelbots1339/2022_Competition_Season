@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
     LimeLight.setPipeline(1);
     LimeLight.setStream(2);
     LimeLight.setLEDMode(1);;
-    //CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
 
     
   }
@@ -93,6 +93,7 @@ public class Robot extends TimedRobot {
     robotContainer.resetArms();
     robotContainer.setDriveMode();
     robotContainer.setOverrideRejectBalls(false);
+    robotContainer.clearClimberStickies();
   }
 
 
@@ -100,7 +101,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if()
+    
   }
 
   @Override
