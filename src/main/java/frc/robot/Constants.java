@@ -256,7 +256,7 @@ public final class Constants {
     public final static class AutoConstants {
 
         // General
-        public static final double SHOOT_TIME_2B = 1.8; // s
+        public static final double SHOOT_TIME_2B = 1.55; // s
         public static final double SHOOT_TIME_1B = 1; // s
 
     }

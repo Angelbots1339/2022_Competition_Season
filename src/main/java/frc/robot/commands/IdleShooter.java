@@ -23,8 +23,8 @@ public class IdleShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setPowerWheelRPM(SHOOTER_PROFILE_IDLE.getPowerRPM());
-    shooterSubsystem.setAimWheelRPM(SHOOTER_PROFILE_IDLE.getAimRPM());
+    shooterSubsystem.setPowerWheelRPM(SHOOTER_PROFILE_HIGH.getPowerRPM());
+    shooterSubsystem.setAimWheelRPM(SHOOTER_PROFILE_HIGH.getAimRPM());
 
   }
 
