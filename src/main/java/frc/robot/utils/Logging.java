@@ -5,5 +5,5 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class Logging {
-    public static boolean log = false;
+    public static boolean log = true;
 }

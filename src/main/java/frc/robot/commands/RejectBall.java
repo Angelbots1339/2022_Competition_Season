@@ -4,21 +4,27 @@
 
 package frc.robot.commands;
 
-import java.sql.Time;
-import java.util.Timer;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LoaderConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
-import frc.robot.Constants.LoaderConstants;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.ColorRange;
+
+import static frc.robot.Constants.LoaderConstants.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 public class RejectBall extends CommandBase {
 
   LoaderSubsystem loaderSubsystem;
   IntakeSubsystem intakeSubsystem;
+  ShooterSubsystem shooterSubsystem;
   BooleanSupplier isTeamRed;
-  Timer timer = new Timer();
+  BooleanSupplier rejectEnabled;
+  ShootTimed shootCommand;
 
   /**
    * Checks if a ball is at the color sensor, what color it is, and what team the
@@ -26,13 +32,14 @@ public class RejectBall extends CommandBase {
    * 
    * @param isTeamRed False if the team is Blue, True if it is Red
    */
-  public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier isTeamRed) {
+  public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, BooleanSupplier isTeamRed, BooleanSupplier rejectEnabled) {
     this.loaderSubsystem = loaderSubsystem;
     this.intakeSubsystem = intakeSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
     this.isTeamRed = isTeamRed;
-
-    addRequirements(loaderSubsystem, intakeSubsystem);
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(loaderSubsystem);
+    this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_WAIT_TIME);
+    shootCommand.cancel();
   }
 
   // Called when the command is initially scheduled.
@@ -40,28 +47,31 @@ public class RejectBall extends CommandBase {
   public void initialize() {
   }
 
-  private double waitTime = 0;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (intakeSubsystem.isBallLow()
-        && ((LoaderConstants.checkColorRed(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())
-            || (LoaderConstants.checkColorBlue(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()))) {
-      loaderSubsystem.runLoader(LoaderConstants.MAX_LOADER_SPEED);
-      waitTime = System.currentTimeMillis();
+    if (intakeSubsystem.isBallLow() && !shootCommand.isScheduled()
+        && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) // If ball is blue and we are red
+        || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean())) { // If ball is red and we are blue
+      CommandScheduler.getInstance().schedule(createShootTimed());
+    } else if (shootCommand.isScheduled() // Trying to eject wrong ball
+    && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()) // If ball is blue and we are blue
+    || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())) { // If ball is red and we are red
+      shootCommand.cancel();
     }
-    else if(System.currentTimeMillis() - waitTime >= LoaderConstants.REJECT_WAIT_TIME){
-      
-      loaderSubsystem.disable();
-    }
-
   }
+
+  public ShootTimed createShootTimed() {
+    this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_REJECT, REJECT_WAIT_TIME);
+    return this.shootCommand;
+  }
+
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    loaderSubsystem.disable();
+
   }
 
   // Returns true when the command should end.

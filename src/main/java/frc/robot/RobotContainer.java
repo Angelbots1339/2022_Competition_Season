@@ -71,11 +71,11 @@ public class RobotContainer {
 
   private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
-  private NetworkTableEntry isTeamRed = tab.add("rejectRed", false).getEntry();
+  private NetworkTableEntry isTeamRed = tab.add("IsTeamRed?", false).getEntry();
 
   private boolean driveMode = true;
 
-  // private boolean overrideRejectBalls = true;
+  private boolean rejectBalls = true;
 
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
@@ -170,22 +170,20 @@ public class RobotContainer {
     // Go to initial climb setpoint when b button is pressed and not in drive mode
     new JoystickButton(joystick, BUTTON_B).whenPressed(
         new ConditionalCommand(
-            new ClearClimbingFaults(climbingSubsystem),
+            new InstantCommand(),
             new ArmsToSetpoints(climbingSubsystem, .6, 0), () -> !driveMode));
 
     /* SHOOTING */
 
     // Shoot high when Y button is pressed
-    new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem)
-        .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
+    new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
             () -> joystick.getRightStickButton())));
 
     // Shoot low when A button is pressed
-    new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem)
-        .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
+    new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
             () -> joystick.getRightStickButton())));
 
-    // shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+    //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
     /* INTAKE */
 
@@ -195,11 +193,9 @@ public class RobotContainer {
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
 
-    // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
-    // intakeSubsystem, () -> isTeamRed.getBoolean(false)));
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, shooterSubsystem, () -> isTeamRed.getBoolean(false), () -> rejectBalls));
 
-    // new POVButton(joystick, 0).whenPressed(new InstantCommand(() ->
-    // overrideRejectBalls = !overrideRejectBalls));
+    new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> rejectBalls = false));
   }
 
   /**

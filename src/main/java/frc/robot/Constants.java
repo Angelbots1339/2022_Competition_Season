@@ -8,6 +8,8 @@ import com.revrobotics.ColorSensorV3.RawColor;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.utils.ColorRange;
 import frc.robot.utils.ShooterProfiles;
 
 /**
@@ -49,6 +51,10 @@ public final class Constants {
         public final static int RIGHT_MENU_BUTTON = 8;
         public final static int LEFT_JOYSTICK_BUTTON = 9;
         public final static int RIGHT_JOYSTICK_BUTTON = 10;
+
+        // Timings
+        public final static double TELEOP_TIME = 2 * 60 + 15;
+        public final static double CLIMB_TIME = 30;
     }
 
     /**
@@ -125,15 +131,15 @@ public final class Constants {
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         public final static boolean INTAKE_INVERTED = false;
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 200; // 0 (closest) to 2047 (furthest)
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 70; // 0 (closest) to 2047 (furthest)
     }
 
     public static final class LoaderConstants {
 
         // General
-        public final static double MAX_LOADER_SPEED = 0.6;
+        public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_WAIT_TIME = 250; //ms
+        public final static double REJECT_WAIT_TIME = .7; //s
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -141,29 +147,8 @@ public final class Constants {
         // Config
         public final static boolean LOADER_INVERSE = true;
 
-        public final static int BALL_R_RED = 30;
-        public final static int BALL_R_GREEN = 12;
-        public final static int BALL_R_BLUE = 2;
-
-        public final static int BALL_B_RED = 7;
-        public final static int BALL_B_GREEN = 11;
-        public final static int BALL_B_BLUE = 8;
-        
-        public final static int COLOR_THRESHOLD = 2;
-        public final static int RED_THRESHOLD = 5;
-        public final static int GREEN_THRESHOLD = 5;
-
-        public static final boolean checkColorRed(RawColor raw) {
-            double redError = Math.abs(raw.blue - BALL_R_BLUE) + Math.abs(raw.red - BALL_R_RED) + Math.abs(raw.green - BALL_R_GREEN);
-            double blueError = Math.abs(raw.blue - BALL_B_BLUE) + Math.abs(raw.red - BALL_B_RED) + Math.abs(raw.green - BALL_B_GREEN);
-            return redError < blueError;
-        }
-
-        public static final boolean checkColorBlue(RawColor raw) {
-            double redError = Math.abs(raw.blue - BALL_R_BLUE) + Math.abs(raw.red - BALL_R_RED) + Math.abs(raw.green - BALL_R_GREEN);
-            double blueError = Math.abs(raw.blue - BALL_B_BLUE) + Math.abs(raw.red - BALL_B_RED) + Math.abs(raw.green - BALL_B_GREEN);
-            return blueError < redError;
-        }
+        public final static ColorRange RED = new ColorRange(990, 500, 100, 600);
+        public final static ColorRange BLUE = new ColorRange(280, 620, 540, 600);
     }
 
     public static final class ClimberConstants {
@@ -220,9 +205,7 @@ public final class Constants {
         public final static double POWER_WHEEL_TOLERANCE = 70; // rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1450, () -> 3350
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
-        public final static ShooterProfiles SHOOTER_PROFILE_IDLE = new ShooterProfiles(
-                () -> 1200,
-                () -> 1100);
+        public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 0);
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11; // 11

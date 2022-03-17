@@ -50,9 +50,9 @@ public class IntakeSubsystem extends SubsystemBase {
     // tab.addNumber("stator current", () -> intakeMotor.getStatorCurrent());
     tab.addNumber("ColorSensor low", () -> colorSensorLow.getProximity());
     tab.addBoolean("At ColorSensor", () -> isBallLow());
-    tab.addBoolean("Is Ball Red", () -> checkColorRed(getColorSensorRaw()));
-    tab.addBoolean("Is Ball Blue", () -> checkColorBlue(getColorSensorRaw()));
-    tab.addNumber("Blue Value", () -> ((double)getColorSensorRaw().blue));
+    tab.addNumber("Ball Red Error", () -> RED.getColorError(getColorSensorRaw()));
+    tab.addNumber("Ball Blue Error", () -> BLUE.getColorError(getColorSensorRaw()));
+    tab.addNumber("Blue Value", () -> (double)getColorSensorRaw().blue);
     tab.addNumber("Green Value", () -> (double)getColorSensorRaw().green);
     tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
   }
