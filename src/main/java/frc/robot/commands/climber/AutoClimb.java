@@ -39,32 +39,48 @@ public class AutoClimb extends SequentialCommandGroup{
         addCommands(
 
             // First Bar Transfer
-            new ArmsToSetpoints(25, climbingSubsystem), // Rotate arms back @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.77, 25, MAX_EXTENDER_VOLTS, 3), // Extend arms to high bar @ default speed
+            // Rotate arms back @ default speed
+            new ArmsToSetpoints(25, climbingSubsystem), 
+            // Extend arms to high bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.77, 25, MAX_EXTENDER_VOLTS, 3), 
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(17, climbingSubsystem), // Rotate arms to smack high bar @ default speed
+            // Rotate arms to smack high bar @ default speed
+            new ArmsToSetpoints(17, climbingSubsystem), 
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.35, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Pull halfway up high bar @ slow speed
-            new WaitCommand(.5), // Brake mode stops arms from slamming into hard stops
-            new ArmsToSetpoints(climbingSubsystem, 0.35, 12, 4.5, MAX_ROTATOR_VOLTS), // Click hooks onto high bar @ default speed
+            // Pull halfway up high bar @ slow speed
+            new ArmsToSetpoints(climbingSubsystem, 0.35, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            // Brake mode stops arms from slamming into hard stops
+            new WaitCommand(.5), 
+            // Click hooks onto high bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.35, 12, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             new WaitCommand(.1),
-            new ArmsToSetpoints(climbingSubsystem, 0.00, 0, 4.5, MAX_ROTATOR_VOLTS), // Click hooks onto high bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.25, 0, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Drop high bar into hooks @ slow speed
+            // Click hooks onto high bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.00, 0,PULLUP_VOLTS, MAX_ROTATOR_VOLTS), 
+            // Drop high bar into hooks @ slow speed
+            new ArmsToSetpoints(climbingSubsystem, 0.25, 0, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             new WaitUntilCommand(proceed),
             
 
             // Second Bar Transfer
-            new ArmsToSetpoints(24, climbingSubsystem), // Rotate arms back @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.5, 24,  MAX_EXTENDER_VOLTS, 3), // Extend arms almost to traverse bar @ default speed
+            // Rotate arms back @ default speed
+            new ArmsToSetpoints(24, climbingSubsystem), 
+            // Extend arms almost to traverse bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.5, 24,  MAX_EXTENDER_VOLTS, 3), 
             new WaitUntilCommand(proceed), 
-            new ArmsToSetpoints(climbingSubsystem, 0.77, 23.5), // Finish extension to get bar traverse bar @ default speed
+            // Finish extension to get bar traverse bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.77, 23.5),
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(17, climbingSubsystem), // Rotate arms to smack high bar @ default speed
+            // Rotate arms to smack high bar @ default speed
+            new ArmsToSetpoints(17, climbingSubsystem), 
             new WaitUntilCommand(proceed),
-            new ArmsToSetpoints(climbingSubsystem, 0.3, SLOW_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), // Pull halfway up traverse bar @ slow speed
-            new WaitCommand(.25), // Brake mode stops arms from slamming into hard stops
-            new ArmsToSetpoints(climbingSubsystem, 0.3, 6), // Click hooks onto traverse bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.00, 0) // Click hooks onto traverse bar @ default speed
+            // Pull halfway up traverse bar @ slow speed
+            new ArmsToSetpoints(climbingSubsystem, 0.3, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            // Brake mode stops arms from slamming into hard stops
+            new WaitCommand(.25), 
+            // Click hooks onto traverse bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.3, 6, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            // Click hooks onto traverse bar @ default speed
+            new ArmsToSetpoints(climbingSubsystem, 0.00, 0, PULLUP_VOLTS, MAX_ROTATOR_VOLTS) 
         );
     }
 

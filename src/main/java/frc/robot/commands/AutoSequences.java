@@ -101,6 +101,18 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         )
                 
                 );
+        this.add(
+                "2 Ball Hide",
+                "2BGrab",
+                new SequentialCommandGroup(
+                                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
+                                ,
+                                grab("2BHide"),
+                                eject(3),
+                                new TurnSimple(driveSubsystem, .5, 3)
+                        )
+                
+                );
 
         // Grabs a different second ball and shoots
         this.add(
@@ -138,7 +150,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4 Ball Blue",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
+                        grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2),
                         grabGrabShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2)
                 ));
         // Grabs second ball and shoots, then grabs third and fourth balls and shoots
@@ -178,6 +190,13 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         grabDriveShoot("3BGrab", "3BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
                         grabDriveShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
                 ));
+
+        this.add(
+                "Turn To 0 Degrees",
+                "3BGrab",
+                new SequentialCommandGroup(turnToAngle(0))
+                
+                );
     }
 
     private void add(String name, String firstPath, SequentialCommandGroup cmd) {
@@ -187,6 +206,15 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         new InstantCommand(() -> driveSubsystem.resetOdometry(getStartPose(firstPath)), driveSubsystem),
                         cmd),
                 name));
+
+       
+    }
+
+   
+
+    private TurnToAngle turnToAngle(double angle) {
+
+        return new TurnToAngle(driveSubsystem, angle);
     }
 
     private ParallelDeadlineGroup grab(String pathName) {

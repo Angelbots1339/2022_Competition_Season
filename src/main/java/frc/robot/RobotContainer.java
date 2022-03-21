@@ -144,8 +144,8 @@ public class RobotContainer {
     /* CLIMBING */
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())
-        * ClimberConstants.MAX_EXTENDER_VOLTS;
+    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() * ClimberConstants.DROP_EXTENDER_VOLTS - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS)
+       ;
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));

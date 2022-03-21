@@ -155,8 +155,10 @@ public final class Constants {
 
         // General
         public final static double MAX_ROTATOR_VOLTS = 2;
-        public final static double MAX_EXTENDER_VOLTS = 6;
-        public final static double SLOW_EXTENDER_VOLTS = 4;
+        public final static double MAX_EXTENDER_VOLTS = 9;
+        public final static double PULLUP_VOLTS = 7;
+        public final static double MANUAL_UP_VOLTS = 8;
+        public final static double DROP_EXTENDER_VOLTS = 4;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
         // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
@@ -242,6 +244,11 @@ public final class Constants {
         public static final double SHOOT_TIME_2B = 1.55; // s
         public static final double SHOOT_TIME_1B = 1; // s
 
+    }
+
+    public final static class TurnConstants {
+
+       public final static double TURN_THRESHOLD = 0; 
     }
 
     public final static class LimelightConstants {
