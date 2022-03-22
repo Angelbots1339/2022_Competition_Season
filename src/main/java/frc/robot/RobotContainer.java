@@ -20,14 +20,11 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutoSequences;
 import frc.robot.commands.ClearClimbingFaults;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.ToggleCamera;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Intake.EjectBalls;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ManualArms;
-import frc.robot.commands.FollowTrajectory;
-import frc.robot.commands.IdleShooter;
 import frc.robot.commands.RejectBall;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -35,7 +32,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -177,11 +173,11 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-            () -> joystick.getRightStickButton())));
+            () -> joystick.getRightStickButton(), () -> isTeamRed.getBoolean(false))));
 
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-            () -> joystick.getRightStickButton())));
+            () -> joystick.getRightStickButton(), () -> isTeamRed.getBoolean(false))));
 
     //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 

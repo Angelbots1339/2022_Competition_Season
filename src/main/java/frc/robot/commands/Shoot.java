@@ -5,7 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -20,6 +23,7 @@ public class Shoot extends CommandBase {
   private IntakeSubsystem intakeSubsystem;
   private ShooterProfiles shooterProfiles;
   private BooleanSupplier overide;
+  private BooleanSupplier isTeamRed;
 
   /**
    * Revs the flywheels, and when they are at setpoint, it will feed the balls and
@@ -30,18 +34,24 @@ public class Shoot extends CommandBase {
    * @param shooterProfile   pass in a shooter profile
    */
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
-      ShooterProfiles shooterProfile, BooleanSupplier overide) {
+      ShooterProfiles shooterProfile, BooleanSupplier overide, BooleanSupplier isTeamRed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
     this.overide = overide;
+    this.isTeamRed = isTeamRed;
     addRequirements(loaderSubsystem, shooterSubsystem);
   }
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
       ShooterProfiles shooterProfile){
-        this(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, (() -> false));
+    this.loaderSubsystem = loaderSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
+    this.shooterProfiles = shooterProfile;
+    this.intakeSubsystem = intakeSubsystem;
+    this.overide = () -> false;
+    addRequirements(loaderSubsystem, shooterSubsystem);
 
   }
 
@@ -53,6 +63,24 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // TODO check unplugging color sensor & see if robot program crashes.
+    // If so, surround color sensor calls in try/catch loop
+    // Check ball color and team color chosen
+    if (intakeSubsystem.isBallLow() && isTeamRed != null
+      // If ball is blue and we are red
+      && ((BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) 
+      // If ball is red and we are blue
+      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()))) { 
+        // Reject current ball
+        // TODO check auto behavior for shooting wrong color ball
+        // If behavior is unexpected, try updating flywheel setpoints for a set
+        // timer, then reverting back to previous setpoints.
+        // Make sure to revert to old setpoints when command ends/ is cancelled.
+        this.cancel();
+        CommandScheduler.getInstance().schedule(new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_REJECT, AutoConstants.SHOOT_TIME_1B));
+    }
+
+
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
 

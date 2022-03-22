@@ -105,8 +105,6 @@ public class Robot extends TimedRobot {
     
   }
 
-
-  private int dPadPreviousState  = 2;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {

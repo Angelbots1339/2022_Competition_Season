@@ -11,8 +11,6 @@ import frc.robot.subsystems.LoaderSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
 
-import java.util.function.BooleanSupplier;
-
 /**
  * 
  * Runs intake, lower indexer, and if no ball is at the high color sensor it runs the loader
@@ -22,7 +20,6 @@ public class RunIntake extends CommandBase {
 
   private final IntakeSubsystem intakeSubsystem;
   private final LoaderSubsystem loaderSubsystem;
-  private double loaderSpeed = MAX_INDEXER_PERCENT;
 
 
   public RunIntake(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {

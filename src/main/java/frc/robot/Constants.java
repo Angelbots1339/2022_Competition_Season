@@ -4,11 +4,9 @@
 
 package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.ColorSensorV3.RawColor;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utils.ColorRange;
 import frc.robot.utils.ShooterProfiles;
 

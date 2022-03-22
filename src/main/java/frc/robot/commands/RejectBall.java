@@ -8,11 +8,9 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.LoaderConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.utils.ColorRange;
 
 import static frc.robot.Constants.LoaderConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -51,12 +49,16 @@ public class RejectBall extends CommandBase {
   @Override
   public void execute() {
     if (intakeSubsystem.isBallLow() && !shootCommand.isScheduled()
-        && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) // If ball is blue and we are red
-        || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean())) { // If ball is red and we are blue
+        // If ball is blue and we are red
+        && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) 
+        // If ball is red and we are blue
+        || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean())) { 
       CommandScheduler.getInstance().schedule(createShootTimed());
     } else if (shootCommand.isScheduled() // Trying to eject wrong ball
-    && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()) // If ball is blue and we are blue
-    || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())) { // If ball is red and we are red
+    // If ball is blue and we are blue
+    && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()) 
+    // If ball is red and we are red
+    || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())) { 
       shootCommand.cancel();
     }
   }
