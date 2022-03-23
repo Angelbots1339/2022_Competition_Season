@@ -74,7 +74,8 @@ public class Shoot extends CommandBase {
         // timer, then reverting back to previous setpoints.
         // Make sure to revert to old setpoints when command ends/ is cancelled.
         this.cancel();
-        CommandScheduler.getInstance().schedule(new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_REJECT, AutoConstants.SHOOT_TIME_1B));
+        CommandScheduler.getInstance().schedule(
+          new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_REJECT, AutoConstants.SHOOT_TIME_1B));
     }
 
 

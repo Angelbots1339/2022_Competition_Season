@@ -125,4 +125,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getAimRPM(){
     return (aimWheel.getSelectedSensorVelocity() / CLICKS_PER_ROT) * 600;
   }
+
+  public void setAimVolts(double volts) {
+    aimWheel.setVoltage(volts);
+  }
+
+  public void setPowerVolts(double volts) {
+    powerWheelLeft.setVoltage(volts);
+    powerWheelRight.setVoltage(volts);
+  }
 }

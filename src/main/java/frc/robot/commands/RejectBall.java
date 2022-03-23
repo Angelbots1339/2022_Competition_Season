@@ -57,7 +57,10 @@ public class RejectBall extends CommandBase {
         // If ball is red and we are blue
         || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean())) { 
       CommandScheduler.getInstance().schedule(createShootTimed().andThen(
-        new ParallelDeadlineGroup(new WaitCommand(REVERSE_TIME), new EjectBalls(intakeSubsystem, loaderSubsystem))
+        new ParallelDeadlineGroup(
+          new WaitCommand(REVERSE_TIME),
+          new EjectBalls(intakeSubsystem, loaderSubsystem),
+          new ReverseShoot(shooterSubsystem))
       ));
     } else if (shootCommand.isScheduled() // Trying to eject wrong ball
     // If ball is blue and we are blue

@@ -137,7 +137,7 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_WAIT_TIME = .35; //s
+        public final static double REJECT_WAIT_TIME = .5; //s
         public final static double REVERSE_TIME = .3;
 
         // Ports
