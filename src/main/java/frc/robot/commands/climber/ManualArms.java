@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
 
 public class ManualArms extends CommandBase {
-  ClimbingSubsystem climbingSubsystem;
-  DoubleSupplier extendVolts;
-  DoubleSupplier rotateVolts;
+  private final ClimbingSubsystem climbingSubsystem;
+  private final DoubleSupplier extendVolts;
+  private final DoubleSupplier rotateVolts;
   /** Creates a new RunArms. */
   public ManualArms(ClimbingSubsystem climbingSubsystem, DoubleSupplier extendVolts, DoubleSupplier rotateVolts) {
     addRequirements(climbingSubsystem);
@@ -21,12 +21,6 @@ public class ManualArms extends CommandBase {
     this.extendVolts = extendVolts;
     this.rotateVolts = rotateVolts;
     // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,8 +33,7 @@ public class ManualArms extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climbingSubsystem.setExtensionVolts(0);
-    climbingSubsystem.setRotationVolts(0);
+    climbingSubsystem.disable();
   }
 
   // Returns true when the command should end.

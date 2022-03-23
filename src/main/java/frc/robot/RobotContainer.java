@@ -16,16 +16,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutoSequences;
-import frc.robot.commands.ClearClimbingFaults;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.Intake.EjectBalls;
+import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.auto.AutoSequences;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
+import frc.robot.commands.climber.ClearClimbingFaults;
 import frc.robot.commands.climber.ManualArms;
-import frc.robot.commands.RejectBall;
+import frc.robot.commands.intake.EjectBalls;
+import frc.robot.commands.intake.RejectBall;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -102,14 +102,6 @@ public class RobotContainer {
   public void addAutoCommands() {
     // Sequence
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
-
-    // Single
-    // autoChooser.addOption("Forward",
-    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "Forward"));
-    // autoChooser.addOption("TurnLeft",
-    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "TurnLeft"));
-    // autoChooser.addOption("2Meter",
-    // FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, "2Meter"));
 
     tab.add(autoChooser);
   }

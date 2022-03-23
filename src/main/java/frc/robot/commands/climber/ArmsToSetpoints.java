@@ -7,11 +7,15 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.utils.Logging;
 
 import static frc.robot.Constants.ClimberConstants.*;
 
+/**
+ * Move the arms to a desired setpont at a desired voltage
+ */
 public class ArmsToSetpoints extends CommandBase {
-  private ClimbingSubsystem climbingSubsystem;
+  private final ClimbingSubsystem climbingSubsystem;
   private final double angleSetpoint;
   private final double lengthSetpoint;
   private final double extenderVoltage;
@@ -85,8 +89,7 @@ public class ArmsToSetpoints extends CommandBase {
    * @param angleSetpoint
    * @param climbingSubsystem
    */
-  public 
-  ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
+  public ArmsToSetpoints(double angleSetpoint, ClimbingSubsystem climbingSubsystem) {
     this(climbingSubsystem, 0, angleSetpoint, MAX_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS);
     stopExtender = true;
   }
@@ -118,16 +121,17 @@ public class ArmsToSetpoints extends CommandBase {
       climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
       climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
     }
-    SmartDashboard.putBoolean("left ROtator",
-        isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("right rotator",
-        isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("left extender",
-        isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("right extender",
-        isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
-    SmartDashboard.putBoolean("StopExtender", stopExtender);
-   
+    if(Logging.log) { 
+        SmartDashboard.putBoolean("left Rotator",
+            isWithinThreshold(climbingSubsystem.getLeftAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+        SmartDashboard.putBoolean("right rotator",
+            isWithinThreshold(climbingSubsystem.getRightAngle(), angleSetpoint, ROTATION_SETPOINT_THRESHOLD));
+        SmartDashboard.putBoolean("left extender",
+            isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+        SmartDashboard.putBoolean("right extender",
+            isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD));
+        SmartDashboard.putBoolean("StopExtender", stopExtender);
+    }
   }
 
   private double rotatorDesiredOutput(double setpoint, double position) {

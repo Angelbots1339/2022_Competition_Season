@@ -137,7 +137,7 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_WAIT_TIME = .5; //s
+        public final static double REJECT_TIME = .5; //s
         public final static double REVERSE_TIME = .3;
 
         // Ports
@@ -160,9 +160,6 @@ public final class Constants {
         public final static double DROP_EXTENDER_VOLTS = 4;
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
-        // public static final double AUTO_EXTENSION_SETPOINT = 0.7351;
-        // public static final double AUTO_ROTATION_SETPOINT = 21.76;
-        // public static final double AUTO_ROTATION_BACK_SETPOINT = 15;
 
         // Ports
         public static final int ROTATOR_LEFT_PORT = 16;
@@ -242,6 +239,8 @@ public final class Constants {
         // General
         public static final double SHOOT_TIME_2B = 1.55; // s
         public static final double SHOOT_TIME_1B = 1; // s
+        public static final double TURN_VOLTS = 3;
+        public static final double HALF_TURN_TIME = .5;
 
     }
 

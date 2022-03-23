@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
@@ -11,13 +11,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
 
-import frc.robot.commands.Intake.EjectBalls;
-import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.drive.FollowTrajectory;
+import frc.robot.commands.drive.TurnSimple;
+import frc.robot.commands.drive.TurnToAngle;
+import frc.robot.commands.intake.EjectBalls;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.IdleShooter;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
@@ -25,9 +31,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.NamedSequentialCommandGroup;
 import frc.robot.utils.ShooterProfiles;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+/**
+ * Adds each auto sequence to an array list to easily populate shuffleboard
+ */
 public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> {
 
     private final DriveSubsystem driveSubsystem;
@@ -46,11 +52,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.intakeSubsystem = intakeSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.isTeamRed = isTeamRed;
-        // Example auto path
-        // Turns on intake
-        // Drives 1 meter
-        // Turns off intake
-        // Shoots low for 2 seconds
+
         this.add(
                 "Example",
                 "2Meter",
@@ -61,18 +63,17 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 ));
 
         this.add(
-                "Zero Move",
+                "Taxi",
                 "2Meter",
                 new SequentialCommandGroup(grab("2Meter"))
 
         );
 
         this.add(
-                "Zero no move",
+                "Wait",
                 "2Meter",
-                new SequentialCommandGroup(new InstantCommand())
-        );
-        
+                new SequentialCommandGroup(idleDrive())
+        );       
 
         // Shoots ball and drives past line
         this.add(
@@ -99,21 +100,18 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "2BGrab",
                 new SequentialCommandGroup(
                                 grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
-                                // ,
-                                // grab("2BHide"),
-                                // eject(3)
                         )
                 
                 );
+
         this.add(
                 "2 Ball Hide",
                 "2BGrab",
                 new SequentialCommandGroup(
-                                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
-                                ,
+                                grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
                                 grab("2BHide"),
                                 eject(3),
-                                new TurnSimple(driveSubsystem, .5, 3)
+                                turnTimed(HALF_TURN_TIME, TURN_VOLTS)
                         )
                 
                 );
@@ -208,30 +206,53 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.add(new NamedSequentialCommandGroup(
                 new SequentialCommandGroup(
                         new InstantCommand(() -> driveSubsystem.resetOdometry(getStartPose(firstPath)), driveSubsystem),
-                        cmd),
+                        cmd,
+                        idleDrive()),
                 name));
 
        
     }
 
-   
-
+    /**
+     * Feed drive watchdog to not generate errors
+     * @return
+     */
+    private RunCommand idleDrive() {
+        return new RunCommand(() -> driveSubsystem.disable(), driveSubsystem);
+    }
+    
     private TurnToAngle turnToAngle(double angle) {
-
         return new TurnToAngle(driveSubsystem, angle);
     }
 
+    private TurnSimple turnTimed(double time, double volts) {
+        return new TurnSimple(driveSubsystem, time, volts);
+    }
+
+    /**
+     * Drive a path while intake is running
+     * @param pathName
+     * @return
+     */
     private ParallelDeadlineGroup grab(String pathName) {
         return new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, pathName),
-                new RunIntake(intakeSubsystem, loaderSubsystem), new IdleShooter(shooterSubsystem));
+                new RunIntake(intakeSubsystem, loaderSubsystem),
+                new IdleShooter(shooterSubsystem));
     }
 
+    /**
+     * Drive a path, run intake on a timer
+     * @param pathName
+     * @param grabTime
+     * @return
+     */
     private ParallelDeadlineGroup grabTimed(String pathName, double grabTime) {
         return new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, pathName),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(grabTime), new RunIntake(intakeSubsystem, loaderSubsystem)),
+                        new WaitCommand(grabTime),
+                        new RunIntake(intakeSubsystem, loaderSubsystem)),
                 new IdleShooter(shooterSubsystem));
     }
 
@@ -239,16 +260,29 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         return new ParallelDeadlineGroup(FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, pathName), new IdleShooter(shooterSubsystem));
     }
 
+    /**
+     * Shoot for a given time
+     * @param time
+     * @param shooterProfile
+     * @return
+     */
     private ParallelDeadlineGroup shoot(double time, ShooterProfiles shooterProfile) {
         return new ParallelDeadlineGroup(
                 new WaitCommand(time),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, isTeamRed));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, isTeamRed),
+                idleDrive());
     }
 
+    /**
+     * Run intake backwards to spit ball
+     * @param time
+     * @return
+     */
     private ParallelDeadlineGroup eject(double time) {
         return new ParallelDeadlineGroup(
                 new WaitCommand(time), 
-                new EjectBalls(intakeSubsystem, loaderSubsystem));
+                new EjectBalls(intakeSubsystem, loaderSubsystem),
+                idleDrive());
     }
 
     private SequentialCommandGroup grabDriveShoot(String grabPath, String drivePath, double time, ShooterProfiles shooterProfile) {

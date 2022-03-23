@@ -53,7 +53,12 @@ public class ClimbingSubsystem extends SubsystemBase {
         reset(true);
         if(Logging.log) {
             log();
+            
         }
+        tab.addBoolean("back left limit", () -> isLeftBackAtLimit());
+        tab.addBoolean("back right limit", () -> isRightBackAtLimit());
+        tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
+        tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
     }
 
     @Override
@@ -71,10 +76,6 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("right Length", () -> getRightLength());
         tab.addNumber("left Length", () -> getLeftLength());
         
-        tab.addBoolean("back left limit", () -> isLeftBackAtLimit());
-        tab.addBoolean("back right limit", () -> isRightBackAtLimit());
-        tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
-        tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
         //tab.addBoolean("Arms stalling?", () -> false);
         tab.add(this);
     }
@@ -249,6 +250,11 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
         rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void disable() {
+        setExtensionVolts(0);
+        setRotationVolts(0);
     }
     
 }

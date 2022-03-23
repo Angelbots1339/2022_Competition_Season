@@ -2,19 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
+/**
+ * Turns robot for a specified time
+ */
 public class TurnSimple extends CommandBase {
   private final DriveSubsystem driveSubsystem;
   private final Timer timer;
   private final double time;
   private final double rightVolts;
 
-  /** Creates a new TurnSimple. */
+  /**
+   * @param driveSubsystem
+   * @param time Time to turn (s)
+   * @param rightVolts Volts on the right side of the drive train (left is inverted)
+   */
   public TurnSimple(DriveSubsystem driveSubsystem, double time, double rightVolts) {
     addRequirements(driveSubsystem);
     this.driveSubsystem = driveSubsystem;
@@ -35,10 +42,6 @@ public class TurnSimple extends CommandBase {
   public void execute() {
     driveSubsystem.tankDriveVolts(-rightVolts, rightVolts);
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
