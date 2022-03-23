@@ -60,13 +60,13 @@ public final class Constants {
      */
     public final static class DriveConstants {
         // General
-        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
+        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.9;
         public final static boolean USE_LIMELIGHT_FIRST = false;
-        public final static double ROT_SCALE = 0.65;
+        public final static double ROT_SCALE = 0.75;
 
         // Slew Rate Limiters
-        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; // max speed percent change per second
-        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; // max speed percent change per second
+        public final static double DECELERATION_SLEW_RATE_LIMITER = 1.35; //2  // max speed percent change per second
+        public final static double ACCELERATION_SLEW_RATE_LIMITER = 2.5; //3  // max speed percent change per second
 
         // Ports
         public final static int LEFT_MOTOR_TOP_PORT = 2;
@@ -137,7 +137,8 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_WAIT_TIME = .7; //s
+        public final static double REJECT_WAIT_TIME = .35; //s
+        public final static double REVERSE_TIME = .3;
 
         // Ports
         public final static int LOADER_PORT = 10;
@@ -205,7 +206,7 @@ public final class Constants {
         public final static double POWER_WHEEL_TOLERANCE = 70; // rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1450, () -> 3350
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
-        public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 0);
+        public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 300);
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11; // 11

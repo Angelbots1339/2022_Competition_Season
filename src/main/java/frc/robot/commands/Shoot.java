@@ -22,7 +22,6 @@ public class Shoot extends CommandBase {
   private LoaderSubsystem loaderSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private ShooterProfiles shooterProfiles;
-  private BooleanSupplier overide;
   private BooleanSupplier isTeamRed;
 
   /**
@@ -34,13 +33,12 @@ public class Shoot extends CommandBase {
    * @param shooterProfile   pass in a shooter profile
    */
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
-      ShooterProfiles shooterProfile, BooleanSupplier overide, BooleanSupplier isTeamRed) {
+      ShooterProfiles shooterProfile, BooleanSupplier isTeamRed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
-    this.overide = overide;
     this.isTeamRed = isTeamRed;
     addRequirements(loaderSubsystem, shooterSubsystem);
   }
@@ -50,7 +48,6 @@ public class Shoot extends CommandBase {
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
-    this.overide = () -> false;
     addRequirements(loaderSubsystem, shooterSubsystem);
 
   }
@@ -84,7 +81,7 @@ public class Shoot extends CommandBase {
     shooterSubsystem.setPowerWheelRPM(shooterProfiles.getPowerRPM());
     shooterSubsystem.setAimWheelRPM(shooterProfiles.getAimRPM());
 
-    if (shooterSubsystem.isAtSetpoint() || overide.getAsBoolean()) {
+    if (shooterSubsystem.isAtSetpoint()) {
       loaderSubsystem.runLoader(MAX_LOADER_SPEED);
       intakeSubsystem.runIndexerLow(IntakeConstants.MAX_INDEXER_PERCENT);
     } 

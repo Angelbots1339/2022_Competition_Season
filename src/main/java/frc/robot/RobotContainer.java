@@ -58,16 +58,16 @@ public class RobotContainer {
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
 
-  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
-      shooterSubsystem);
-
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
+  private static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
-  private NetworkTableEntry isTeamRed = tab.add("IsTeamRed?", false).getEntry();
+  private static NetworkTableEntry isTeamRed = tab.add("IsTeamRed?", false).getEntry();
+
+  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
+      shooterSubsystem, () -> isTeamRed.getBoolean(false));
 
   private boolean driveMode = true;
 
@@ -173,11 +173,11 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-            () -> joystick.getRightStickButton(), () -> isTeamRed.getBoolean(false))));
+            () -> isTeamRed.getBoolean(false))));
 
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-            () -> joystick.getRightStickButton(), () -> isTeamRed.getBoolean(false))));
+            () -> isTeamRed.getBoolean(false))));
 
     //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 

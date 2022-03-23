@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,15 +34,18 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private final IntakeSubsystem intakeSubsystem;
     private final LoaderSubsystem loaderSubsystem;
     private final ShooterSubsystem shooterSubsystem;
+    private final BooleanSupplier isTeamRed;
 
     public AutoSequences(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem,
             LoaderSubsystem loaderSubsystem,
-            ShooterSubsystem shooterSubsystem) {
+            ShooterSubsystem shooterSubsystem, 
+            BooleanSupplier isTeamRed) {
         super();
         this.driveSubsystem = driveSubsystem;
         this.loaderSubsystem = loaderSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.shooterSubsystem = shooterSubsystem;
+        this.isTeamRed = isTeamRed;
         // Example auto path
         // Turns on intake
         // Drives 1 meter
@@ -52,7 +56,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "2Meter",
                 new SequentialCommandGroup(
                         grabTimed("2Meter", 2),
-                        shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_LOW)
+                        shoot(SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
+                        drive("2Meter")
                 ));
 
         this.add(
@@ -237,7 +242,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private ParallelDeadlineGroup shoot(double time, ShooterProfiles shooterProfile) {
         return new ParallelDeadlineGroup(
                 new WaitCommand(time),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile));
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, isTeamRed));
     }
 
     private ParallelDeadlineGroup eject(double time) {
