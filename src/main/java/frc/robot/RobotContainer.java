@@ -35,7 +35,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -158,18 +160,22 @@ public class RobotContainer {
     // Go to initial climb setpoint when b button is pressed and not in drive mode
     new JoystickButton(joystick, BUTTON_B).whenPressed(
         new ConditionalCommand(
-            new InstantCommand(),
+            new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1),
             new ArmsToSetpoints(climbingSubsystem, .6, 0), () -> !driveMode));
 
     /* SHOOTING */
 
     // Shoot high when Y button is pressed
-    new JoystickButton(joystick, BUTTON_Y).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-            () -> isTeamRed.getBoolean(false))));
+    new JoystickButton(joystick, BUTTON_Y).whileHeld(
+      new ClearClimbingFaults(climbingSubsystem)
+      .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
+            () -> isTeamRed.getBoolean(false))))
+    .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-            () -> isTeamRed.getBoolean(false))));
+            () -> isTeamRed.getBoolean(false))))
+    .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 

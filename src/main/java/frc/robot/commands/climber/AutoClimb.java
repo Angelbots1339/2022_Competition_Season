@@ -26,7 +26,7 @@ public class AutoClimb extends SequentialCommandGroup{
 
             // First Bar Transfer
             // Rotate arms back @ default speed
-            new ArmsToSetpoints(25, climbingSubsystem), 
+            new ArmsToSetpoints(25, climbingSubsystem), // 25
             // Extend arms to high bar @ default speed
             new ArmsToSetpoints(climbingSubsystem, 0.77, 25, MAX_EXTENDER_VOLTS, 3), 
             new WaitUntilCommand(proceed),

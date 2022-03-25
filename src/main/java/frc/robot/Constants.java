@@ -60,13 +60,13 @@ public final class Constants {
      */
     public final static class DriveConstants {
         // General
-        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.9;
+        public final static double MAX_DRIVE_OUTPUT_PERCENT = 0.75;
         public final static boolean USE_LIMELIGHT_FIRST = false;
-        public final static double ROT_SCALE = 0.75;
+        public final static double ROT_SCALE = 0.65;
 
         // Slew Rate Limiters
-        public final static double DECELERATION_SLEW_RATE_LIMITER = 1.35; //2  // max speed percent change per second
-        public final static double ACCELERATION_SLEW_RATE_LIMITER = 2.5; //3  // max speed percent change per second
+        public final static double DECELERATION_SLEW_RATE_LIMITER = 2; //2  // max speed percent change per second
+        public final static double ACCELERATION_SLEW_RATE_LIMITER = 3; //3  // max speed percent change per second
 
         // Ports
         public final static int LEFT_MOTOR_TOP_PORT = 2;
@@ -119,6 +119,8 @@ public final class Constants {
         // General
         public final static double MAX_INDEXER_PERCENT = 0.5;
         public final static double MAX_INTAKE_PERCENT = 1;
+        public final static double INTAKE_DEPLOY_SPEED = .2;
+        public final static double INTAKE_DEPLOY_TIME = .4;
 
         // Ports
         public final static int INTAKE_MOTOR_PORT = 7;
@@ -201,7 +203,7 @@ public final class Constants {
         // General
         public final static double AIM_WHEEL_TOLERANCE = 70; // rpm
         public final static double POWER_WHEEL_TOLERANCE = 70; // rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1450, () -> 3350
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1260, () -> 3015); // () -> 1400, () -> 3350
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
         public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 300);
 
@@ -240,7 +242,7 @@ public final class Constants {
         public static final double SHOOT_TIME_2B = 1.55; // s
         public static final double SHOOT_TIME_1B = 1; // s
         public static final double TURN_VOLTS = 3;
-        public static final double HALF_TURN_TIME = .5;
+        public static final double HALF_TURN_TIME = .75;
 
     }
 

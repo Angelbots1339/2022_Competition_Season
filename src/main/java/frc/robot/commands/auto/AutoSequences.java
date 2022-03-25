@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.FollowTrajectory;
 import frc.robot.commands.drive.TurnSimple;
 import frc.robot.commands.drive.TurnToAngle;
+import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.EjectBalls;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.IdleShooter;
@@ -54,7 +56,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.isTeamRed = isTeamRed;
 
         this.add(
-                "Example",
+                "Exmaple",
                 "2Meter",
                 new SequentialCommandGroup(
                         grabTimed("2Meter", 2),
@@ -72,7 +74,13 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.add(
                 "Wait",
                 "2Meter",
-                new SequentialCommandGroup(idleDrive())
+                new SequentialCommandGroup(
+                        new ParallelDeadlineGroup(
+                                idleDrive(), 
+                                new ParallelDeadlineGroup(
+                                        new WaitCommand(2), 
+                                        new DeployIntake(intakeSubsystem)))
+                )
         );       
 
         // Shoots ball and drives past line
@@ -81,7 +89,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "1BForward",
                 new SequentialCommandGroup(
                         shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
-                        drive("1BForward")
+                        grabTimed("1BForward", 2)
                 ));
 
         // Shoots ball and hides opponent's
@@ -120,7 +128,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
         this.add(
                 "2 Ball Alt 1",
                 "4BGrab1stSet",
-                grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH)
+                grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2)
                 );
         // Grabs another different second ball and shoots
         this.add(
@@ -153,7 +161,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
                         grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2),
-                        grabGrabShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2)
+                        grabGrabShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2)
                 ));
         // Grabs second ball and shoots, then grabs third and fourth balls and shoots
         this.add(
@@ -161,7 +169,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
                         grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH),
-                        grabGrabShoot("4BGrab2ndSetRed", "4BShoot2ndSetRed", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2)
+                        grabGrabShoot("4BGrab2ndSetRed", "4BShoot2ndSetRed", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2)
                 ));
 
         // Grabs second ball and shoots, then grabs third and a different fourth ball
@@ -237,7 +245,12 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private ParallelDeadlineGroup grab(String pathName) {
         return new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, pathName),
-                new RunIntake(intakeSubsystem, loaderSubsystem),
+                new SequentialCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new WaitCommand(IntakeConstants.INTAKE_DEPLOY_TIME), 
+                                new DeployIntake(intakeSubsystem)),
+                        new RunIntake(intakeSubsystem, loaderSubsystem)
+                ),
                 new IdleShooter(shooterSubsystem));
     }
 
@@ -250,9 +263,15 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private ParallelDeadlineGroup grabTimed(String pathName, double grabTime) {
         return new ParallelDeadlineGroup(
                 FollowTrajectory.followTrajectoryFromJSON(driveSubsystem, pathName),
-                new ParallelDeadlineGroup(
-                        new WaitCommand(grabTime),
-                        new RunIntake(intakeSubsystem, loaderSubsystem)),
+                new SequentialCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new WaitCommand(IntakeConstants.INTAKE_DEPLOY_TIME), 
+                                new DeployIntake(intakeSubsystem)),
+                        new ParallelDeadlineGroup(
+                                new WaitCommand(grabTime),
+                                new RunIntake(intakeSubsystem, loaderSubsystem))  
+                ),
+                
                 new IdleShooter(shooterSubsystem));
     }
 
