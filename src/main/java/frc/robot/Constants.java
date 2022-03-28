@@ -131,7 +131,7 @@ public final class Constants {
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         public final static boolean INTAKE_INVERTED = false;
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 70; // 0 (closest) to 2047 (furthest)
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 100; // 0 (closest) to 2047 (furthest)
     }
 
     public static final class LoaderConstants {

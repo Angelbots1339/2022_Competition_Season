@@ -38,10 +38,11 @@ public class AutoClimb extends SequentialCommandGroup{
             // Brake mode stops arms from slamming into hard stops
             new WaitCommand(.5), 
             // Click hooks onto high bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.35, 12, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            new ArmsToSetpoints(climbingSubsystem, 0.35, 9, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             new WaitCommand(.1),
             // Click hooks onto high bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.00, 0,PULLUP_VOLTS, MAX_ROTATOR_VOLTS), 
+            new ArmsToSetpoints(climbingSubsystem, -0.01, -0.5,PULLUP_VOLTS, MAX_ROTATOR_VOLTS),
+            new WaitUntilCommand(proceed),
             // Drop high bar into hooks @ slow speed
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             new WaitUntilCommand(proceed),
@@ -67,6 +68,7 @@ public class AutoClimb extends SequentialCommandGroup{
             new ArmsToSetpoints(climbingSubsystem, 0.3, 6, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             // Click hooks onto traverse bar @ default speed
             new ArmsToSetpoints(climbingSubsystem, 0.00, 0, PULLUP_VOLTS, MAX_ROTATOR_VOLTS) 
+            // TODO angle -1
         );
     }
 }
