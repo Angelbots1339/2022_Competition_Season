@@ -11,6 +11,8 @@ import frc.robot.subsystems.LoaderSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * Runs balls up the intake to the color sensor
  */
@@ -33,18 +35,34 @@ public class RunIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
+    intakeSubsystem.runDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
+  
+      intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+      intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
-    intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
-    if(intakeSubsystem.isBallLow()) {
-      loaderSubsystem.runLoader(0);
-    }
+    if(Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD){
+      intakeSubsystem.runDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
+  
+      intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+      intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
+  
+      } else{
+  
+        intakeSubsystem.runDeployMotorsVolts(0);
+  
+        intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
+        intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
+    
+        if(intakeSubsystem.isBallLow()) {
+          loaderSubsystem.runLoader(0);
+        }
+      }
+   
   }
 
   // Called once the command ends or is interrupted.
