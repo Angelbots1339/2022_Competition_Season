@@ -44,6 +44,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     leftRetractMotor.getEncoder().setPosition(0);
     rightRetractMotor.getEncoder().setPosition(0);
+    leftRetractMotor.setInverted(true);
+    rightRetractMotor.setInverted(false);
 
     indexerLeftMotor.clearStickyFaults();
     indexerRightMotor.clearStickyFaults();
@@ -104,7 +106,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public double getLeftDeployMotorPosition() {
 
-    return leftRetractMotor.getEncoder().getPosition();
+    return -leftRetractMotor.getEncoder().getPosition();
 
   }
 

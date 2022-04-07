@@ -6,7 +6,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.IntakeConstants;
+import static frc.robot.Constants.IntakeConstants.*;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 
@@ -22,7 +22,8 @@ public class RetractIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.runDeployMotorsVolts(-IntakeConstants.INTAKE_RETRACT_MAX_VOLTS);
+    intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
 
   }
 
@@ -30,15 +31,17 @@ public class RetractIntake extends CommandBase {
   @Override
   public void execute() {
 
-    if(Math.abs(intakeSubsystem.getRightDeployMotorPosition() - IntakeConstants.RETRACTION_SETPOINT) > IntakeConstants.RETRACTION_THRESHOLD){
-
-      intakeSubsystem.runDeployMotorsVolts(IntakeConstants.INTAKE_RETRACT_MAX_VOLTS);
-  
-      } else{
-
-        intakeSubsystem.runDeployMotorsVolts(0);
-
-      }
+    // Feed Forward to get both motors to their setpoints
+    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runRightDeployMotorsVolts(0);
+    }
+    if (Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runLeftDeployMotorsVolts(0);
+    }
     }
 
   
@@ -52,6 +55,6 @@ public class RetractIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(intakeSubsystem.getRightDeployMotorPosition() - IntakeConstants.RETRACTION_SETPOINT) > IntakeConstants.RETRACTION_THRESHOLD;
+    return Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD;
   }
 }
