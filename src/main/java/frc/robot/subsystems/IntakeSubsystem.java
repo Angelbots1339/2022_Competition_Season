@@ -88,6 +88,16 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void runDeployMotorsVolts(double speed){
 
+    leftRetractMotor.setVoltage(speed);
+    rightRetractMotor.setVoltage(speed);
+  }
+  public void runRightDeployMotorsVolts(double speed){
+
+    leftRetractMotor.setVoltage(-speed);
+    rightRetractMotor.setVoltage(speed);
+  }
+  public void runLeftDeployMotorsVolts(double speed){
+
     leftRetractMotor.setVoltage(-speed);
     rightRetractMotor.setVoltage(speed);
   }

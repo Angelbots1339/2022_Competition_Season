@@ -22,7 +22,6 @@ public class RunIntake extends CommandBase {
   private final IntakeSubsystem intakeSubsystem;
   private final LoaderSubsystem loaderSubsystem;
 
-
   public RunIntake(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, loaderSubsystem);
@@ -31,38 +30,48 @@ public class RunIntake extends CommandBase {
 
   }
 
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.runDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
-  
-      intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
-      intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
+
+    // Start motors at speed safe for deploy
+    loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
+    intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+    intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if(Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD){
-      intakeSubsystem.runDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
-  
-      intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
-      intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
-  
-      } else{
-  
-        intakeSubsystem.runDeployMotorsVolts(0);
-  
-        intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
-        intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
-    
-        if(intakeSubsystem.isBallLow()) {
-          loaderSubsystem.runLoader(0);
-        }
+    // Feed Forward to get both motors to their setpoints
+    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runRightDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runRightDeployMotorsVolts(0);
+    }
+    if (Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runLeftDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runLeftDeployMotorsVolts(0);
+    }
+
+    // Runs intake and indexer if both motors have reached their setpoints
+    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) < RETRACTION_THRESHOLD
+        && Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - DEPLOY_SETPOINT) < RETRACTION_THRESHOLD) {
+
+      intakeSubsystem.runDeployMotorsVolts(0);
+
+      loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
+
+      intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
+      intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
+
+      if (intakeSubsystem.isBallLow()) {
+        loaderSubsystem.runLoader(0);
       }
-   
+
+    }
   }
 
   // Called once the command ends or is interrupted.
