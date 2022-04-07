@@ -134,8 +134,8 @@ public final class Constants {
         public final static int INDEXER_RIGHT_PORT = 9;
         public final static int INDEXER_LEFT_PORT = 8;
 
-        public final static int INTAKE_RETRACT_LEFT_PORT = 20;
-        public final static int INTAKE_RETRACT_RIGHT_PORT = 21;
+        public final static int INTAKE_RETRACT_LEFT_PORT = 18;
+        public final static int INTAKE_RETRACT_RIGHT_PORT = 19;
 
         // Config
         public final static boolean INDEXER_LEFT_INVERTED = true;
