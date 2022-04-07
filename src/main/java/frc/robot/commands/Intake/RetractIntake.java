@@ -6,14 +6,14 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.IntakeConstants;
+import static frc.robot.Constants.IntakeConstants.*;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 
-public class DeployIntake extends CommandBase {
+public class RetractIntake extends CommandBase {
   private IntakeSubsystem intakeSubsystem;
   /** Creates a new DeployIntake. */
-  public DeployIntake(IntakeSubsystem intakeSubsystem) {
+  public RetractIntake(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem);
     this.intakeSubsystem = intakeSubsystem;
@@ -22,16 +22,29 @@ public class DeployIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.runIntake(IntakeConstants.INTAKE_DEPLOY_SPEED);
-    intakeSubsystem.runIndexerLow(IntakeConstants.INTAKE_DEPLOY_SPEED);
+    intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.runIntake(IntakeConstants.INTAKE_DEPLOY_SPEED);
-    intakeSubsystem.runIndexerLow(IntakeConstants.INTAKE_DEPLOY_SPEED);
-  }
+
+    // Feed Forward to get both motors to their setpoints
+    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runRightDeployMotorsVolts(0);
+    }
+    if (Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
+      intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
+    } else {
+      intakeSubsystem.runLeftDeployMotorsVolts(0);
+    }
+    }
+
+  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -42,6 +55,6 @@ public class DeployIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD;
   }
 }

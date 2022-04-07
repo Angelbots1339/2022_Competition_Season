@@ -121,11 +121,21 @@ public final class Constants {
         public final static double MAX_INTAKE_PERCENT = 1;
         public final static double INTAKE_DEPLOY_SPEED = .2;
         public final static double INTAKE_DEPLOY_TIME = .4;
+        public final static double INTAKE_RETRACT_MAX_VOLTS = .4;
+
+        public final static double RETRACTION_THRESHOLD = 0.2;
+        public final static double DEPLOY_SETPOINT = 1;
+        public final static double RETRACTION_SETPOINT = 0;
+    
+
 
         // Ports
         public final static int INTAKE_MOTOR_PORT = 7;
         public final static int INDEXER_RIGHT_PORT = 9;
         public final static int INDEXER_LEFT_PORT = 8;
+
+        public final static int INTAKE_RETRACT_LEFT_PORT = 18;
+        public final static int INTAKE_RETRACT_RIGHT_PORT = 19;
 
         // Config
         public final static boolean INDEXER_LEFT_INVERTED = true;
@@ -149,7 +159,7 @@ public final class Constants {
         public final static boolean LOADER_INVERSE = true;
 
         public final static ColorRange RED = new ColorRange(990, 500, 100, 600);
-        public final static ColorRange BLUE = new ColorRange(280, 620, 540, 600);
+        public final static ColorRange BLUE = new ColorRange(280, 620, 540, 600);    
     }
 
     public static final class ClimberConstants {
