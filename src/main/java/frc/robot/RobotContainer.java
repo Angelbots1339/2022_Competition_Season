@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,10 +25,10 @@ import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
 import frc.robot.commands.climber.ManualArms;
-import frc.robot.commands.climber.PIDArmsToSetpoints;
-import frc.robot.commands.Intake.EjectBalls;
-import frc.robot.commands.Intake.RejectBall;
-import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.intake.EjectBalls;
+import frc.robot.commands.intake.RejectBall;
+import frc.robot.commands.intake.RetractIntake;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -193,8 +194,9 @@ public class RobotContainer {
 
     /* INTAKE */
 
+
     // Run Intake-in while the left bumper is held
-    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem));
+    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem)).whenReleased(new RetractIntake(intakeSubsystem));
 
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));

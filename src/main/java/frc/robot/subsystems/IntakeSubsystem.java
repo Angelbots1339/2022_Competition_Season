@@ -27,6 +27,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT, Constants.CANIVORE_NAME);
+  private CANSparkMax leftRetractMotor = new CANSparkMax(INTAKE_RETRACT_LEFT_PORT, MotorType.kBrushless);
+  private CANSparkMax rightRetractMotor = new CANSparkMax(INTAKE_RETRACT_RIGHT_PORT, MotorType.kBrushless);
+
+
   private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
 
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
@@ -39,6 +43,10 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     intakeMotor.setInverted(INTAKE_INVERTED);
 
+    leftRetractMotor.getEncoder().setPosition(0);
+    rightRetractMotor.getEncoder().setPosition(0);
+    leftRetractMotor.setInverted(true);
+    rightRetractMotor.setInverted(false);
 
     indexerLeftMotor.clearStickyFaults();
     indexerRightMotor.clearStickyFaults();
@@ -75,6 +83,39 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void runIntake(double speed) {
     intakeMotor.set(speed);
+  }
+
+  /**
+   * Runs the deploy motors at a set voltage
+   * 
+   * @param speed
+   */
+  public void runDeployMotorsVolts(double speed){
+
+    leftRetractMotor.setVoltage(speed);
+    rightRetractMotor.setVoltage(speed);
+  }
+  public void runRightDeployMotorsVolts(double speed){
+
+    leftRetractMotor.setVoltage(-speed);
+    rightRetractMotor.setVoltage(speed);
+  }
+  public void runLeftDeployMotorsVolts(double speed){
+
+    leftRetractMotor.setVoltage(-speed);
+    rightRetractMotor.setVoltage(speed);
+  }
+
+  public double getLeftDeployMotorPosition() {
+
+    return -leftRetractMotor.getEncoder().getPosition();
+
+  }
+
+  public double getRightDeployMotorPosition() {
+
+    return rightRetractMotor.getEncoder().getPosition();
+
   }
 
   /**

@@ -16,14 +16,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
-
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.FollowTrajectory;
 import frc.robot.commands.drive.TurnSimple;
 import frc.robot.commands.drive.TurnToAngle;
-import frc.robot.commands.Intake.DeployIntake;
-import frc.robot.commands.Intake.EjectBalls;
-import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.intake.EjectBalls;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.IdleShooter;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
@@ -78,9 +76,8 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         new ParallelDeadlineGroup(
                                 idleDrive(), 
                                 new ParallelDeadlineGroup(
-                                        new WaitCommand(2), 
-                                        new DeployIntake(intakeSubsystem)))
-                )
+                                        new WaitCommand(2)
+                )))
         );       
 
         // Shoots ball and drives past line
@@ -248,10 +245,9 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new SequentialCommandGroup(
                         new ParallelDeadlineGroup(
                                 new WaitCommand(IntakeConstants.INTAKE_DEPLOY_TIME), 
-                                new DeployIntake(intakeSubsystem)),
                         new RunIntake(intakeSubsystem, loaderSubsystem)
                 ),
-                new IdleShooter(shooterSubsystem));
+                new IdleShooter(shooterSubsystem)));
     }
 
     /**
@@ -266,13 +262,12 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 new SequentialCommandGroup(
                         new ParallelDeadlineGroup(
                                 new WaitCommand(IntakeConstants.INTAKE_DEPLOY_TIME), 
-                                new DeployIntake(intakeSubsystem)),
                         new ParallelDeadlineGroup(
                                 new WaitCommand(grabTime),
                                 new RunIntake(intakeSubsystem, loaderSubsystem))  
                 ),
                 
-                new IdleShooter(shooterSubsystem));
+                new IdleShooter(shooterSubsystem)));
     }
 
     private Command drive(String pathName) {
