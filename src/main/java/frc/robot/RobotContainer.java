@@ -25,6 +25,7 @@ import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
 import frc.robot.commands.climber.ManualArms;
+import frc.robot.commands.climber.PIDArmsToSetpoints;
 import frc.robot.commands.intake.EjectBalls;
 import frc.robot.commands.intake.RejectBall;
 import frc.robot.commands.intake.RetractIntake;

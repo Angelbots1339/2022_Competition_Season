@@ -41,7 +41,6 @@ public class ClimbingSubsystem extends SubsystemBase {
 
 
     public ClimbingSubsystem() {
-        extenderLeftMotor.startMotionProfile(stream, minBufferedPts, motionProfControlMode)
 
         
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
