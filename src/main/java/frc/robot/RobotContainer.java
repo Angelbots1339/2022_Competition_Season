@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.ClearDrivingFaults;
+import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.commands.auto.AutoSequences;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
@@ -35,6 +37,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.ArmSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -108,6 +111,8 @@ public class RobotContainer {
   public void addAutoCommands() {
     // Sequence
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
+    // SmartDashboard.putData("turn 90",new TurnToAngle(driveSubsystem, 90));
+    // SmartDashboard.putData("turn -90", new TurnToAngle(driveSubsystem, -90));
 
     tab.add(autoChooser);
   }

@@ -4,11 +4,9 @@
 
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.IntakeConstants.*;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LoaderSubsystem;
 
 public class RetractIntake extends CommandBase {
   private IntakeSubsystem intakeSubsystem;
