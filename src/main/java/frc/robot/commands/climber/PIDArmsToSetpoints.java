@@ -65,19 +65,19 @@ public class PIDArmsToSetpoints extends CommandBase {
       rightExtender.setConstraints(armSpeeds.getExtenderConstraints());
       leftExtender.setConstraints(armSpeeds.getExtenderConstraints());
 
-      SmartDashboard.putNumber("rightExtender", rightExtender.calculate(climbingSubsystem.getRightLength()));
-      SmartDashboard.putNumber("rightLength", climbingSubsystem.getRightLength());
-      SmartDashboard.putBoolean("at setPoint", rightExtender.atSetpoint());
-      SmartDashboard.putBoolean("at goal", rightExtender.atGoal());
-      SmartDashboard.putNumber("Goal", rightExtender.getGoal().position);
-      SmartDashboard.putNumber("Setpoint", rightExtender.getSetpoint().position);
+      // SmartDashboard.putNumber("rightExtender", rightExtender.calculate(climbingSubsystem.getRightLength()));
+      // SmartDashboard.putNumber("rightLength", climbingSubsystem.getRightLength());
+      // SmartDashboard.putBoolean("at setPoint", rightExtender.atSetpoint());
+      // SmartDashboard.putBoolean("at goal", rightExtender.atGoal());
+      // SmartDashboard.putNumber("Goal", rightExtender.getGoal().position);
+      // SmartDashboard.putNumber("Setpoint", rightExtender.getSetpoint().position);
 
       //SmartDashboard.putBoolean("Test", new TrapezoidProfile.Constraints(10, 10) == armSpeeds.getExtenderConstraints());
       
 
 
-      climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtender.calculate(climbingSubsystem.getLeftLength()), -MAX_RETRACTION_VOLTS, MAX_EXTENSION_VOLTS));
-      climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtender.calculate(climbingSubsystem.getRightLength()), MAX_EXTENSION_VOLTS, -MAX_RETRACTION_VOLTS));
+      //climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtender.calculate(climbingSubsystem.getLeftLength()), -MAX_RETRACTION_VOLTS, MAX_EXTENSION_VOLTS));
+      //climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtender.calculate(climbingSubsystem.getRightLength()), MAX_EXTENSION_VOLTS, -MAX_RETRACTION_VOLTS));
     }
 
     if(!armSpeeds.isRotatorNeutral()){
