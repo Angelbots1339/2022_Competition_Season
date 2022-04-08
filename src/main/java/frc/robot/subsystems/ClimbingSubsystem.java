@@ -211,7 +211,6 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public double getRightAngle() {
         return Math.IEEEremainder(rightEncoder.get() * 360, 180);
-
     }
 
     public double getLeftAngle() {

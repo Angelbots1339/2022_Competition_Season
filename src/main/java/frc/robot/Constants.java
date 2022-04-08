@@ -121,12 +121,14 @@ public final class Constants {
         public final static double MAX_INTAKE_PERCENT = 1;
         public final static double INTAKE_DEPLOY_SPEED = .2;
         public final static double INTAKE_DEPLOY_TIME = .4;
-        public final static double INTAKE_RETRACT_MAX_VOLTS = .4;
+        public final static double INTAKE_RETRACT_VOLTS = 10;
+        public final static double INTAKE_DEPLOY_VOLTS = 7;
 
         public final static double RETRACTION_THRESHOLD = 0.2;
-        public final static double DEPLOY_SETPOINT = 1;
-        public final static double RETRACTION_SETPOINT = 0;
-    
+        public final static double ROTATIONS_TO_METERS = Units.inchesToMeters(25 * Math.PI);
+        public final static double DEPLOY_SETPOINT = 40; // rot
+        public final static double RETRACTION_SETPOINT = 7;
+        public final static boolean LEFT_DEPLOY_INVERTED = true;
 
 
         // Ports

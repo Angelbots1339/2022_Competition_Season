@@ -137,6 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
     tab.addNumber("y",  () -> pose.getY());
     tab.addNumber("Left Speed",  () -> getWheelSpeeds().leftMetersPerSecond);
     tab.addNumber("Right Speed",  () -> (getWheelSpeeds().rightMetersPerSecond));
+    tab.addNumber("left stator", () -> leftMotorBack.getStatorCurrent());
    
   }
 
@@ -270,6 +271,15 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
     driveOdometry.resetPosition(pose, getHeading());
+  }
+
+  public void clearStickies() {
+    rightMotorBack.clearStickyFaults();
+    rightMotorFront.clearStickyFaults();
+    rightMotorTop.clearStickyFaults();
+    leftMotorBack.clearStickyFaults();
+    leftMotorFront.clearStickyFaults();
+    leftMotorTop.clearStickyFaults();
   }
 
 }

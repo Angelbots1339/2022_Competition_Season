@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ColorSensorV3.RawColor;
 
@@ -29,7 +30,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax leftRetractMotor = new CANSparkMax(INTAKE_RETRACT_LEFT_PORT, MotorType.kBrushless);
   private CANSparkMax rightRetractMotor = new CANSparkMax(INTAKE_RETRACT_RIGHT_PORT, MotorType.kBrushless);
 
-
   private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
 
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
@@ -41,16 +41,16 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     intakeMotor.setInverted(INTAKE_INVERTED);
-
+    
     leftRetractMotor.getEncoder().setPosition(0);
     rightRetractMotor.getEncoder().setPosition(0);
-    leftRetractMotor.setInverted(true);
-    rightRetractMotor.setInverted(false);
-
-    indexerLeftMotor.clearStickyFaults();
-    indexerRightMotor.clearStickyFaults();
-    intakeMotor.clearStickyFaults();
-
+    leftRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
+    rightRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
+    
+    leftRetractMotor.setIdleMode(IdleMode.kCoast);
+    rightRetractMotor.setIdleMode(IdleMode.kCoast);
+    
+    
     if(Logging.log) {
       log();
     }
@@ -66,6 +66,8 @@ public class IntakeSubsystem extends SubsystemBase {
     tab.addNumber("Blue Value", () -> (double)getColorSensorRaw().blue);
     tab.addNumber("Green Value", () -> (double)getColorSensorRaw().green);
     tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
+    tab.addNumber("Retract L Position", () -> getLeftPosition());
+    tab.addNumber("Retract R Position", () -> getRightPosition());
   }
 
   @Override
@@ -86,34 +88,29 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * Runs the deploy motors at a set voltage
    * 
-   * @param speed
+   * @param volts
    */
-  public void runDeployMotorsVolts(double speed){
-
-    leftRetractMotor.setVoltage(speed);
-    rightRetractMotor.setVoltage(speed);
+  public void setDeployMotorsVolts(double volts){
+    setDeployMotorsVolts(volts, volts);
   }
-  public void runRightDeployMotorsVolts(double speed){
-
-    leftRetractMotor.setVoltage(-speed);
-    rightRetractMotor.setVoltage(speed);
-  }
-  public void runLeftDeployMotorsVolts(double speed){
-
-    leftRetractMotor.setVoltage(-speed);
-    rightRetractMotor.setVoltage(speed);
+  public void setDeployMotorsVolts(double leftVolts, double rightVolts){
+    leftRetractMotor.setVoltage(leftVolts * (LEFT_DEPLOY_INVERTED ? -1 : 1));
+    rightRetractMotor.setVoltage(rightVolts * (LEFT_DEPLOY_INVERTED ? 1 : -1));
   }
 
-  public double getLeftDeployMotorPosition() {
-
-    return -leftRetractMotor.getEncoder().getPosition();
-
+  /**
+   * @return Current position of the left retract motor position in rotations
+   */
+  public double getLeftPosition() {
+    return leftRetractMotor.getEncoder().getPosition() * (LEFT_DEPLOY_INVERTED ? -1 : 1);
   }
 
-  public double getRightDeployMotorPosition() {
-
-    return rightRetractMotor.getEncoder().getPosition();
-
+  /**
+   * 
+   * @return Current position of the right retract motor position in rotations
+   */
+  public double getRightPosition() {
+    return rightRetractMotor.getEncoder().getPosition() * (LEFT_DEPLOY_INVERTED ? 1 : -1);
   }
 
   /**
@@ -146,6 +143,8 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerLeftMotor.set(0);
     indexerRightMotor.set(0);
     intakeMotor.set(0);
+    rightRetractMotor.set(0);
+    leftRetractMotor.set(0);
   }
 
 }

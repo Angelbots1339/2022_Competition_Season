@@ -18,11 +18,13 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.ClearDrivingFaults;
 import frc.robot.commands.auto.AutoSequences;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
 import frc.robot.commands.climber.ManualArms;
+import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.EjectBalls;
 import frc.robot.commands.intake.RejectBall;
 import frc.robot.commands.intake.RetractIntake;
@@ -170,12 +172,16 @@ public class RobotContainer {
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(
       new ClearClimbingFaults(climbingSubsystem)
+      .andThen(new ClearDrivingFaults(driveSubsystem))
       .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
             () -> isTeamRed.getBoolean(false))))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // Shoot low when A button is pressed
-    new JoystickButton(joystick, BUTTON_A).whileHeld(new ClearClimbingFaults(climbingSubsystem).andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
+    new JoystickButton(joystick, BUTTON_A).whileHeld(
+      new ClearClimbingFaults(climbingSubsystem)
+      .andThen(new ClearDrivingFaults(driveSubsystem))
+      .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
             () -> isTeamRed.getBoolean(false))))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
@@ -183,16 +189,20 @@ public class RobotContainer {
 
     /* INTAKE */
 
-
     // Run Intake-in while the left bumper is held
-    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new RunIntake(intakeSubsystem, loaderSubsystem)).whenReleased(new RetractIntake(intakeSubsystem));
+    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)));
 
     // Run reverse intake when right bumper is pressed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new EjectBalls(intakeSubsystem, loaderSubsystem));
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)));
+
+    intakeSubsystem.setDefaultCommand(new RetractIntake(intakeSubsystem));
 
     loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, shooterSubsystem, () -> isTeamRed.getBoolean(false), () -> rejectBalls));
 
     new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> rejectBalls = false));
+
+    // FIXME test
+    climbingSubsystem.setDefaultCommand(new ArmsToSetpoints(climbingSubsystem, 0, 3, 0));
   }
 
   /**

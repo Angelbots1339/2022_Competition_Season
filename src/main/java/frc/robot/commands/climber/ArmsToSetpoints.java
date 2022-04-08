@@ -4,6 +4,8 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -22,6 +24,7 @@ public class ArmsToSetpoints extends CommandBase {
   private final double rotatorVoltage;
   private boolean stopRoatator = false;
   private boolean stopExtender = false;
+  private PIDController syncExtender = new PIDController(100, 0, 0);
 
   /**
    * Fully customized
@@ -111,15 +114,16 @@ public class ArmsToSetpoints extends CommandBase {
     double rightExtendDesired = extenderDesiredOutput(lengthSetpoint, climbingSubsystem.getRightLength());
     double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle());
     double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
-    
+    double extError = climbingSubsystem.getLeftLength() - climbingSubsystem.getRightLength();
+    double syncOutput = MathUtil.clamp(syncExtender.calculate(extError, 0), -1, 1);
 
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
     }
     if(!stopExtender) {
-      climbingSubsystem.setLeftExtensionVolts(leftExtendDesired);
-      climbingSubsystem.setRightExtensionVolts(rightExtendDesired);
+      climbingSubsystem.setLeftExtensionVolts(leftExtendDesired + syncOutput);
+      climbingSubsystem.setRightExtensionVolts(rightExtendDesired - syncOutput);
     }
     if(Logging.log) { 
         SmartDashboard.putBoolean("left Rotator",
@@ -158,7 +162,9 @@ public class ArmsToSetpoints extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
+    // FIXME bad
+    return false;
+    /*
     if (stopRoatator) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
@@ -177,5 +183,6 @@ public class ArmsToSetpoints extends CommandBase {
           //|| climbingSubsystem.areMotorsStalling();
           ;
     }
+    */
   }
 }

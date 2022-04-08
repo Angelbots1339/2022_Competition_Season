@@ -44,26 +44,9 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
 
-    // Feed Forward to get both motors to their setpoints
-    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD) {
-      intakeSubsystem.runRightDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
-    } else {
-      intakeSubsystem.runRightDeployMotorsVolts(0);
-    }
-    if (Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - DEPLOY_SETPOINT) > RETRACTION_THRESHOLD) {
-      intakeSubsystem.runLeftDeployMotorsVolts(INTAKE_RETRACT_MAX_VOLTS);
-    } else {
-      intakeSubsystem.runLeftDeployMotorsVolts(0);
-    }
-
     // Runs intake and indexer if both motors have reached their setpoints
-    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - DEPLOY_SETPOINT) < RETRACTION_THRESHOLD
-        && Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - DEPLOY_SETPOINT) < RETRACTION_THRESHOLD) {
-
-      intakeSubsystem.runDeployMotorsVolts(0);
-
+ 
       loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
-
       intakeSubsystem.runIntake(MAX_INTAKE_PERCENT);
       intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
@@ -72,7 +55,7 @@ public class RunIntake extends CommandBase {
       }
 
     }
-  }
+  
 
   // Called once the command ends or is interrupted.
   @Override

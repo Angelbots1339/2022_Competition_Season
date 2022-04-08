@@ -22,29 +22,15 @@ public class RetractIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
-    intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    // Feed Forward to get both motors to their setpoints
-    if (Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
-      intakeSubsystem.runRightDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
-    } else {
-      intakeSubsystem.runRightDeployMotorsVolts(0);
-    }
-    if (Math.abs(intakeSubsystem.getLeftDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD) {
-      intakeSubsystem.runLeftDeployMotorsVolts(-INTAKE_RETRACT_MAX_VOLTS);
-    } else {
-      intakeSubsystem.runLeftDeployMotorsVolts(0);
-    }
-    }
-
-  
+    intakeSubsystem.setDeployMotorsVolts(
+      isLeftRetracted() ? 0 : -INTAKE_RETRACT_VOLTS,
+      isRightRetracted() ? 0 : -INTAKE_RETRACT_VOLTS);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -55,6 +41,14 @@ public class RetractIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(intakeSubsystem.getRightDeployMotorPosition() - RETRACTION_SETPOINT) > RETRACTION_THRESHOLD;
+    // Don't finish, default command
+    return false;
+  }
+
+  private boolean isLeftRetracted() {
+    return intakeSubsystem.getLeftPosition() <= RETRACTION_SETPOINT;
+  }
+  private boolean isRightRetracted() {
+    return intakeSubsystem.getRightPosition() <= RETRACTION_SETPOINT;
   }
 }
