@@ -90,6 +90,20 @@ public final class Constants {
                 * WHEEL_ROT_PER_MOTOR_ROT * WHEEL_DIAMETER_METERS * Math.PI;
         public final static boolean GYRO_INVERTED = true;
 
+        //Ball targeting 
+        public final static double TARGETING_KP = 0;
+        public final static double TARGETING_KI = 0;
+        public final static double TARGETING_KD = 0;
+        public final static double TARGETING_TOLERANCE = 0;
+
+        //Turning 
+        public final static double TURN_MAX_VOLTS = 5; // 5
+        public final static double TURN_THRESHHOLD = 1; // 1
+        public final static double TURN_VELOCITY_THRESHHOLD = 0.5; // 1
+        public final static double TURN_KP = 0.01;
+        public final static double TURN_KI = 0;
+        public final static double TURN_KD = 0;
+
         // PID / Motion Profiling
         public final static double LEFT_KP = 3.5;
         public final static double RIGHT_KP = 3.5; // 2.8639
@@ -163,6 +177,10 @@ public final class Constants {
         public final static double EXTENDER_SETPOINT_THRESHOLD = .02; // m
         public final static double ROTATION_SETPOINT_THRESHOLD = 2; // deg
 
+        public final static double MAX_EXTENSION_VOLTS = 9;
+        public final static double MAX_RETRACTION_VOLTS = 9;
+
+
         // Ports
         public static final int ROTATOR_LEFT_PORT = 16;
         public static final int ROTATOR_RIGHT_PORT = 17;
@@ -174,6 +192,14 @@ public final class Constants {
         public static final int ROTATOR_LEFT_BACK_LIMIT_PORT = 3;
         public final static int LEFT_ENCODER_PORT = 5;
         public final static int RIGHT_ENCODER_PORT = 4;
+
+        //PID 
+        public static final double ROTATOR_KP = 0.01;
+        public static final double ROTATOR_KI = 0;
+        public static final double ROTATOR_KD = 0;
+        public static final double EXTENDER_KP = 50;
+        public static final double EXTENDER_KI = 0;
+        public static final double EXTENDER_KD = 0;
 
         // Soft stops
         public static final double EXTENDER_TOP_LIMIT = 0.75;
@@ -244,11 +270,6 @@ public final class Constants {
         public static final double TURN_VOLTS = 3;
         public static final double HALF_TURN_TIME = .75;
 
-    }
-
-    public final static class TurnConstants {
-
-       public final static double TURN_THRESHOLD = 0; 
     }
 
     public final static class LimelightConstants {

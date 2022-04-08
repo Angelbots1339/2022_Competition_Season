@@ -13,24 +13,28 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.TurnToAngle;
 import frc.robot.commands.auto.AutoSequences;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
 import frc.robot.commands.climber.ManualArms;
-import frc.robot.commands.intake.EjectBalls;
-import frc.robot.commands.intake.RejectBall;
-import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.climber.PIDArmsToSetpoints;
+import frc.robot.commands.Intake.EjectBalls;
+import frc.robot.commands.Intake.RejectBall;
+import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.ArmSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -104,6 +108,14 @@ public class RobotContainer {
   public void addAutoCommands() {
     // Sequence
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
+    // SmartDashboard.putData("turn 90",new TurnToAngle(driveSubsystem, 90));
+    // SmartDashboard.putData("turn -90", new TurnToAngle(driveSubsystem, -90));
+
+    SmartDashboard.putData("arms up", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_TOP_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
+    SmartDashboard.putData("arms down", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_BOTTOM_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
+
+    SmartDashboard.putData("rotator front", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_FRONT_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
+    SmartDashboard.putData("rotator back", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_BACK_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
 
     tab.add(autoChooser);
   }

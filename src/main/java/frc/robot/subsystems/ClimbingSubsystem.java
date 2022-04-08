@@ -41,6 +41,7 @@ public class ClimbingSubsystem extends SubsystemBase {
 
 
     public ClimbingSubsystem() {
+        extenderLeftMotor.startMotionProfile(stream, minBufferedPts, motionProfControlMode)
 
         
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
@@ -246,10 +247,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorLeftMotor.clearStickyFaults();
         rotatorRightMotor.clearStickyFaults();
 
-        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
-        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        extenderRightMotor.setNeutralMode(NeutralMode.Coast);
+        extenderLeftMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     public void disable() {

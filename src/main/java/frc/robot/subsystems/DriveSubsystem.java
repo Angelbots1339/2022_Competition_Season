@@ -16,6 +16,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -64,12 +66,14 @@ public class DriveSubsystem extends SubsystemBase {
   ShuffleboardTab tab;
   Field2d field2d = new Field2d();
 
+
   public DriveSubsystem() {
     constructorHelper();
     // Zero sensors
     resetOdometry(new Pose2d());
     //leftMotorTop.configFactoryDefault();
     //rightMotorTop.configFactoryDefault();
+    
 
     rightMotorControllerGroup.setInverted(RIGHT_INVERTED);
     leftMotorControllerGroup.setInverted(LEFT_INVERTED);
@@ -125,25 +129,32 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void logData() {
    
-    tab.addNumber("angle", () -> pose.getRotation().getDegrees());
-    tab.addNumber("heading", () -> getHeading().getDegrees());
-    tab.add(this);
+   // tab.addNumber("angle", () -> pose.getRotation().getDegrees());
+   // tab.addNumber("heading", () -> getHeading().getDegrees());
+    //tab.add(this);
     tab.add(leftMotorTop);
     tab.add(rightMotorTop);
     tab.add(field2d);
-    tab.add(leftPID);
-    tab.add(rightPID);
-    tab.addNumber("x", () -> pose.getX());
-    tab.addNumber("y",  () -> pose.getY());
-    tab.addNumber("Left Speed",  () -> getWheelSpeeds().leftMetersPerSecond);
-    tab.addNumber("Right Speed",  () -> (getWheelSpeeds().rightMetersPerSecond));
+    // tab.add(leftPID);
+    // tab.add(rightPID);
+    //tab.addNumber("x", () -> pose.getX());
+    //tab.addNumber("y",  () -> pose.getY());
+    //tab.addNumber("Left Speed",  () -> getWheelSpeeds().leftMetersPerSecond);
+    //tab.addNumber("Right Speed",  () -> (getWheelSpeeds().rightMetersPerSecond));
+    tab.addNumber("stator left", () -> leftMotorTop.getStatorCurrent());
+    tab.addNumber("supply left", () -> leftMotorTop.getSupplyCurrent());
+    tab.addNumber("stator right", () -> rightMotorTop.getStatorCurrent());
+    tab.addNumber("supply right", () -> rightMotorTop.getSupplyCurrent());
    
   }
 
   // --- Getters ---
 
-  private static double getEncoderDistance(WPI_TalonFX targetMotor) {
+  public double getClosetBallX(){
+    return 0; //TODO
+  }
 
+  private static double getEncoderDistance(WPI_TalonFX targetMotor) {
     // Converts clicks to distance in meters
     return targetMotor.getSelectedSensorPosition(0) * CLICKS_TO_METERS;
   }
@@ -271,5 +282,7 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
     driveOdometry.resetPosition(pose, getHeading());
   }
+
+
 
 }
