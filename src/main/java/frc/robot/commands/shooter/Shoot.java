@@ -60,7 +60,6 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO check unplugging color sensor & see if robot program crashes.
     // If so, surround color sensor calls in try/catch loop
     // Check ball color and team color chosen
     if (intakeSubsystem.isBallLow() && isTeamRed != null
@@ -69,7 +68,6 @@ public class Shoot extends CommandBase {
       // If ball is red and we are blue
       || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()))) { 
         // Reject current ball
-        // TODO check auto behavior for shooting wrong color ball
         // If behavior is unexpected, try updating flywheel setpoints for a set
         // timer, then reverting back to previous setpoints.
         // Make sure to revert to old setpoints when command ends/ is cancelled.

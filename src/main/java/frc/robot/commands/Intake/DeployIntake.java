@@ -3,7 +3,6 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LoaderSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 
 public class DeployIntake extends CommandBase {

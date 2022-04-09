@@ -11,8 +11,6 @@ import frc.robot.subsystems.LoaderSubsystem;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
 
-import java.util.function.BooleanSupplier;
-
 /**
  * Runs balls up the intake to the color sensor
  */
