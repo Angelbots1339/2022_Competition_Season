@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.utils.Logging;
 
@@ -24,7 +25,7 @@ public class ArmsToSetpoints extends CommandBase {
   private final double rotatorVoltage;
   private boolean stopRoatator = false;
   private boolean stopExtender = false;
-  private PIDController syncExtender = new PIDController(100, 0, 0);
+  private PIDController syncExtender = new PIDController(ClimberConstants.SYNC_KP, 0, 0);
 
   /**
    * Fully customized
@@ -115,15 +116,15 @@ public class ArmsToSetpoints extends CommandBase {
     double leftRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getLeftAngle());
     double rightRotateDesired = rotatorDesiredOutput(angleSetpoint, climbingSubsystem.getRightAngle());
     double extError = climbingSubsystem.getLeftLength() - climbingSubsystem.getRightLength();
-    double syncOutput = MathUtil.clamp(syncExtender.calculate(extError, 0), -1, 1);
+    double syncOutput = MathUtil.clamp(syncExtender.calculate(extError, 0), -MAX_PID_VOLTS, MAX_PID_VOLTS);
 
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
     }
     if(!stopExtender) {
-      climbingSubsystem.setLeftExtensionVolts(leftExtendDesired + syncOutput);
-      climbingSubsystem.setRightExtensionVolts(rightExtendDesired - syncOutput);
+      climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtendDesired + syncOutput, -10, 10));
+      climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtendDesired - syncOutput, -10, 10));
     }
     if(Logging.log) { 
         SmartDashboard.putBoolean("left Rotator",
@@ -162,9 +163,8 @@ public class ArmsToSetpoints extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // FIXME bad
-    return false;
-    /*
+
+    
     if (stopRoatator) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
@@ -183,6 +183,6 @@ public class ArmsToSetpoints extends CommandBase {
           //|| climbingSubsystem.areMotorsStalling();
           ;
     }
-    */
+    
   }
 }

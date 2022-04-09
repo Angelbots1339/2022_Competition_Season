@@ -45,6 +45,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
         extenderRightMotor.setInverted(EXTENDER_RIGHT_INVERTED);
+        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
+        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
@@ -59,6 +63,11 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addBoolean("back right limit", () -> isRightBackAtLimit());
         tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
         tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
+        tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        //tab.add(this);
     }
 
     @Override
@@ -245,10 +254,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorLeftMotor.clearStickyFaults();
         rotatorRightMotor.clearStickyFaults();
 
-        extenderRightMotor.setNeutralMode(NeutralMode.Coast);
-        extenderLeftMotor.setNeutralMode(NeutralMode.Coast);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
+        extenderRightMotor.setNeutralMode(NeutralMode.Brake);
+        extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void disable() {

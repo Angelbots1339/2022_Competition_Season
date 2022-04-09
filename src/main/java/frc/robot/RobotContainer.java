@@ -216,7 +216,7 @@ public class RobotContainer {
     new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> rejectBalls = false));
 
     // FIXME test
-    climbingSubsystem.setDefaultCommand(new ArmsToSetpoints(climbingSubsystem, 0, 3, 0));
+    // climbingSubsystem.setDefaultCommand(new ArmsToSetpoints(climbingSubsystem, 0, 3, 0));
   }
 
   /**

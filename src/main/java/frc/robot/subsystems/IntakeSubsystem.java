@@ -41,15 +41,14 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     indexerLeftMotor.setInverted(INDEXER_LEFT_INVERTED);
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
+    Constants.updateGeneralStatusFrame(indexerRightMotor);
     intakeMotor.setInverted(INTAKE_INVERTED);
     
-    leftRetractMotor.getEncoder().setPosition(0);
-    rightRetractMotor.getEncoder().setPosition(0);
     leftRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
     rightRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
     
-    leftRetractMotor.setIdleMode(IdleMode.kCoast);
-    rightRetractMotor.setIdleMode(IdleMode.kCoast);
+    leftRetractMotor.setIdleMode(IdleMode.kBrake);
+    rightRetractMotor.setIdleMode(IdleMode.kBrake);
     
     
     if(Logging.log) {
@@ -69,6 +68,7 @@ public class IntakeSubsystem extends SubsystemBase {
     tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
     tab.addNumber("Retract L Position", () -> getLeftPosition());
     tab.addNumber("Retract R Position", () -> getRightPosition());
+    tab.add(this);
   }
 
   @Override
@@ -136,6 +136,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public RawColor getColorSensorRaw(){
 
     return colorSensorLow.getRawColor();
+  }
+
+  public void resetIntake() {
+    leftRetractMotor.getEncoder().setPosition(0);
+    rightRetractMotor.getEncoder().setPosition(0);
   }
 
   /**

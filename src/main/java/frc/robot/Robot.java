@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
     LimeLight.setPipeline(1);
     LimeLight.setStream(2);
     LimeLight.setLEDMode(1);;
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
     tab.addBoolean("Climb time?", () -> {return timer != null && timer.get() > TELEOP_TIME - CLIMB_TIME;});
     
   }

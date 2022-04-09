@@ -20,6 +20,8 @@ public class DeployIntake extends CommandBase {
     public void initialize() {
         intakeSubsystem.setDeployMotorsVolts(INTAKE_DEPLOY_VOLTS);
         intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+        intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
+
     }
 
     @Override

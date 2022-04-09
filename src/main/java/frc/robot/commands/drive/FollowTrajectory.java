@@ -49,8 +49,8 @@ public class FollowTrajectory extends RamseteCommand {
         super.initialize();
     }
 
-    public static FollowTrajectory followTrajectoryFromJSON(DriveSubsystem driveSubsystem, String fileName) {
-        return new FollowTrajectory(driveSubsystem, getTrajectoryFromJSON(fileName));
+    public static FollowTrajectory followTrajectoryFromJSON(DriveSubsystem driveSubsystem, String fileName, String folder) {
+        return new FollowTrajectory(driveSubsystem, getTrajectoryFromJSON(folder, fileName));
     }
 
     /**
@@ -59,7 +59,7 @@ public class FollowTrajectory extends RamseteCommand {
      * @param fileName
      * @return
      */
-    public static RamseteCommand TestFollowTrajectory(DriveSubsystem driveSubsystem, String fileName) {
+    public static RamseteCommand TestFollowTrajectory(DriveSubsystem driveSubsystem, String fileName, String folder) {
 
         var leftController = new PIDController(DriveConstants.LEFT_KP + 0.5, 0, 0);
         var rightController = new PIDController(DriveConstants.RIGHT_KP + 0.5, 0, 0);
@@ -67,7 +67,7 @@ public class FollowTrajectory extends RamseteCommand {
         RamseteController m_disabledRamsete = new RamseteController();
         m_disabledRamsete.setEnabled(true);
         RamseteCommand ramseteCommand = new RamseteCommand(
-                getTrajectoryFromJSON(fileName),
+                getTrajectoryFromJSON(folder, fileName),
                 driveSubsystem::getPose,
                 m_disabledRamsete, // Pass inm disabledRamsete here
                 driveSubsystem.getFeedforward(),
@@ -93,12 +93,18 @@ public class FollowTrajectory extends RamseteCommand {
 
     }
 
-    private static Trajectory getTrajectoryFromJSON(String pathWeeverFileName) {
+    /**
+     * 
+     * @param prefix Folder to grab paths from, e.g. "output/"
+     * @param pathWeeverFileName Name of path, e.g. "1Ball"
+     * @return
+     */
+    private static Trajectory getTrajectoryFromJSON(String prefix, String pathWeeverFileName) {
 
         Trajectory trajectory = new Trajectory();
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath()
-                    .resolve("output/" + pathWeeverFileName + ".wpilib.json");
+                    .resolve(prefix + pathWeeverFileName + ".wpilib.json");
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathWeeverFileName, ex.getStackTrace());

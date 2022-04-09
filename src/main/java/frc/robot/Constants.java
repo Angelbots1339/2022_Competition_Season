@@ -9,6 +9,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.utils.ColorRange;
 import frc.robot.utils.ShooterProfiles;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -27,11 +29,18 @@ import frc.robot.utils.ShooterProfiles;
  */
 public final class Constants {
 
-    public final static String CANIVORE_NAME = "rio";
+    public final static String CANIVORE_NAME = "Canivore";
+    public final static String RIO_NAME = "rio";
 
     public static boolean isMotorStalling(WPI_TalonFX motor) {
         double voltage = motor.getMotorOutputVoltage();
         return motor.getStatorCurrent() >= 1.4 * voltage * voltage + 4.26 * voltage;
+    }
+
+    public static WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
+        motor.setStatusFramePeriod(StatusFrame.Status_1_General, 255);
+        motor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 255);
+        return motor;
     }
 
     public final static class JoystickConstants {
@@ -70,11 +79,11 @@ public final class Constants {
 
         // Ports
         public final static int LEFT_MOTOR_TOP_PORT = 2;
-        public final static int LEFT_MOTOR_FRONT_PORT = 1;
-        public final static int LEFT_MOTOR_BACK_PORT = 3;
+        public final static int LEFT_MOTOR_FRONT_PORT = 21;
+        public final static int LEFT_MOTOR_BACK_PORT = 23;
         public final static int RIGHT_MOTOR_TOP_PORT = 5;
-        public final static int RIGHT_MOTOR_FRONT_PORT = 4;
-        public final static int RIGHT_MOTOR_BACK_PORT = 6;
+        public final static int RIGHT_MOTOR_FRONT_PORT = 24;
+        public final static int RIGHT_MOTOR_BACK_PORT = 26;
 
         // Config
         public final static double CENTER_DIST_BACK_BUMPER = 31.85541;
@@ -135,8 +144,8 @@ public final class Constants {
         public final static double MAX_INTAKE_PERCENT = 1;
         public final static double INTAKE_DEPLOY_SPEED = .2;
         public final static double INTAKE_DEPLOY_TIME = .4;
-        public final static double INTAKE_RETRACT_VOLTS = 10;
-        public final static double INTAKE_DEPLOY_VOLTS = 7;
+        public final static double INTAKE_RETRACT_VOLTS =10;//= 10;
+        public final static double INTAKE_DEPLOY_VOLTS = 7;//7;
 
         public final static double RETRACTION_THRESHOLD = 0.2;
         public final static double ROTATIONS_TO_METERS = Units.inchesToMeters(25 * Math.PI);
@@ -148,7 +157,7 @@ public final class Constants {
         // Ports
         public final static int INTAKE_MOTOR_PORT = 7;
         public final static int INDEXER_RIGHT_PORT = 9;
-        public final static int INDEXER_LEFT_PORT = 8;
+        public final static int INDEXER_LEFT_PORT = 28;
 
         public final static int INTAKE_RETRACT_LEFT_PORT = 18;
         public final static int INTAKE_RETRACT_RIGHT_PORT = 19;
@@ -230,6 +239,9 @@ public final class Constants {
         private static final double SPOOL_CIRCUM = Units.inchesToMeters(2) * Math.PI;
         public static final double LENGTH_PER_CLICK = (1 / DriveConstants.CLICKS_PER_ROT) * SPOOL_CIRCUM
                 / MOTOR_ROT_PER_SPOOL_ROT;
+        public static final double ROTATIONS_PER_CLICK = (1/ DriveConstants.CLICKS_PER_ROT);
+        public static final int MAX_PID_VOLTS = 4;
+        public static final double SYNC_KP = 100;
 
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks) {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
@@ -247,7 +259,7 @@ public final class Constants {
 
         // Ports
         public final static int LEFT_POWER_WHEEL = 11; // 11
-        public final static int RIGHT_POWER_WHEEL = 12; // 12
+        public final static int RIGHT_POWER_WHEEL = 32; // 12
         public final static int AIM_WHEEL = 13; // 13
 
         // PID / Motion Profiling

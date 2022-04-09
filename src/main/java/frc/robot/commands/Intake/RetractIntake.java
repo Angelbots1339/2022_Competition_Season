@@ -20,6 +20,9 @@ public class RetractIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+    intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -28,12 +31,25 @@ public class RetractIntake extends CommandBase {
     intakeSubsystem.setDeployMotorsVolts(
       isLeftRetracted() ? 0 : -INTAKE_RETRACT_VOLTS,
       isRightRetracted() ? 0 : -INTAKE_RETRACT_VOLTS);
+
+      if(isLeftRetracted() && isRightRetracted()){
+        intakeSubsystem.runIntake(0);
+        intakeSubsystem.runIndexerLow(0);
+
+      } else {
+        intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
+        intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
+
+      }
   }
+
+  
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.disable();
+
   }
 
   // Returns true when the command should end.
