@@ -11,8 +11,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -81,13 +79,13 @@ public class FollowTrajectory extends RamseteCommand {
                 },
                 driveSubsystem);
 
-        ShuffleboardTab tab = Shuffleboard.getTab("Test");
+        //ShuffleboardTab tab = Shuffleboard.getTab("Test");
 
         // Graph these together to tune P value
-        tab.addNumber(new StringBuffer("LeftActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().leftMetersPerSecond);
-        tab.addNumber(new StringBuffer("RightActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().rightMetersPerSecond);
-        tab.addNumber(new StringBuffer("LeftIdeal").append(fileName).toString(), () -> leftController.getSetpoint());
-        tab.addNumber(new StringBuffer("RightIdeal").append(fileName).toString(), () -> rightController.getSetpoint());
+        // tab.addNumber(new StringBuffer("LeftActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().leftMetersPerSecond);
+        // tab.addNumber(new StringBuffer("RightActual").append(fileName).toString(), () -> driveSubsystem.getWheelSpeeds().rightMetersPerSecond);
+        // tab.addNumber(new StringBuffer("LeftIdeal").append(fileName).toString(), () -> leftController.getSetpoint());
+        // tab.addNumber(new StringBuffer("RightIdeal").append(fileName).toString(), () -> rightController.getSetpoint());
 
         return ramseteCommand;
 
@@ -102,6 +100,7 @@ public class FollowTrajectory extends RamseteCommand {
     private static Trajectory getTrajectoryFromJSON(String prefix, String pathWeeverFileName) {
 
         Trajectory trajectory = new Trajectory();
+        // TODO use stringbuilder
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath()
                     .resolve(prefix + pathWeeverFileName + ".wpilib.json");

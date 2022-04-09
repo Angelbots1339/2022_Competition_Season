@@ -110,7 +110,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         )
                 
                 );
-
+        // TODO Upgrade 2BHide to hide 2 balls, probably using turntoangle
         this.add(
                 "2 Ball Hide",
                 "2BGrab",

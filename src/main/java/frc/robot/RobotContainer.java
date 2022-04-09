@@ -104,6 +104,7 @@ public class RobotContainer {
    */
   public void addAutoCommands() {
     // Sequence
+    // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
 
     //Test code for turn and arms
