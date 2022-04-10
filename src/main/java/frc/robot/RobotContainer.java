@@ -233,12 +233,6 @@ public class RobotContainer {
     climbingSubsystem.setTestExtenderPercent(joystick.getLeftY() * 0.4, joystick.getRightY() * 0.4);
     climbingSubsystem.setTestRotatorPercent(-joystick.getLeftTriggerAxis() * 0.1,
         -joystick.getRightTriggerAxis() * 0.1);
-    if (joystick.getXButton()) {
-      climbingSubsystem.reset(false);
-    }
-    if (joystick.getBButton()) {
-      climbingSubsystem.reset(true);
-    }
   }
 
   public void setDriveMode() {
@@ -251,6 +245,21 @@ public class RobotContainer {
 
   public void clearClimberStickies() {
     climbingSubsystem.clearStickies();
+  }
+
+  public void testModeRunIntake() {
+    double leftVolts = 0, rightVolts = 0;
+    
+    if (joystick.getXButton()) {
+      leftVolts = -1.5;
+    }
+    if (joystick.getBButton()) {
+      rightVolts = -1.5;
+    }
+    if(joystick.getYButton()) {
+      intakeSubsystem.resetIntake();
+    }
+    intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
   }
 
 }

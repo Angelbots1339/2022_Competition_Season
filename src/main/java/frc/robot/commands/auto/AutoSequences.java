@@ -167,7 +167,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4 Ball Red",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, REGULAR),
+                        grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, REGULAR),
                         grabGrabShoot("4BGrab2ndSetRed", "4BShoot2ndSetRed", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2, REGULAR)
                 ));
 
@@ -196,9 +196,9 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "5 Ball",
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
-                        grabDriveShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, FAST),
-                        grabDriveShoot("5BGrab2nd", "5BShoot2nd", SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH, FAST),
-                        grabDriveShoot("5BGrab3rdSet", "5BGrab3rdSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, FAST)
+                        grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, FAST),
+                        grabGrabShoot("5BGrab2nd", "5BShoot2nd", SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH, 2, FAST),
+                        grabGrabShoot("5BGrab3rdSet", "5BShoot3rdSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, FAST)
 
                 ));
         // Grabs 2nd ball, shoots 2, grabs 3rd, shoots 1, grabs 4th & 5th, shoots 2

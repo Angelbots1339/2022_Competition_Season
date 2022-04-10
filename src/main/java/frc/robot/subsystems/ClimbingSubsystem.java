@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
@@ -52,6 +54,19 @@ public class ClimbingSubsystem extends SubsystemBase {
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
+        // rotatorLeftMotor.configStatorCurrentLimit(
+        //     new StatorCurrentLimitConfiguration(true, 231, 231, .001)
+        // );
+        // rotatorRightMotor.configStatorCurrentLimit(
+        //     new StatorCurrentLimitConfiguration(false, 231, 231, .001)
+        // );
+        // rotatorLeftMotor.configSupplyCurrentLimit(
+        //     new SupplyCurrentLimitConfiguration(true, 40, 40, .001)
+        // );
+        // rotatorRightMotor.configSupplyCurrentLimit(
+        //     new SupplyCurrentLimitConfiguration(false, 40, 40, .001)
+        // );
+
         clearStickies();
         
         reset(true);
@@ -63,10 +78,10 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addBoolean("back right limit", () -> isRightBackAtLimit());
         tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
         tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
-        tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
-        tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
-        tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
-        tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        // tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
+        // tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
+        // tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        // tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
         //tab.add(this);
     }
 

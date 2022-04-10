@@ -145,7 +145,7 @@ public final class Constants {
         public final static double INTAKE_DEPLOY_SPEED = .2;
         public final static double INTAKE_DEPLOY_TIME = .4;
         public final static double INTAKE_RETRACT_VOLTS =10;//= 10;
-        public final static double INTAKE_DEPLOY_VOLTS = 7;//7;
+        public final static double INTAKE_DEPLOY_VOLTS = 6;//7;
 
         public final static double RETRACTION_THRESHOLD = 0.2;
         public final static double ROTATIONS_TO_METERS = Units.inchesToMeters(25 * Math.PI);
@@ -263,12 +263,12 @@ public final class Constants {
         public final static int AIM_WHEEL = 13; // 13
 
         // PID / Motion Profiling
-        public final static double POWER_WHEEL_KF = 0.00172528;
+        public final static double POWER_WHEEL_KF = 0.0016;// used in colorado 0.00172528;
         public final static double POWER_WHEEL_KB = 0.823253;
-        public final static double POWER_WHEEL_KP = 0.001;
+        public final static double POWER_WHEEL_KP = 0.0005;
         public final static double POWER_WHEEL_KI = 0;
         public final static double POWER_WHEEL_KD = 0;
-        public final static double AIM_WHEEL_KF = 0.00181965;
+        public final static double AIM_WHEEL_KF = 0.00181;// used in colorado 0.00181965;
         public final static double AIM_WHEEL_KB = 0.5523;
         public final static double AIM_WHEEL_KP = 0.0008;
         public final static double AIM_WHEEL_KI = 0;
@@ -289,7 +289,7 @@ public final class Constants {
     public final static class AutoConstants {
 
         // General
-        public static final double SHOOT_TIME_2B = 1.55; // s
+        public static final double SHOOT_TIME_2B = 2; // s
         public static final double SHOOT_TIME_1B = 1; // s
         public static final double TURN_VOLTS = 3;
         public static final double HALF_TURN_TIME = .75;

@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    
+    if(this.isTest()) robotContainer.clearClimberStickies();
   }
 
   @Override
@@ -120,6 +120,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     robotContainer.testModeRunArms();
+    robotContainer.testModeRunIntake();
 
   }
 }

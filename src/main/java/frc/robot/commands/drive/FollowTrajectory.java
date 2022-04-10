@@ -103,7 +103,7 @@ public class FollowTrajectory extends RamseteCommand {
         // TODO use stringbuilder
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath()
-                    .resolve(prefix + pathWeeverFileName + ".wpilib.json");
+                    .resolve("output/" + pathWeeverFileName + ".wpilib.json");
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathWeeverFileName, ex.getStackTrace());

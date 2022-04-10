@@ -282,12 +282,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void clearStickies() {
-    rightMotorBack.clearStickyFaults();
-    rightMotorFront.clearStickyFaults();
-    rightMotorTop.clearStickyFaults();
-    leftMotorBack.clearStickyFaults();
-    leftMotorFront.clearStickyFaults();
-    leftMotorTop.clearStickyFaults();
+    // rightMotorBack.clearStickyFaults();
+    // rightMotorFront.clearStickyFaults();
+    // rightMotorTop.clearStickyFaults();
+    // leftMotorBack.clearStickyFaults();
+    // leftMotorFront.clearStickyFaults();
+    // leftMotorTop.clearStickyFaults();
   }
 
 }

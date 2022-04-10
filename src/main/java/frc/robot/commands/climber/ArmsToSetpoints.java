@@ -25,6 +25,8 @@ public class ArmsToSetpoints extends CommandBase {
   private final double rotatorVoltage;
   private boolean stopRoatator = false;
   private boolean stopExtender = false;
+  private boolean stallRotate = false;
+  private boolean stopEnd = false;
   private PIDController syncExtender = new PIDController(ClimberConstants.SYNC_KP, 0, 0);
 
   /**
@@ -42,6 +44,25 @@ public class ArmsToSetpoints extends CommandBase {
     this.lengthSetpoint = lengthSetpoint;
     this.extenderVoltage = extenderVoltage;
     this.rotatorVoltage = rotatorVoltage;
+  }
+
+  /**
+   * Fully customized
+   * @param climbingSubsystem
+   * @param lengthSetpoint Target length
+   * @param angleSetpoint Target rotation
+   * @param extenderVoltage Voltage to drive extension
+   * @param rotatorVoltage Voltage to drive rotation
+   */
+  public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double angleSetpoint, double extenderVoltage, double rotatorVoltage, boolean stallRotate, boolean stopEnd) {
+    addRequirements(climbingSubsystem);
+    this.climbingSubsystem = climbingSubsystem;
+    this.angleSetpoint = angleSetpoint;
+    this.lengthSetpoint = lengthSetpoint;
+    this.extenderVoltage = extenderVoltage;
+    this.rotatorVoltage = rotatorVoltage;
+    this.stallRotate = stallRotate;
+    this.stopEnd = stopEnd;
   }
 
   /**
@@ -102,7 +123,7 @@ public class ArmsToSetpoints extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climbingSubsystem.clearStickies();
+    //climbingSubsystem.clearStickies();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -164,8 +185,10 @@ public class ArmsToSetpoints extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    
-    if (stopRoatator) {
+    if(stopEnd) {
+      return false;
+    }
+    if (stopRoatator || stallRotate) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))
           //|| climbingSubsystem.areMotorsStalling();
