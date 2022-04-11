@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.Logging;
 
@@ -78,11 +79,11 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addBoolean("back right limit", () -> isRightBackAtLimit());
         tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
         tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
-        // tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
-        // tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
-        // tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
-        // tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
-        //tab.add(this);
+        tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        tab.add(this);
     }
 
     @Override
@@ -147,6 +148,33 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setLeftRotationVolts(double volts) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit(), isLeftBackAtLimit()));
+    }
+
+    /**
+     * @param volts Input voltage (will be clamped)
+     * @param brakemode motors in brakemode, will try to stall motors in opposite direction if in brakemode
+     */
+    public void setLeftRotationVolts(double volts, boolean brakemode) {
+        volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
+        if(brakemode) {
+            //volts -= MathUtil.clamp(getLeftRotateVelocity() * BRAKE_KP, -3, 3);
+            SmartDashboard.putNumber("Left brake output", MathUtil.clamp(getLeftRotateVelocity() * BRAKE_KP, -3, 3));
+        }
+        setLeftRotationVolts(volts);
+    }
+
+    /**
+     * @param volts Input voltage (will be clamped)
+     * @param brakemode motors in brakemode, will try to stall motors in opposite direction if in brakemode
+     */
+    public void setRightRotationVolts(double volts, boolean brakemode) {
+        volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
+        if(brakemode) {
+            //volts -= MathUtil.clamp(getRightRotateVelocity() * BRAKE_KP, -3, 3);
+            SmartDashboard.putNumber("Right brake output", MathUtil.clamp(getRightRotateVelocity() * BRAKE_KP, -3, 3));
+        }
+        setRightRotationVolts(volts);
+
     }
 
     /**
@@ -223,6 +251,14 @@ public class ClimbingSubsystem extends SubsystemBase {
             return voltage;
         }
         return 0;
+    }
+
+    public double getRightRotateVelocity() {
+        return rotatorRightMotor.getSelectedSensorVelocity() * DriveConstants.CLICKS_PER_ROT;
+    }
+
+    public double getLeftRotateVelocity() {
+        return rotatorLeftMotor.getSelectedSensorVelocity() * DriveConstants.CLICKS_PER_ROT;
     }
 
     public double getRightLength() {

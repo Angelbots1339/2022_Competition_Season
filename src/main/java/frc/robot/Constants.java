@@ -242,6 +242,7 @@ public final class Constants {
         public static final double ROTATIONS_PER_CLICK = (1/ DriveConstants.CLICKS_PER_ROT);
         public static final int MAX_PID_VOLTS = 4;
         public static final double SYNC_KP = 100;
+        public static double BRAKE_KP = 0;
 
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks) {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;
@@ -251,10 +252,10 @@ public final class Constants {
     public final static class ShooterConstants {
 
         // General
-        public final static double AIM_WHEEL_TOLERANCE = 70; // rpm
-        public final static double POWER_WHEEL_TOLERANCE = 70; // rpm
+        public final static double AIM_WHEEL_TOLERANCE = 400; // 70 rpm
+        public final static double POWER_WHEEL_TOLERANCE = 400; // 70 rpm
         public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1260, () -> 3015); // () -> 1400, () -> 3350
-        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100);
+        public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 3000, () -> 3000); // 1200, 1100
         public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 300);
 
         // Ports
