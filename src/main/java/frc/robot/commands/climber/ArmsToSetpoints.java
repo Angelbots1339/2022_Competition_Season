@@ -142,10 +142,16 @@ public class ArmsToSetpoints extends CommandBase {
     if (!stopRoatator) {
       climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
       climbingSubsystem.setRightRotationVolts(rightRotateDesired);
+
+      climbingSubsystem.setLeftExtensionVolts(0);
+      climbingSubsystem.setRightExtensionVolts(0);
     }
     if(!stopExtender) {
       climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtendDesired + syncOutput, -10, 10));
       climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtendDesired - syncOutput, -10, 10));
+      
+      climbingSubsystem.setLeftRotationVolts(0);
+      climbingSubsystem.setRightRotationVolts(0);
     }
     if(Logging.log) { 
         SmartDashboard.putBoolean("left Rotator",
