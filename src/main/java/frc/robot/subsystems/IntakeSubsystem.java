@@ -50,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rightRetractMotor.setIdleMode(IdleMode.kBrake);
     
     
-    if(Logging.log) {
+    if(Logging.intake) {
       log();
     }
   }

@@ -83,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     gyro.reset();
     
-    if(Logging.log) {
+    if(Logging.drive) {
       logData();
     }
     

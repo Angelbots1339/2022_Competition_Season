@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelPID.setTolerance(POWER_WHEEL_TOLERANCE);
     aimWheelPID.setTolerance(AIM_WHEEL_TOLERANCE);
 
-    if(Logging.log) {
+    if(Logging.shooter) {
       log();
     }
   }

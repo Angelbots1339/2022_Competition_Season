@@ -74,7 +74,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         clearStickies();
         
         reset(true);
-        if(Logging.log) {
+        if(Logging.climb) {
             log();
             
         }
