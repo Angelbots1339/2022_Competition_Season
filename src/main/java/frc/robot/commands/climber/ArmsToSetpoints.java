@@ -151,6 +151,9 @@ public class ArmsToSetpoints extends CommandBase {
       }
       climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtendDesired + syncOutput, -10, 10));
       climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtendDesired - syncOutput, -10, 10));
+      
+      climbingSubsystem.setLeftRotationVolts(0);
+      climbingSubsystem.setRightRotationVolts(0);
     }
   }
 
