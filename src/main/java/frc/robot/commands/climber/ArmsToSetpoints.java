@@ -139,20 +139,17 @@ public class ArmsToSetpoints extends CommandBase {
     double extError = climbingSubsystem.getLeftLength() - climbingSubsystem.getRightLength();
     double syncOutput = MathUtil.clamp(syncExtender.calculate(extError, 0), -MAX_PID_VOLTS, MAX_PID_VOLTS);
     
-
-    if (!stopRoatator) {
-      // FIXME put back in for climb to function
-      // climbingSubsystem.setLeftRotationVolts(leftRotateDesired, stallRotate);
-      // climbingSubsystem.setRightRotationVolts(rightRotateDesired, stallRotate);
+    if(stallRotate) {
+      climbingSubsystem.setLeftRotationVolts(0, true);
+      climbingSubsystem.setRightRotationVolts(0, true);
+    }
+    else if (!stopRoatator) {
+      if(!stallRotate) {
+        climbingSubsystem.setLeftRotationVolts(leftRotateDesired);
+        climbingSubsystem.setRightRotationVolts(rightRotateDesired);
+      }
     }
     if(!stopExtender) {
-      if(stallRotate) {
-        climbingSubsystem.setRightRotationVolts(0.0, true);
-        climbingSubsystem.setLeftRotationVolts(0.0, true);
-      } else {
-        climbingSubsystem.setLeftRotationVolts(0);
-        climbingSubsystem.setRightRotationVolts(0);
-      }
       climbingSubsystem.setLeftExtensionVolts(MathUtil.clamp(leftExtendDesired + syncOutput, -10, 10));
       climbingSubsystem.setRightExtensionVolts(MathUtil.clamp(rightExtendDesired - syncOutput, -10, 10));
       

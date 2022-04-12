@@ -247,7 +247,8 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul"
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Right vel": true
             }
           }
         }
@@ -595,6 +596,16 @@
                   "_type": "PID Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[26]",
                   "_title": "PIDController[26]"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[27]",
+                  "_title": "PIDController[27]"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[28]",
+                  "_title": "PIDController[28]"
                 }
               ]
             }
@@ -666,7 +677,8 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul"
+              "Y-axis/Unit": "ul",
+              "Visible data/Shuffleboard/Climber Subsystem/Left stator Current": true
             }
           },
           "4,0": {
@@ -683,7 +695,8 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul"
+              "Y-axis/Unit": "ul",
+              "Visible data/Shuffleboard/Climber Subsystem/Left RPM": true
             }
           }
         }

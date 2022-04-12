@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -42,19 +43,25 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DutyCycleEncoder leftEncoder = new DutyCycleEncoder(LEFT_ENCODER_PORT);
     private DutyCycleEncoder rightEncoder = new DutyCycleEncoder(RIGHT_ENCODER_PORT);
 
-    private double leftRotLast = 0;
-    private double rightRotLast = 0;
+    private PIDController leftRotateBrake;
+    private PIDController rightRotateBrake;
 
+    private boolean leftTrueBrake = true;
+    private boolean rightTrueBrake = true;
 
     public ClimbingSubsystem() {
 
+        leftRotateBrake = new PIDController(BRAKE_KP, 0, 0);
+        leftRotateBrake.setTolerance(BRAKE_TOLERANCE);
+        rightRotateBrake = new PIDController(BRAKE_KP, 0, 0);
+        rightRotateBrake.setTolerance(BRAKE_TOLERANCE);
         
         extenderLeftMotor.setInverted(EXTENDER_LEFT_INVERTED);
         extenderRightMotor.setInverted(EXTENDER_RIGHT_INVERTED);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
@@ -86,7 +93,9 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
         tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
         tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
-        tab.add(this);
+        //tab.add(this);
+        //tab.add("leftBrakePID", leftRotateBrake);
+        //tab.add("rightbrakepid", rightRotateBrake);
     }
 
     @Override
@@ -149,6 +158,10 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setLeftRotationVolts(double volts) {
+        if(!leftTrueBrake) {
+            leftTrueBrake = true;
+            rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        }
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit(), isLeftBackAtLimit()));
     }
@@ -160,10 +173,14 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setLeftRotationVolts(double volts, boolean brakemode) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         if(brakemode) {
-            volts -= MathUtil.clamp(rotatorLeftMotor.getSelectedSensorVelocity() * BRAKE_KP, -8, 8);
-            SmartDashboard.putNumber("Left brake output", volts);
+            if(leftTrueBrake) {
+                leftTrueBrake = false;
+                rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
+            }
+            volts += MathUtil.clamp(leftRotateBrake.calculate(rotatorLeftMotor.getSelectedSensorVelocity(), 0), -3, 3);
+            // SmartDashboard.putNumber("Left brake output", volts);
         }
-        setLeftRotationVolts(volts);
+        rotatorLeftMotor.setVoltage(checkBoundsRotations(volts, getLeftAngle(), isLeftFrontAtLimit(), isLeftBackAtLimit()));
     }
 
     /**
@@ -173,11 +190,16 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setRightRotationVolts(double volts, boolean brakemode) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         if(brakemode) {
-            volts -= MathUtil.clamp(rotatorRightMotor.getSelectedSensorVelocity() * BRAKE_KP, -8, 8);
-            SmartDashboard.putNumber("Right brake output", volts);
-            SmartDashboard.putNumber("Right vel", rotatorRightMotor.getSelectedSensorVelocity());
+            if(rightTrueBrake) {
+                rightTrueBrake = false;
+                rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
+            }
+            volts += MathUtil.clamp(rightRotateBrake.calculate(rotatorRightMotor.getSelectedSensorVelocity(), 0), -3, 3);
+            // SmartDashboard.putNumber("Right brake output", volts);
+            // SmartDashboard.putNumber("Right vel", rotatorRightMotor.getSelectedSensorVelocity());
         }
-        setRightRotationVolts(volts);
+        rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit(), isRightBackAtLimit()));
+        
 
     }
 
@@ -185,8 +207,13 @@ public class ClimbingSubsystem extends SubsystemBase {
      * @param volts Input voltage (will be clamped)
      */
     public void setRightRotationVolts(double volts) {
+        if(!rightTrueBrake) {
+            rightTrueBrake = true;
+            rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        }
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         rotatorRightMotor.setVoltage(checkBoundsRotations(volts, getRightAngle(), isRightFrontAtLimit(), isRightBackAtLimit()));
+
     }
 
     /**
@@ -312,8 +339,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void disable() {

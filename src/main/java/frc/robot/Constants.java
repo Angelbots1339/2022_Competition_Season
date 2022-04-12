@@ -242,7 +242,8 @@ public final class Constants {
         public static final double ROTATIONS_PER_CLICK = (1/ DriveConstants.CLICKS_PER_ROT);
         public static final int MAX_PID_VOLTS = 4;
         public static final double SYNC_KP = 100;
-        public static double BRAKE_KP = .005;
+        public static double BRAKE_KP = .0006; // 0.000125
+        public static double BRAKE_TOLERANCE = 500;
 
         public final static double GET_DEGREES_FROM_CLICKS(double Clicks) {
             return Clicks / DriveConstants.CLICKS_PER_ROT * MOTOR_ROT_PER_ARM_ROT * 360;

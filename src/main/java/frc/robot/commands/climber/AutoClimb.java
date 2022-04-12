@@ -29,20 +29,18 @@ public class AutoClimb extends SequentialCommandGroup{
             new ArmsToSetpoints(17, climbingSubsystem), 
             new WaitUntilCommand(proceed),
             // Slip hooks off mid bar, stall at 9 degrees
-            new ArmsToSetpoints(climbingSubsystem, 0.57, 9, DROP_EXTENDER_VOLTS, 3.5, true, false),
-            // TODO see if slowing this down reduces swing
+            //new ArmsToSetpoints(climbingSubsystem, 0.57, 9, DROP_EXTENDER_VOLTS, 3.5, true, false),
+            // Brake mode stops arms from slamming
             new ParallelDeadlineGroup(
                 // Wait while stalling at 9 degrees
-                new WaitCommand(2),
-                new ArmsToSetpoints(climbingSubsystem, 0.57, 9, DROP_EXTENDER_VOLTS, 3.5, true, true)
+                new WaitCommand(1),
+                new ArmsToSetpoints(climbingSubsystem, 0.45, 9, DROP_EXTENDER_VOLTS, 3.5, true, true)
             ), 
-            // Brake mode stops arms from slamming into hard stops
-            // new WaitCommand(.5), 
             // Click hooks onto high bar @ default speed
-            // new ArmsToSetpoints(climbingSubsystem, 0.47, -0.5, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            new ArmsToSetpoints(climbingSubsystem, 0.45, -0.5, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             // new WaitCommand(.1),
             // Click hooks onto high bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, -0.01, -0.5,PULLUP_VOLTS - 3, MAX_ROTATOR_VOLTS - 0.5),
+            new ArmsToSetpoints(climbingSubsystem, 0.01, -0.5, PULLUP_VOLTS, MAX_ROTATOR_VOLTS), //-0.01 length setpoint
             new WaitUntilCommand(proceed),
             // Drop high bar into hooks @ slow speed
             new ArmsToSetpoints(climbingSubsystem, 0.25, 0, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
@@ -62,15 +60,17 @@ public class AutoClimb extends SequentialCommandGroup{
             new ArmsToSetpoints(17, climbingSubsystem), 
             new WaitUntilCommand(proceed),
             // Pull halfway up traverse bar @ slow speed
-            new ArmsToSetpoints(climbingSubsystem, 0.3, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
+            // new ArmsToSetpoints(climbingSubsystem, 0.3, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             // Brake mode stops arms from slamming into hard stops
-            // TODO see if slowing this down reduces swing
-            new WaitCommand(.25), 
+            new ParallelDeadlineGroup(
+                // Wait while stalling at 9 degrees
+                new WaitCommand(1),
+                new ArmsToSetpoints(climbingSubsystem, 0.45, 9, DROP_EXTENDER_VOLTS, 3.5, true, true)
+            ), 
+            // // Click hooks onto traverse bar @ default speed
+            // new ArmsToSetpoints(climbingSubsystem, 0.3, 6, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
             // Click hooks onto traverse bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.3, 6, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
-            // Click hooks onto traverse bar @ default speed
-            new ArmsToSetpoints(climbingSubsystem, 0.00, 0, PULLUP_VOLTS, MAX_ROTATOR_VOLTS) 
-            // TODO angle -1
+            new ArmsToSetpoints(climbingSubsystem, 0.01, 0, PULLUP_VOLTS, MAX_ROTATOR_VOLTS)  // 0.00 length
         );
     }
 }
