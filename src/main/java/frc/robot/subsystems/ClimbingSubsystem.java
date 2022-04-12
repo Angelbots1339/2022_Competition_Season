@@ -42,6 +42,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     private DutyCycleEncoder leftEncoder = new DutyCycleEncoder(LEFT_ENCODER_PORT);
     private DutyCycleEncoder rightEncoder = new DutyCycleEncoder(RIGHT_ENCODER_PORT);
 
+    private double leftRotLast = 0;
+    private double rightRotLast = 0;
+
 
     public ClimbingSubsystem() {
 
@@ -50,8 +53,8 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderRightMotor.setInverted(EXTENDER_RIGHT_INVERTED);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
         rotatorLeftMotor.setInverted(ROTATOR_LEFT_INVERTED);
         rotatorRightMotor.setInverted(ROTATOR_RIGHT_INVERTED);
 
@@ -157,8 +160,8 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setLeftRotationVolts(double volts, boolean brakemode) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         if(brakemode) {
-            //volts -= MathUtil.clamp(getLeftRotateVelocity() * BRAKE_KP, -3, 3);
-            SmartDashboard.putNumber("Left brake output", MathUtil.clamp(getLeftRotateVelocity() * BRAKE_KP, -3, 3));
+            volts -= MathUtil.clamp(rotatorLeftMotor.getSelectedSensorVelocity() * BRAKE_KP, -8, 8);
+            SmartDashboard.putNumber("Left brake output", volts);
         }
         setLeftRotationVolts(volts);
     }
@@ -170,8 +173,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     public void setRightRotationVolts(double volts, boolean brakemode) {
         volts = MathUtil.clamp(volts, -MAX_ROTATOR_VOLTS, MAX_ROTATOR_VOLTS);
         if(brakemode) {
-            //volts -= MathUtil.clamp(getRightRotateVelocity() * BRAKE_KP, -3, 3);
-            SmartDashboard.putNumber("Right brake output", MathUtil.clamp(getRightRotateVelocity() * BRAKE_KP, -3, 3));
+            volts -= MathUtil.clamp(rotatorRightMotor.getSelectedSensorVelocity() * BRAKE_KP, -8, 8);
+            SmartDashboard.putNumber("Right brake output", volts);
+            SmartDashboard.putNumber("Right vel", rotatorRightMotor.getSelectedSensorVelocity());
         }
         setRightRotationVolts(volts);
 
@@ -254,6 +258,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getRightRotateVelocity() {
+        
         return rotatorRightMotor.getSelectedSensorVelocity() * DriveConstants.CLICKS_PER_ROT;
     }
 
@@ -307,8 +312,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         extenderRightMotor.setNeutralMode(NeutralMode.Brake);
         extenderLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorLeftMotor.setNeutralMode(NeutralMode.Brake);
-        rotatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        rotatorLeftMotor.setNeutralMode(NeutralMode.Coast);
+        rotatorRightMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     public void disable() {

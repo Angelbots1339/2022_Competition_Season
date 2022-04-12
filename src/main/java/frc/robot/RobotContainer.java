@@ -115,7 +115,7 @@ public class RobotContainer {
     // SmartDashboard.putData("arms up", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_TOP_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
     // SmartDashboard.putData("arms down", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_BOTTOM_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
 
-    // SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, .05, 0, ));
+    SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, 0, 0, 3, 0, true, true));
     // SmartDashboard.putData("rotator front", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_FRONT_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
     // SmartDashboard.putData("rotator back", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_BACK_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
 
