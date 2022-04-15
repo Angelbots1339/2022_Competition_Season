@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.ClearDrivingFaults;
+import frc.robot.commands.drive.TargetBall;
 import frc.robot.commands.auto.AutoSequences;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
@@ -35,6 +35,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Targeting;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -74,9 +75,7 @@ public class RobotContainer {
       shooterSubsystem, () -> isTeamRed.getBoolean(false));
 
   private boolean driveMode = true;
-
   private boolean rejectBalls = true;
-
   private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
   /**
@@ -107,6 +106,10 @@ public class RobotContainer {
     // Sequence
     // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
+    tab.add("Update pipeline", new InstantCommand(() -> {
+      // Red = 0, blue = 1
+      Targeting.setPipeline(isTeamRed.getBoolean(false) ? 0 : 1);
+    }));
 
     //Test code for turn and arms
     // SmartDashboard.putData("turn 90",new TurnToAngle(driveSubsystem, 90));
@@ -115,7 +118,7 @@ public class RobotContainer {
     // SmartDashboard.putData("arms up", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_TOP_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
     // SmartDashboard.putData("arms down", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_BOTTOM_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
 
-    SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, 0, 0, 3, 0, true, true));
+    // SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, 0, 0, 3, 0, true, true));
     // SmartDashboard.putData("rotator front", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_FRONT_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
     // SmartDashboard.putData("rotator back", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_BACK_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
 
@@ -138,6 +141,13 @@ public class RobotContainer {
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
+    // Target ball when x pressed and not in climb mode.
+    // TODO test conditional targeting command works
+    new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
+      new TargetBall(driveSubsystem, fwd, rot),
+      new InstantCommand(), () -> !driveMode));
+    // new JoystickButton(joystick, BUTTON_X).whenHeld(new TargetBall(driveSubsystem, fwd, rot));
+
     // Feed drive watchdog when idle
     Command stopDrive = new RunCommand(() -> driveSubsystem.disable(), driveSubsystem);
     Command stopShooter = new RunCommand(() -> shooterSubsystem.disable(), shooterSubsystem);
@@ -148,8 +158,9 @@ public class RobotContainer {
     /* CLIMBING */
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() * ClimberConstants.DROP_EXTENDER_VOLTS - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS)
-       ;
+    DoubleSupplier extension = () -> (
+      joystick.getLeftTriggerAxis() * ClimberConstants.DROP_EXTENDER_VOLTS
+    - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS);
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));

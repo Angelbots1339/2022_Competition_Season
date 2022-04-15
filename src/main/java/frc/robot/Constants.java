@@ -100,7 +100,7 @@ public final class Constants {
         public final static boolean GYRO_INVERTED = true;
 
         //Ball targeting 
-        public final static double TARGETING_KP = 0;
+        public final static double TARGETING_KP = 1.0/160.0;
         public final static double TARGETING_KI = 0;
         public final static double TARGETING_KD = 0;
         public final static double TARGETING_TOLERANCE = 0;
@@ -166,7 +166,8 @@ public final class Constants {
         public final static boolean INDEXER_LEFT_INVERTED = true;
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         public final static boolean INTAKE_INVERTED = false;
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 100; // 0 (closest) to 2047 (furthest)
+        // This vvv breaks over time, raise it periodically
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 130; // 0 (closest) to 2047 (furthest)
     }
 
     public static final class LoaderConstants {

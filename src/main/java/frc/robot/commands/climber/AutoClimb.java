@@ -115,7 +115,6 @@ public class AutoClimb extends SequentialCommandGroup{
 //             new ArmsToSetpoints(17, climbingSubsystem), 
 //             new WaitUntilCommand(proceed),
 //             // Pull halfway up high bar @ slow speed
-//             // TODO see if slowing this down reduces swing
 //             new ArmsToSetpoints(climbingSubsystem, 0.35, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
 //             // Brake mode stops arms from slamming into hard stops
 //             new WaitCommand(.5), 
@@ -145,13 +144,12 @@ public class AutoClimb extends SequentialCommandGroup{
 //             // Pull halfway up traverse bar @ slow speed
 //             new ArmsToSetpoints(climbingSubsystem, 0.3, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
 //             // Brake mode stops arms from slamming into hard stops
-//             // TODO see if slowing this down reduces swing
 //             new WaitCommand(.25), 
 //             // Click hooks onto traverse bar @ default speed
 //             new ArmsToSetpoints(climbingSubsystem, 0.3, 6, DROP_EXTENDER_VOLTS, MAX_ROTATOR_VOLTS), 
 //             // Click hooks onto traverse bar @ default speed
 //             new ArmsToSetpoints(climbingSubsystem, 0.00, 0, PULLUP_VOLTS, MAX_ROTATOR_VOLTS) 
-//             // TODO angle -1
+//             // 
 //         );
 //     }
 // }

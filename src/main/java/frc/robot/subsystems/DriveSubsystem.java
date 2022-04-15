@@ -17,9 +17,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Logging;
+import frc.robot.utils.Targeting;
 
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -95,6 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
     field2d.setRobotPose(pose);
+    SmartDashboard.putNumber("xoffset", Targeting.getTargetXOffset());
+    SmartDashboard.putBoolean("Has Ball", Targeting.hasTarget());
+    SmartDashboard.putBoolean("Is connected", Targeting.isConnected());
   }
 
   /**
@@ -147,10 +152,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   // --- Getters ---
-
-  public double getClosetBallX(){
-    return 0; //TODO
-  }
 
   private static double getEncoderDistance(WPI_TalonFX targetMotor) {
     // Converts clicks to distance in meters

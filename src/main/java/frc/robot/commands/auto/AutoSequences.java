@@ -190,7 +190,6 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         grabDriveShoot("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, REGULAR),
                         grabDriveShoot("4BAlt3Grab", "4BAlt3Shoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, REGULAR)
                 ));
-        // TODO these might need to use grabgrabshoot if the balls aren't indexed high up enough
         // Grabs 2nd ball, shoots 2, grabs 3rd, shoots 1, grabs 4th and 5th, shoots 2
         this.add(
                 "5 Ball",

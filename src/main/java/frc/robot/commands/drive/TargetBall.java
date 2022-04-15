@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.DriveConstants.*;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utils.Targeting;
 
 public class TargetBall extends CommandBase {
   /** Creates a new TargetBall. */
@@ -36,8 +37,10 @@ public class TargetBall extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pidRot = MathUtil.clamp(pidController.calculate(MathUtil.clamp(driveSubsystem.getClosetBallX(), 0, 0)), -1, 1);
+    double pidRot = -MathUtil.clamp(pidController.calculate(Targeting.getTargetXOffset()), -.5, .5);
     driveSubsystem.arcadeDrive(fwd, () -> rot.getAsDouble() + pidRot);
+    // SmartDashboard.putNumber("pidrot", pidRot);
+
   }
 
   // Called once the command ends or is interrupted.

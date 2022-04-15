@@ -93,14 +93,13 @@ public class FollowTrajectory extends RamseteCommand {
 
     /**
      * 
-     * @param prefix Folder to grab paths from, e.g. "output/"
+     * @param prefix DEPRECEATED: Will not use parameter. Folder to grab paths from, e.g. "output/"
      * @param pathWeeverFileName Name of path, e.g. "1Ball"
      * @return
      */
     private static Trajectory getTrajectoryFromJSON(String prefix, String pathWeeverFileName) {
 
         Trajectory trajectory = new Trajectory();
-        // TODO use stringbuilder
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath()
                     .resolve("output/" + pathWeeverFileName + ".wpilib.json");
