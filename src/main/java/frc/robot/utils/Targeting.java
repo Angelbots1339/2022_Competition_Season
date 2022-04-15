@@ -34,7 +34,7 @@ public class Targeting {
      * @return Median of the results of last 5 frames
      */
     public static double getTargetXOffset() {
-        if(hasTarget() && NetworkTablesHelper.getDouble("photonvision", CAMERA_NAME, "targetPixelsY") > 120){
+        if(hasTarget()){
             recentFrames[index] = (160 - NetworkTablesHelper.getDouble("photonvision", CAMERA_NAME, "targetPixelsX"));
         } else{
             recentFrames[index] = 0;
@@ -50,8 +50,12 @@ public class Targeting {
     }
 
     public static boolean setPipeline(double pipelineIndex) {
-        return NetworkTableInstance.getDefault().getTable("photovision").getSubTable(CAMERA_NAME)
+        return NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(CAMERA_NAME)
                 .getEntry("pipelineIndex").setDouble(pipelineIndex);
+    }
+    public static double getPipeline() {
+        return NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(CAMERA_NAME)
+                .getEntry("pipelineIndex").getDouble(-1);
     }
 
 }

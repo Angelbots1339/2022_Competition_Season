@@ -4,15 +4,19 @@
 
 package frc.robot;
 
+import java.io.Console;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -69,10 +73,10 @@ public class RobotContainer {
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
-  private static NetworkTableEntry isTeamRed = tab.add("IsTeamRed?", false).getEntry();
+  private static BooleanSupplier isTeamRed = () -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
 
   private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
-      shooterSubsystem, () -> isTeamRed.getBoolean(false));
+      shooterSubsystem, isTeamRed);
 
   private boolean driveMode = true;
   private boolean rejectBalls = true;
@@ -99,6 +103,12 @@ public class RobotContainer {
     climbingSubsystem.reset(true);
   }
 
+  public void setPipeline(){
+
+    Targeting.setPipeline(isTeamRed.getAsBoolean() ? 0 : 1);
+
+  }
+
   /**
    * Populate auto chooser in SmartDashboard with auto commands
    */
@@ -106,10 +116,10 @@ public class RobotContainer {
     // Sequence
     // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
-    tab.add("Update pipeline", new InstantCommand(() -> {
-      // Red = 0, blue = 1
-      Targeting.setPipeline(isTeamRed.getBoolean(false) ? 0 : 1);
-    }));
+   
+    tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
+    tab.addBoolean("isTEAMred",isTeamRed);
+    
 
     //Test code for turn and arms
     // SmartDashboard.putData("turn 90",new TurnToAngle(driveSubsystem, 90));
@@ -195,7 +205,7 @@ public class RobotContainer {
       new ClearClimbingFaults(climbingSubsystem)
       .andThen(new ClearDrivingFaults(driveSubsystem))
       .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-            () -> isTeamRed.getBoolean(false))))
+            isTeamRed)))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // Shoot low when A button is pressed
@@ -203,7 +213,7 @@ public class RobotContainer {
       new ClearClimbingFaults(climbingSubsystem)
       .andThen(new ClearDrivingFaults(driveSubsystem))
       .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-            () -> isTeamRed.getBoolean(false))))
+            isTeamRed)))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
@@ -218,7 +228,7 @@ public class RobotContainer {
 
     intakeSubsystem.setDefaultCommand(new RetractIntake(intakeSubsystem));
 
-    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, shooterSubsystem, () -> isTeamRed.getBoolean(false), () -> rejectBalls));
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, shooterSubsystem, isTeamRed, () -> rejectBalls));
 
     new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> rejectBalls = false));
 
