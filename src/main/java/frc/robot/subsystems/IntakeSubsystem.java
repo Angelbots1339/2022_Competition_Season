@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax leftRetractMotor = new CANSparkMax(INTAKE_RETRACT_LEFT_PORT, MotorType.kBrushless);
   private CANSparkMax rightRetractMotor = new CANSparkMax(INTAKE_RETRACT_RIGHT_PORT, MotorType.kBrushless);
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
+  public static ShuffleboardTab tab = Shuffleboard.getTab("IntakeSubsystem");
 
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
   //private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);

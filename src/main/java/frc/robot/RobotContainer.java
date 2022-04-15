@@ -67,7 +67,7 @@ public class RobotContainer {
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
+  public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
 
   private static NetworkTableEntry isTeamRed = tab.add("IsTeamRed?", false).getEntry();
 

@@ -8,7 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Logging;
@@ -27,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //private MotorControllerGroup powerWheelGroup = new MotorControllerGroup(powerWheelLeft, powerWheelRight);
 
-  private ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
+  public static ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
 
   private NetworkTableEntry powerPresentsTest = tab.add("Power Presents Test", 0)
       .getEntry();
@@ -81,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setPowerWheelRPM(double speed) {
     powerPID = powerWheelPID.calculate(getPowerRPM(), speed);
     double powerFeedForward = (speed * POWER_WHEEL_KF) + POWER_WHEEL_KB;
-    SmartDashboard.putNumber("power feed foward", powerFeedForward);
+    // SmartDashboard.putNumber("power feed foward", powerFeedForward);
     powerWheelLeft.setVoltage(powerFeedForward + powerPID);
     powerWheelRight.setVoltage(powerFeedForward + powerPID);
   }
@@ -93,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setAimWheelRPM(double speed) {
     aimPID = aimWheelPID.calculate(getAimRPM(), speed);
     double aimWheelFeedForward = (speed * AIM_WHEEL_KF) + AIM_WHEEL_KB;
-    SmartDashboard.putNumber("aim feed foward", aimWheelFeedForward);
+    // SmartDashboard.putNumber("aim feed foward", aimWheelFeedForward);
     aimWheel.setVoltage(aimWheelFeedForward + aimPID);
   }
 

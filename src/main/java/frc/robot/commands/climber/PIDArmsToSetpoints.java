@@ -6,7 +6,6 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.robot.Constants.ClimberConstants.*;
 
@@ -15,7 +14,6 @@ import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.utils.ArmSpeeds;
 
 public class PIDArmsToSetpoints extends CommandBase {
-  private ClimbingSubsystem climbingSubsystem;
   private ProfiledPIDController leftRotator;
   private ProfiledPIDController rightRotator;
   private ProfiledPIDController leftExtender;
@@ -26,8 +24,6 @@ public class PIDArmsToSetpoints extends CommandBase {
   public PIDArmsToSetpoints(ClimbingSubsystem climbingSubsystem,  double extension, double rotation, ArmSpeeds armSpeeds) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.armSpeeds = armSpeeds;
-    this.climbingSubsystem = climbingSubsystem;
-
     rightRotator = new ProfiledPIDController(ROTATOR_KP, ROTATOR_KI, ROTATOR_KD, armSpeeds.getRotatorConstraints());
     leftRotator = new ProfiledPIDController(ROTATOR_KP, ROTATOR_KI, ROTATOR_KD, armSpeeds.getRotatorConstraints());
  
@@ -82,8 +78,8 @@ public class PIDArmsToSetpoints extends CommandBase {
     if(!armSpeeds.isRotatorNeutral()){
       rightRotator.setConstraints(armSpeeds.getRotatorConstraints());
       leftRotator.setConstraints(armSpeeds.getRotatorConstraints());
-      SmartDashboard.putNumber("rightRotator", rightRotator.calculate(climbingSubsystem.getRightAngle()));
-      SmartDashboard.putNumber("leftRotator", leftRotator.calculate(climbingSubsystem.getLeftAngle()));
+      // SmartDashboard.putNumber("rightRotator", rightRotator.calculate(climbingSubsystem.getRightAngle()));
+      // SmartDashboard.putNumber("leftRotator", leftRotator.calculate(climbingSubsystem.getLeftAngle()));
       
       //climbingSubsystem.setLeftRotationVolts(MathUtil.clamp(MAX_ROTATOR_VOLTS, -MAX_ROTATOR_VOLTS, leftRotator.calculate(climbingSubsystem.getLeftAngle())));
       //climbingSubsystem.setRightRotationVolts(MathUtil.clamp(MAX_ROTATOR_VOLTS, -MAX_ROTATOR_VOLTS, rightRotator.calculate(climbingSubsystem.getRightAngle())));

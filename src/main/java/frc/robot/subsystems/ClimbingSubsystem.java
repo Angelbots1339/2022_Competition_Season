@@ -23,7 +23,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     private WPI_TalonFX extenderRightMotor = new WPI_TalonFX(EXTENDER_RIGHT_PORT, CANIVORE_NAME);
     private WPI_TalonFX rotatorLeftMotor = new WPI_TalonFX(ROTATOR_LEFT_PORT, CANIVORE_NAME);
     private WPI_TalonFX rotatorRightMotor = new WPI_TalonFX(ROTATOR_RIGHT_PORT, CANIVORE_NAME);
-    private ShuffleboardTab tab = Shuffleboard.getTab("Climber Subsystem");
+    public static ShuffleboardTab tab = Shuffleboard.getTab("ClimberSubsystem");
 
     // Limit Switches
     private DigitalInput rotatorLeftFrontLimit = new DigitalInput(ROTATOR_LEFT_FRONT_LIMIT_PORT);
@@ -86,10 +86,6 @@ public class ClimbingSubsystem extends SubsystemBase {
         tab.addBoolean("back right limit", () -> isRightBackAtLimit());
         tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
         tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
-        tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
-        tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
-        tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
-        tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
         //tab.add(this);
         //tab.add("leftBrakePID", leftRotateBrake);
         //tab.add("rightbrakepid", rightRotateBrake);
@@ -112,6 +108,11 @@ public class ClimbingSubsystem extends SubsystemBase {
         
         //tab.addBoolean("Arms stalling?", () -> false);
         tab.add(this);
+
+        tab.addNumber("Left RPM", () -> rotatorLeftMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Right RPM", () -> rotatorRightMotor.getSelectedSensorVelocity() * 10 / 60);
+        tab.addNumber("Left stator Current", () -> rotatorLeftMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
+        tab.addNumber("Right stator Current", () -> rotatorRightMotor.getStatorCurrent() * ROTATIONS_PER_CLICK * 10 * 60);
     }
     public boolean areMotorsStalling(){
         return isMotorStalling(extenderLeftMotor) || isMotorStalling(extenderRightMotor) || isMotorStalling(rotatorLeftMotor) || isMotorStalling(rotatorRightMotor);

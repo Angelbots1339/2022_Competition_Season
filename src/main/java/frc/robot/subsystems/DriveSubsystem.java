@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
   private AHRS gyro;
 
   // log
-  ShuffleboardTab tab;
+  public static ShuffleboardTab tab = Shuffleboard.getTab("DriveSubsystem");
   Field2d field2d = new Field2d();
 
 
@@ -79,9 +79,6 @@ public class DriveSubsystem extends SubsystemBase {
     leftMotorControllerGroup.setInverted(LEFT_INVERTED);
     drive.setMaxOutput(MAX_DRIVE_OUTPUT_PERCENT);
     drive.arcadeDrive(0, 0);
-    
-
-    tab = Shuffleboard.getTab(this.getName());
 
     gyro.reset();
     
@@ -97,9 +94,11 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
     field2d.setRobotPose(pose);
-    SmartDashboard.putNumber("xoffset", Targeting.getTargetXOffset());
-    SmartDashboard.putBoolean("Has Ball", Targeting.hasTarget());
-    SmartDashboard.putBoolean("Is connected", Targeting.isConnected());
+    if(Logging.general) {
+      SmartDashboard.putNumber("xoffset", Targeting.getTargetXOffset());
+      SmartDashboard.putBoolean("Has Ball", Targeting.hasTarget());
+      SmartDashboard.putBoolean("Is connected", Targeting.isConnected());
+    }
   }
 
   /**
@@ -144,10 +143,6 @@ public class DriveSubsystem extends SubsystemBase {
     tab.addNumber("y",  () -> pose.getY());
     tab.addNumber("Left Speed",  () -> getWheelSpeeds().leftMetersPerSecond);
     tab.addNumber("Right Speed",  () -> (getWheelSpeeds().rightMetersPerSecond));
-    tab.addNumber("stator left", () -> leftMotorTop.getStatorCurrent());
-    tab.addNumber("supply left", () -> leftMotorTop.getSupplyCurrent());
-    tab.addNumber("stator right", () -> rightMotorTop.getStatorCurrent());
-    tab.addNumber("supply right", () -> rightMotorTop.getSupplyCurrent());
    
   }
 

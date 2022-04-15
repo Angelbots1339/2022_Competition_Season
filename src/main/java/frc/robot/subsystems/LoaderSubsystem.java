@@ -7,17 +7,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.Logging;
 
 import static frc.robot.Constants.LoaderConstants.*;
 
 
 public class LoaderSubsystem extends SubsystemBase {
   
-  private ShuffleboardTab tab = Shuffleboard.getTab("Intake Subsystem");
+  public static ShuffleboardTab tab = IntakeSubsystem.tab;
   private WPI_TalonFX loaderMotor = new WPI_TalonFX(LOADER_PORT, Constants.CANIVORE_NAME);
   /** Creates a new LoaderSubsystem. */
   public LoaderSubsystem() {
@@ -25,6 +25,10 @@ public class LoaderSubsystem extends SubsystemBase {
     loaderMotor.setInverted(LOADER_INVERSE);
     loaderMotor.setNeutralMode(NeutralMode.Brake);
     loaderMotor.clearStickyFaults();
+
+    if(Logging.loader) {
+      log();
+    }
   }
 
   public void log() {
