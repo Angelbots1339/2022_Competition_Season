@@ -68,8 +68,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
     robotContainer.setTeamColor();
+    autonomousCommand = robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
+    robotContainer.setTeamColor();
     robotContainer.resetOdometry();
     robotContainer.resetArms();
     robotContainer.setDriveMode();
@@ -124,6 +124,6 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     robotContainer.testModeRunArms();
     robotContainer.testModeRunIntake();
-
+    robotContainer.logLimits();
   }
 }

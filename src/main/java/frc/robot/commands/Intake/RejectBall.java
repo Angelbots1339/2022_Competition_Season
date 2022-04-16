@@ -6,10 +6,15 @@ package frc.robot.commands.intake;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LoaderConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.commands.shooter.ShootTimed;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -22,10 +27,12 @@ import static frc.robot.Constants.ShooterConstants.*;
 public class RejectBall extends CommandBase {
 
   private final LoaderSubsystem loaderSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  private final BooleanSupplier isTeamRed;
   private ShootTimed shootCommand;
+  private Timer shootTimer = new Timer();
+  private boolean shooting = false;
+  private Timer retractTimer = new Timer();
+  private boolean retracting = false;
 
   /**
    * Checks if a ball is at the color sensor, what color it is, and what team the
@@ -33,13 +40,11 @@ public class RejectBall extends CommandBase {
    * 
    * @param isTeamRed False if the team is Blue, True if it is Red
    */
-  public RejectBall(LoaderSubsystem loaderSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, BooleanSupplier isTeamRed, BooleanSupplier rejectEnabled) {
+  public RejectBall(LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem, boolean rejectEnabled) {
     this.loaderSubsystem = loaderSubsystem;
-    this.intakeSubsystem = intakeSubsystem;
     this.shooterSubsystem = shooterSubsystem;
-    this.isTeamRed = isTeamRed;
     addRequirements(loaderSubsystem);
-    this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_TIME);
+    //this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_TIME);
     shootCommand.cancel();
   }
 
@@ -52,20 +57,15 @@ public class RejectBall extends CommandBase {
   @Override
   public void execute() {
     // Check ball color
-    if (intakeSubsystem.isBallLow() && !shootCommand.isScheduled()
+    if (IntakeSubsystem.isBallLow() && !shootCommand.isScheduled()
         // If ball is blue and we are red
-        && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) 
+        && (BLUE.colorMatch(IntakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
         // If ball is red and we are blue
-        || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean())) { 
+        || (RED.colorMatch(IntakeSubsystem.getColorSensorRaw()) && !RobotContainer.getTeamColor())) { 
         // If ball is opponent color, reject it
-      CommandScheduler.getInstance().schedule(createShootTimed()
-        // Then push next ball back down to color sensor
-        .andThen(
-        new ParallelDeadlineGroup(
-          new WaitCommand(REVERSE_TIME),
-          new EjectBalls(intakeSubsystem, loaderSubsystem),
-          new ReverseShoot(shooterSubsystem))
-      ));
+        // Start shoot timer
+          shootTimer.start();
+          shooting = true;
     } /*else if (shootCommand.isScheduled() // Trying to eject wrong ball
     // If ball is blue and we are blue
     && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()) 
@@ -73,14 +73,29 @@ public class RejectBall extends CommandBase {
     || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())) { 
       shootCommand.cancel();
     }*/
-  }
 
-  /**
-   * Creates a new shoot timed command instance
-   */
-  private ShootTimed createShootTimed() {
-    this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_REJECT, REJECT_TIME);
-    return this.shootCommand;
+    if(shootTimer.get() > REJECT_TIME) {
+      shooting = false;
+      retracting = true;
+      retractTimer.start();
+    }
+
+    if(retractTimer.get() > REVERSE_TIME) {
+      retracting = false;
+    }
+
+    if(shooting) {
+      shooterSubsystem.setAimWheelRPM(SHOOTER_PROFILE_REJECT.getAimRPM());
+      shooterSubsystem.setPowerWheelRPM(SHOOTER_PROFILE_REJECT.getPowerRPM());
+      loaderSubsystem.runLoader(MAX_LOADER_SPEED);
+    } else if (retracting) {
+      shooterSubsystem.setAimVolts(-2);
+      shooterSubsystem.setPowerVolts(-2);
+      loaderSubsystem.runLoader(-MAX_LOADER_SPEED);
+    } else {
+      shooterSubsystem.disable();
+      loaderSubsystem.disable();
+    }
   }
 
 

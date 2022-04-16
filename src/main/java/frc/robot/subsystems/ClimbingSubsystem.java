@@ -82,10 +82,6 @@ public class ClimbingSubsystem extends SubsystemBase {
             log();
             
         }
-        tab.addBoolean("back left limit", () -> isLeftBackAtLimit());
-        tab.addBoolean("back right limit", () -> isRightBackAtLimit());
-        tab.addBoolean("front left limit", () -> isLeftFrontAtLimit());
-        tab.addBoolean("front right limit", () -> isRightFrontAtLimit());
         //tab.add(this);
         //tab.add("leftBrakePID", leftRotateBrake);
         //tab.add("rightbrakepid", rightRotateBrake);

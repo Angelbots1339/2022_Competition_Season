@@ -29,11 +29,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
 
-  private NetworkTableEntry powerPresentsTest = tab.add("Power Presents Test", 0)
-      .getEntry();
-  private NetworkTableEntry aimPercentTest = tab.add("Aim Percent Test", 0)
-      .getEntry();
-
   private double aimPID = 0;
   private double powerPID = 0;
 
@@ -97,13 +92,6 @@ public class ShooterSubsystem extends SubsystemBase {
     double aimWheelFeedForward = (speed * AIM_WHEEL_KF) + AIM_WHEEL_KB;
     // SmartDashboard.putNumber("aim feed foward", aimWheelFeedForward);
     aimWheel.setVoltage(aimWheelFeedForward + aimPID);
-  }
-
-  public void testWheels(){
-
-    aimWheel.setVoltage(aimPercentTest.getDouble(0));
-    powerWheelLeft.setVoltage(powerPresentsTest.getDouble(0));
-    powerWheelRight.setVoltage(powerPresentsTest.getDouble(0));
   }
 
   /**
