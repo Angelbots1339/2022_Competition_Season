@@ -72,15 +72,15 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
-
-  private static BooleanSupplier isTeamRed = () -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+  private static boolean color = false;
+  private static BooleanSupplier isTeamRed = () -> false;//() -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+  
 
   private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
       shooterSubsystem, isTeamRed);
 
   private boolean driveMode = true;
   private boolean rejectBalls = true;
-  private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -117,7 +117,7 @@ public class RobotContainer {
     // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
    
-    tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
+    //tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
     tab.addBoolean("isTEAMred",isTeamRed);
     
 
@@ -145,14 +145,13 @@ public class RobotContainer {
     /* DRIVING */
 
     // Invert drive when using rear camera
-    DoubleSupplier fwd = () -> (isDriveReversed ? 1 : -1) * joystick.getLeftY();
+    DoubleSupplier fwd = () -> -joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Target ball when x pressed and not in climb mode.
-    // TODO test conditional targeting command works
     new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
       new TargetBall(driveSubsystem, fwd, rot),
       new InstantCommand(), () -> !driveMode));
@@ -283,6 +282,15 @@ public class RobotContainer {
       intakeSubsystem.resetIntake();
     }
     intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
+  }
+
+  public void setTeamColor() {
+    color = NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+    isTeamRed = () -> color;
+  }
+
+  public void updatePose() {
+    driveSubsystem.updatePose();
   }
 
 }

@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -44,7 +45,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    Constants.updateGeneralStatusFrame(powerWheelRight);
+    //Constants.updateGeneralStatusFrame(powerWheelRight);
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     powerWheelLeft.clearStickyFaults();
     powerWheelRight.clearStickyFaults();

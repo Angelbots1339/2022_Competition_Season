@@ -92,13 +92,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
-    field2d.setRobotPose(pose);
+    //field2d.setRobotPose(pose);
     if(Logging.general) {
       SmartDashboard.putNumber("xoffset", Targeting.getTargetXOffset());
       SmartDashboard.putBoolean("Has Ball", Targeting.hasTarget());
       SmartDashboard.putBoolean("Is connected", Targeting.isConnected());
     }
+  }
+
+  public void updatePose() {
+    // FIXME Put back in periodic if autos are weird
+    pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
   }
 
   /**

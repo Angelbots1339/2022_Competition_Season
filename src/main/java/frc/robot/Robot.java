@@ -21,7 +21,6 @@ import static frc.robot.Constants.JoystickConstants.*;
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-  private Timer timer;
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -33,11 +32,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    LimeLight.setPipeline(1);
-    LimeLight.setStream(2);
-    LimeLight.setLEDMode(1);;
+    // LimeLight.setPipeline(1);
+    // LimeLight.setStream(2);
+    // LimeLight.setLEDMode(1);;
     // CameraServer.startAutomaticCapture();
-    RobotContainer.tab.addBoolean("Climb time?", () -> {return timer != null && timer.get() > TELEOP_TIME - CLIMB_TIME;});
+    // RobotContainer.tab.addBoolean("Climb time?", () -> {return timer != null && timer.get() > TELEOP_TIME - CLIMB_TIME;});
     
   }
 
@@ -70,7 +69,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
-
+    robotContainer.setTeamColor();
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -79,7 +78,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    robotContainer.updatePose();
+  }
 
   @Override
   public void teleopInit() {
@@ -88,7 +89,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    robotContainer.setPipeline();
+    
 
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
@@ -99,8 +100,10 @@ public class Robot extends TimedRobot {
     robotContainer.setDriveMode();
     robotContainer.setOverrideRejectBalls(false);
     robotContainer.clearClimberStickies();
-    timer = new Timer();
-    timer.start();
+    robotContainer.setPipeline();
+    // robotContainer.setTeamColor();
+    // timer = new Timer();
+    // timer.start();
     
   }
 

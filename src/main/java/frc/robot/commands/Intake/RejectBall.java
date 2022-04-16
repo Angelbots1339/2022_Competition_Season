@@ -66,13 +66,13 @@ public class RejectBall extends CommandBase {
           new EjectBalls(intakeSubsystem, loaderSubsystem),
           new ReverseShoot(shooterSubsystem))
       ));
-    } else if (shootCommand.isScheduled() // Trying to eject wrong ball
+    } /*else if (shootCommand.isScheduled() // Trying to eject wrong ball
     // If ball is blue and we are blue
     && (BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()) 
     // If ball is red and we are red
     || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean())) { 
       shootCommand.cancel();
-    }
+    }*/
   }
 
   /**
