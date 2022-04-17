@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   //private ColorMUXed colorSensorHigh = new ColorMUXed(COLOR_SENSOR_HIGH_PORT);
   //private ColorMUXed colorSensorLow = new ColorMUXed(COLOR_SENSOR_LOW_PORT);
-  private ColorSensorV3 colorSensorLow = new ColorSensorV3(Port.kMXP);
+  private static ColorSensorV3 colorSensorLow = new ColorSensorV3(Port.kMXP);
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -128,12 +128,11 @@ public class IntakeSubsystem extends SubsystemBase {
   //   return colorSensorHigh.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
   // }
 
-  public boolean isBallLow() {
+  public static boolean isBallLow() {
     return colorSensorLow.getProximity() > COLOR_SENSOR_PROXIMITY_THRESHOLD;
   }
 
-  public RawColor getColorSensorRaw(){
-
+  public static RawColor getColorSensorRaw(){
     return colorSensorLow.getRawColor();
   }
 

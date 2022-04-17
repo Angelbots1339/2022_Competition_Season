@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Targeting {
 
-    private static double[] recentFrames = { 0, 0, 0, 0, 0 };
+    private static double[] recentFrames = { 0, 0, 0, };
     private static String CAMERA_NAME = "USB_Camera-B4.09.24.1";
     private static int index = 0;
 
@@ -42,10 +42,10 @@ public class Targeting {
 
         double[] sortedFrames = recentFrames;
         Arrays.sort(sortedFrames);
-        if(Logging.general) SmartDashboard.putNumber("Extreme x-target", recentFrames[4]);
         index++;
         index %= recentFrames.length;
-        return sortedFrames[2];
+        return sortedFrames[1];
+
         
     }
 

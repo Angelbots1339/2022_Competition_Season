@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -22,7 +23,7 @@ public class Shoot extends CommandBase {
   private LoaderSubsystem loaderSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private ShooterProfiles shooterProfiles;
-  private BooleanSupplier isTeamRed;
+  private boolean reject;
 
   /**
    * Revs the flywheels, and when they are at setpoint, it will feed the balls and
@@ -31,15 +32,15 @@ public class Shoot extends CommandBase {
    * @param loaderSubsystem  pass in the intake subsystem
    * @param shooterSubsystem pass in the shooter subsystem
    * @param shooterProfile   pass in a shooter profile
+   * @param reject Turn on/off ball rejection
    */
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
-      ShooterProfiles shooterProfile, BooleanSupplier isTeamRed) {
+      ShooterProfiles shooterProfile, boolean reject) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
-    this.isTeamRed = isTeamRed;
     addRequirements(loaderSubsystem, shooterSubsystem);
   }
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
@@ -62,11 +63,11 @@ public class Shoot extends CommandBase {
   public void execute() {
     // If so, surround color sensor calls in try/catch loop
     // Check ball color and team color chosen
-    if (intakeSubsystem.isBallLow() && isTeamRed != null
+    if (intakeSubsystem.isBallLow() && reject
       // If ball is blue and we are red
-      && ((BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && isTeamRed.getAsBoolean()) 
+      && ((BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
       // If ball is red and we are blue
-      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !isTeamRed.getAsBoolean()))) { 
+      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()))) { 
         // Reject current ball
         // If behavior is unexpected, try updating flywheel setpoints for a set
         // timer, then reverting back to previous setpoints.

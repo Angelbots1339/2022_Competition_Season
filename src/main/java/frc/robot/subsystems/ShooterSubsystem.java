@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -28,11 +29,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("ShooterSystem");
 
-  private NetworkTableEntry powerPresentsTest = tab.add("Power Presents Test", 0)
-      .getEntry();
-  private NetworkTableEntry aimPercentTest = tab.add("Aim Percent Test", 0)
-      .getEntry();
-
   private double aimPID = 0;
   private double powerPID = 0;
 
@@ -44,7 +40,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    Constants.updateGeneralStatusFrame(powerWheelRight);
+    //Constants.updateGeneralStatusFrame(powerWheelRight);
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     powerWheelLeft.clearStickyFaults();
     powerWheelRight.clearStickyFaults();
@@ -94,13 +92,6 @@ public class ShooterSubsystem extends SubsystemBase {
     double aimWheelFeedForward = (speed * AIM_WHEEL_KF) + AIM_WHEEL_KB;
     // SmartDashboard.putNumber("aim feed foward", aimWheelFeedForward);
     aimWheel.setVoltage(aimWheelFeedForward + aimPID);
-  }
-
-  public void testWheels(){
-
-    aimWheel.setVoltage(aimPercentTest.getDouble(0));
-    powerWheelLeft.setVoltage(powerPresentsTest.getDouble(0));
-    powerWheelRight.setVoltage(powerPresentsTest.getDouble(0));
   }
 
   /**

@@ -39,6 +39,8 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Logging;
+import frc.robot.utils.NetworkTablesHelper;
 import frc.robot.utils.Targeting;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -72,16 +74,14 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
-
-  private static BooleanSupplier isTeamRed = () -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
-
-  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
-      shooterSubsystem, isTeamRed);
-
+  private static boolean isTeamRed = false;
+  //private static BooleanSupplier isTeamRed = () -> false;//() -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+  
   private boolean driveMode = true;
-  private boolean rejectBalls = true;
-  private boolean isDriveReversed = DriveConstants.USE_LIMELIGHT_FIRST;
-
+  private static boolean rejectBalls = true;
+  private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
+      shooterSubsystem, rejectBalls);
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -105,7 +105,7 @@ public class RobotContainer {
 
   public void setPipeline(){
 
-    Targeting.setPipeline(isTeamRed.getAsBoolean() ? 0 : 1);
+    Targeting.setPipeline(isTeamRed ? 0 : 1);
 
   }
 
@@ -117,8 +117,10 @@ public class RobotContainer {
     // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
    
-    tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
-    tab.addBoolean("isTEAMred",isTeamRed);
+    //tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
+    if(Logging.general) {
+      tab.addBoolean("isTEAMred", () -> isTeamRed);
+    }
     
 
     //Test code for turn and arms
@@ -145,14 +147,13 @@ public class RobotContainer {
     /* DRIVING */
 
     // Invert drive when using rear camera
-    DoubleSupplier fwd = () -> (isDriveReversed ? 1 : -1) * joystick.getLeftY();
+    DoubleSupplier fwd = () -> -joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Target ball when x pressed and not in climb mode.
-    // TODO test conditional targeting command works
     new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
       new TargetBall(driveSubsystem, fwd, rot),
       new InstantCommand(), () -> !driveMode));
@@ -203,7 +204,6 @@ public class RobotContainer {
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(
       new ClearClimbingFaults(climbingSubsystem)
-      .andThen(new ClearDrivingFaults(driveSubsystem))
       .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
             isTeamRed)))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
@@ -211,7 +211,6 @@ public class RobotContainer {
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(
       new ClearClimbingFaults(climbingSubsystem)
-      .andThen(new ClearDrivingFaults(driveSubsystem))
       .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
             isTeamRed)))
     .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
@@ -228,10 +227,7 @@ public class RobotContainer {
 
     intakeSubsystem.setDefaultCommand(new RetractIntake(intakeSubsystem));
 
-    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, intakeSubsystem, shooterSubsystem, isTeamRed, () -> rejectBalls));
-
-    new POVButton(joystick, 0).whenPressed(new InstantCommand(() -> rejectBalls = false));
-
+    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, shooterSubsystem, rejectBalls));
   }
 
   /**
@@ -283,6 +279,29 @@ public class RobotContainer {
       intakeSubsystem.resetIntake();
     }
     intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
+  }
+
+  public void setTeamColor() {
+    isTeamRed = NetworkTablesHelper.getBoolean("FMSInfo", "IsRedAlliance", false);
+  }
+
+  public void updatePose() {
+    driveSubsystem.updatePose();
+  }
+
+  /**
+   * 
+   * @return True if red, false if blue
+   */
+  public static boolean getTeamColor() {
+    return isTeamRed;
+  }
+
+  public void logLimits() {
+    SmartDashboard.putBoolean("back left limit", climbingSubsystem.isLeftBackAtLimit());
+    SmartDashboard.putBoolean("back right limit", climbingSubsystem.isRightBackAtLimit());
+    SmartDashboard.putBoolean("front left limit", climbingSubsystem.isLeftFrontAtLimit());
+    SmartDashboard.putBoolean("front right limit", climbingSubsystem.isRightFrontAtLimit());
   }
 
 }

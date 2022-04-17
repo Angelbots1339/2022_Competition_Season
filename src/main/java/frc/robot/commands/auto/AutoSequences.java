@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
+
+import frc.robot.RobotContainer;
 import frc.robot.commands.drive.FollowTrajectory;
 import frc.robot.commands.drive.TurnSimple;
 import frc.robot.commands.drive.TurnToAngle;
@@ -40,20 +42,20 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private final IntakeSubsystem intakeSubsystem;
     private final LoaderSubsystem loaderSubsystem;
     private final ShooterSubsystem shooterSubsystem;
-    private final BooleanSupplier isTeamRed;
+    private final boolean reject;
     private static final String FAST = "fast/output/";
     private static final String REGULAR = "regular/output/";
 
     public AutoSequences(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem,
             LoaderSubsystem loaderSubsystem,
-            ShooterSubsystem shooterSubsystem, 
-            BooleanSupplier isTeamRed) {
+            ShooterSubsystem shooterSubsystem,
+            boolean reject) {
         super();
         this.driveSubsystem = driveSubsystem;
         this.loaderSubsystem = loaderSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.shooterSubsystem = shooterSubsystem;
-        this.isTeamRed = isTeamRed;
+        this.reject = reject;
 
         this.add(
                 "Exmaple",
@@ -316,7 +318,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
     private ParallelDeadlineGroup shoot(double time, ShooterProfiles shooterProfile) {
         return new ParallelDeadlineGroup(
                 new WaitCommand(time),
-                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, isTeamRed),
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, shooterProfile, reject),
                 idleDrive());
     }
 
