@@ -16,7 +16,6 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LoaderConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.shooter.ReverseShoot;
-import frc.robot.commands.shooter.ShootTimed;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -28,7 +27,6 @@ public class RejectBall extends CommandBase {
 
   private final LoaderSubsystem loaderSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  private ShootTimed shootCommand;
   private Timer shootTimer = new Timer();
   private boolean shooting = false;
   private Timer retractTimer = new Timer();
@@ -45,7 +43,6 @@ public class RejectBall extends CommandBase {
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(loaderSubsystem);
     //this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_TIME);
-    shootCommand.cancel();
   }
 
   // Called when the command is initially scheduled.
@@ -57,7 +54,7 @@ public class RejectBall extends CommandBase {
   @Override
   public void execute() {
     // Check ball color
-    if (IntakeSubsystem.isBallLow() && !shootCommand.isScheduled()
+    if (IntakeSubsystem.isBallLow() && !shooting
         // If ball is blue and we are red
         && (BLUE.colorMatch(IntakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
         // If ball is red and we are blue
@@ -76,12 +73,14 @@ public class RejectBall extends CommandBase {
 
     if(shootTimer.get() > REJECT_TIME) {
       shooting = false;
+      shootTimer = new Timer();
       retracting = true;
       retractTimer.start();
     }
 
     if(retractTimer.get() > REVERSE_TIME) {
       retracting = false;
+      retractTimer = new Timer();
     }
 
     if(shooting) {
