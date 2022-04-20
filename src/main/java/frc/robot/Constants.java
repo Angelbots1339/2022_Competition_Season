@@ -167,7 +167,7 @@ public final class Constants {
         public final static boolean INDEXER_RIGHT_INVERTED = false;
         public final static boolean INTAKE_INVERTED = false;
         // This vvv breaks over time, raise it periodically
-        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 130; // 0 (closest) to 2047 (furthest)
+        public final static int COLOR_SENSOR_PROXIMITY_THRESHOLD = 85; // 0 (closest) to 2047 (furthest)
     }
 
     public static final class LoaderConstants {
@@ -175,7 +175,8 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_TIME = .5; //s
+        public final static double REJECT_TIME_RED = .2; //s
+        public final static double REJECT_TIME_BLUE = .4; //s
         public final static double REVERSE_TIME = .3;
 
         // Ports
@@ -256,7 +257,7 @@ public final class Constants {
         // General
         public final static double AIM_WHEEL_TOLERANCE = 70; // 70 rpm
         public final static double POWER_WHEEL_TOLERANCE = 70; // 70 rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1260, () -> 3015); // () -> 1400, () -> 3350
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1260, () -> 3015
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100); // 1200, 1100
         public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 300);
 

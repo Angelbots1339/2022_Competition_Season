@@ -7,6 +7,8 @@ package frc.robot.commands.intake;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -61,6 +63,7 @@ public class RejectBall extends CommandBase {
         || (RED.colorMatch(IntakeSubsystem.getColorSensorRaw()) && !RobotContainer.getTeamColor())) { 
         // If ball is opponent color, reject it
         // Start shoot timer
+          shootTimer = new Timer();
           shootTimer.start();
           shooting = true;
     } /*else if (shootCommand.isScheduled() // Trying to eject wrong ball
@@ -71,16 +74,15 @@ public class RejectBall extends CommandBase {
       shootCommand.cancel();
     }*/
 
-    if(shootTimer.get() > REJECT_TIME) {
+    if(shootTimer.get() > (RobotContainer.getTeamColor() ? REJECT_TIME_BLUE : REJECT_TIME_RED) && shooting) {
       shooting = false;
-      shootTimer = new Timer();
+      retractTimer = new Timer();
       retracting = true;
       retractTimer.start();
     }
 
-    if(retractTimer.get() > REVERSE_TIME) {
+    if(retractTimer.get() > REVERSE_TIME && retracting) {
       retracting = false;
-      retractTimer = new Timer();
     }
 
     if(shooting) {
@@ -95,6 +97,7 @@ public class RejectBall extends CommandBase {
       shooterSubsystem.disable();
       loaderSubsystem.disable();
     }
+
   }
 
 
