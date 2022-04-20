@@ -28,7 +28,6 @@ public class RejectBall extends CommandBase {
 
   private final LoaderSubsystem loaderSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  private ShootTimed shootCommand;
   private Timer shootTimer = new Timer();
   private boolean shooting = false;
   private Timer retractTimer = new Timer();
@@ -44,8 +43,6 @@ public class RejectBall extends CommandBase {
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(loaderSubsystem);
-    //this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_TIME);
-    shootCommand.cancel();
   }
 
   // Called when the command is initially scheduled.
@@ -57,7 +54,7 @@ public class RejectBall extends CommandBase {
   @Override
   public void execute() {
     // Check ball color
-    if (IntakeSubsystem.isBallLow() && !shootCommand.isScheduled()
+    if (IntakeSubsystem.isBallLow() && !shooting
         // If ball is blue and we are red
         && (BLUE.colorMatch(IntakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
         // If ball is red and we are blue
