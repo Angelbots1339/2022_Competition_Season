@@ -40,9 +40,9 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    //Constants.updateGeneralStatusFrame(powerWheelRight);
-    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
-    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    //TODO remove after running once
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_1_General, powerWheelLeft.getStatusFramePeriod(StatusFrame.Status_1_General));
+    powerWheelRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, powerWheelLeft.getStatusFramePeriod(StatusFrame.Status_2_Feedback0));
 
     powerWheelLeft.clearStickyFaults();
     powerWheelRight.clearStickyFaults();

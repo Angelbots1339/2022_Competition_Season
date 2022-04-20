@@ -16,7 +16,6 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LoaderConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.shooter.ReverseShoot;
-import frc.robot.commands.shooter.ShootTimed;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -43,6 +42,7 @@ public class RejectBall extends CommandBase {
     this.loaderSubsystem = loaderSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(loaderSubsystem);
+    //this.shootCommand = new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, SHOOTER_PROFILE_LOW, REJECT_TIME);
   }
 
   // Called when the command is initially scheduled.
@@ -73,12 +73,14 @@ public class RejectBall extends CommandBase {
 
     if(shootTimer.get() > REJECT_TIME) {
       shooting = false;
+      shootTimer = new Timer();
       retracting = true;
       retractTimer.start();
     }
 
     if(retractTimer.get() > REVERSE_TIME) {
       retracting = false;
+      retractTimer = new Timer();
     }
 
     if(shooting) {
