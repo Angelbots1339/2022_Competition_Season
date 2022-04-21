@@ -37,7 +37,7 @@ public class TargetBall extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pidRot = -MathUtil.clamp(pidController.calculate(Targeting.getTargetXOffset()), -.5, .5);
+    double pidRot = MathUtil.clamp(-MathUtil.clamp(pidController.calculate(Targeting.getTargetXOffset()), -1, 1) * (Math.pow(fwd.getAsDouble(), 0.5) + .5), -.75, .75);
     driveSubsystem.arcadeDrive(fwd, () -> rot.getAsDouble() + pidRot);
     // SmartDashboard.putNumber("pidrot", pidRot);
 

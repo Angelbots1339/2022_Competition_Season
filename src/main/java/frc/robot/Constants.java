@@ -100,7 +100,7 @@ public final class Constants {
         public final static boolean GYRO_INVERTED = true;
 
         //Ball targeting 
-        public final static double TARGETING_KP = 1.0/160.0;
+        public final static double TARGETING_KP = 1/160.0; //1.0/160.0
         public final static double TARGETING_KI = 0;
         public final static double TARGETING_KD = 0;
         public final static double TARGETING_TOLERANCE = 0;
