@@ -154,9 +154,9 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
 
     // Target ball when x pressed and not in climb mode.
-    new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
-      new TargetBall(driveSubsystem, fwd, rot),
-      new InstantCommand(), () -> !driveMode));
+    // new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
+    //   new TargetBall(driveSubsystem, fwd, rot),
+    //   new InstantCommand(), () -> !driveMode));
     // new JoystickButton(joystick, BUTTON_X).whenHeld(new TargetBall(driveSubsystem, fwd, rot));
 
     // Feed drive watchdog when idle
@@ -174,6 +174,7 @@ public class RobotContainer {
     - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS);
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
+    // TODO move to schedule in auto
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
     // Right Menu to toggle between driving and climbing
@@ -220,14 +221,12 @@ public class RobotContainer {
     /* INTAKE */
 
     // Run Intake-in while the left bumper is held
-    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)));
+    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem))).whenReleased(new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
 
     // Run reverse intake when right bumper is pressed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)));
+    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem))).whenReleased(new RetractIntake(intakeSubsystem));
 
-    intakeSubsystem.setDefaultCommand(new RetractIntake(intakeSubsystem));
-
-    loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, shooterSubsystem, rejectBalls));
+    //loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, shooterSubsystem, rejectBalls));
   }
 
   /**

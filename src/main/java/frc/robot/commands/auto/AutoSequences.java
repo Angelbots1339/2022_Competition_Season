@@ -162,7 +162,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 "4BGrab1stSet",
                 new SequentialCommandGroup(
                         grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, REGULAR),
-                        grabGrabShoot("4BGrab2ndSet", "4BShoot2ndSet", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2, REGULAR)
+                        grabGrabShoot("4BGrab2ndSetBlue", "4BShoot2ndSetBlue", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2, REGULAR)
                 ));
         // Grabs second ball and shoots, then grabs third and fourth balls and shoots
         this.add(

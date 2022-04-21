@@ -56,7 +56,8 @@ public class RetractIntake extends CommandBase {
   @Override
   public boolean isFinished() {
     // Don't finish, default command
-    return false;
+    return isLeftRetracted() && isRightRetracted()
+    ;
   }
 
   private boolean isLeftRetracted() {

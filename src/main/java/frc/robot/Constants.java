@@ -175,8 +175,7 @@ public final class Constants {
         // General
         public final static double MAX_LOADER_SPEED = 0.8;
         public final static double MAX_LOADER_INTAKE_SPEED = 0.3;
-        public final static double REJECT_TIME_RED = .2; //s
-        public final static double REJECT_TIME_BLUE = .4; //s
+        public final static double REJECT_TIME_BLUE = .45; //s
         public final static double REVERSE_TIME = .3;
 
         // Ports
