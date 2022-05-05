@@ -9,18 +9,31 @@ import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CandleConstants;
+import frc.robot.utils.Logging;
 
 public class CandleSubsystem extends SubsystemBase {
 
   private CANdle candle = new CANdle(CandleConstants.CANDLE_ID);
+
+  public static ShuffleboardTab tab = Shuffleboard.getTab("CandleSubsystem");
 
   /** Creates a new CandleSubsystem. */
   public CandleSubsystem() {
 
     candle.configLEDType(LEDStripType.GRB);
 
+    if(Logging.candle) {
+      log();
+    }
+  }
+
+  public void log() {
+    tab.addNumber("Candle Current", () -> candle.getCurrent());
+    tab.addNumber("Candle Temp", () -> candle.getTemperature());
   }
 
 
@@ -30,7 +43,7 @@ public class CandleSubsystem extends SubsystemBase {
   }
 
 
-  public void setLarsonAnimation(int R, int G, int B) {
+  public void setToLarsonAnimation(int R, int G, int B) {
 
 
 candle.animate(new LarsonAnimation(R, G, B));
@@ -38,7 +51,7 @@ candle.animate(new LarsonAnimation(R, G, B));
 
   }
 
-  public void setLarsonAnimation(int R, int G, int B, int W, double Speed, int numLed, BounceMode bounceMode, int size) {
+  public void setToLarsonAnimation(int R, int G, int B, int W, double Speed, int numLed, BounceMode bounceMode, int size) {
 
     candle.animate(new LarsonAnimation(R, G, B, W, Speed, numLed, bounceMode, size));
 

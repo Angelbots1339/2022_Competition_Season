@@ -7,4 +7,5 @@ public class Logging {
     public static boolean intake = false;
     public static boolean loader = false;
     public static boolean shooter = false;
+    public static boolean candle = false;
 }
