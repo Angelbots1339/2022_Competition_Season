@@ -24,6 +24,7 @@ import frc.robot.utils.Targeting;
 
 import static frc.robot.Constants.DriveConstants.*;
 
+import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
@@ -64,6 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
   // log
   public static ShuffleboardTab tab = Shuffleboard.getTab("DriveSubsystem");
   Field2d field2d = new Field2d();
+
 
 
   public DriveSubsystem() {
@@ -263,6 +265,8 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotorFront.clearStickyFaults();
     leftMotorBack.clearStickyFaults();
     rightMotorBack.clearStickyFaults();
+
+    
   }
 
   private WPI_TalonFX updateGeneralStatusFrame(WPI_TalonFX motor) {
@@ -287,5 +291,11 @@ public class DriveSubsystem extends SubsystemBase {
     // leftMotorFront.clearStickyFaults();
     // leftMotorTop.clearStickyFaults();
   }
+
+
+
+
+
+
 
 }

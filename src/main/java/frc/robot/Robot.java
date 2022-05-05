@@ -39,6 +39,9 @@ public class Robot extends TimedRobot {
     // LimeLight.setLEDMode(1);;
     // CameraServer.startAutomaticCapture();
     // RobotContainer.tab.addBoolean("Climb time?", () -> {return timer != null && timer.get() > TELEOP_TIME - CLIMB_TIME;});
+
+
+    robotContainer.setToDefaultAnimation();
     
   }
 

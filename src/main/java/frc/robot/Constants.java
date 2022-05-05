@@ -9,6 +9,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.utils.ColorRange;
 import frc.robot.utils.ShooterProfiles;
+
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 
 
@@ -296,6 +298,23 @@ public final class Constants {
         public static final double SHOOT_TIME_1B = 1; // s
         public static final double TURN_VOLTS = 3;
         public static final double HALF_TURN_TIME = .75;
+
+    }
+
+    public final static class CandleConstants {
+
+        public static final int CANDLE_ID = 30;
+        
+        public static final int DEFAULT_R = 255;
+        public static final int DEFAULT_B = 255;
+        public static final int DEFAULT_G = 255;
+        public static final int DEFAULT_W = 255;
+        public static final double DEFAULT_SPEED = 1;
+        public static final int DEFAULT_SIZE = 1;
+        public static final int DEFAULT_NUM_LED = 10;
+        public static final BounceMode DEFAULT_BOUNCE_MODE = BounceMode.Center;
+   
+
 
     }
 
