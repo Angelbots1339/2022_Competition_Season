@@ -25,6 +25,9 @@ public class CandleSubsystem extends SubsystemBase {
   public CandleSubsystem() {
 
     candle.configLEDType(LEDStripType.GRB);
+    candle.configStatusLedState(true);
+    candle.configLOSBehavior(true);
+    candle.configBrightnessScalar(CandleConstants.CANDLE_BRIGHTNESS);
 
     if(Logging.candle) {
       log();
