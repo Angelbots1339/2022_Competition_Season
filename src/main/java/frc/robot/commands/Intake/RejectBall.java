@@ -4,22 +4,12 @@
 
 package frc.robot.commands.intake;
 
-import java.util.function.BooleanSupplier;
 
 import com.revrobotics.ColorSensorV3.RawColor;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.LoaderConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.shooter.ReverseShoot;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;

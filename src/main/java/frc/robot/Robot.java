@@ -13,6 +13,11 @@ import frc.robot.utils.LimeLight;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -22,6 +27,8 @@ import static frc.robot.Constants.JoystickConstants.*;
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  //CANdle candle = new CANdle(37);
+
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,14 +41,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    // LimeLight.setPipeline(1);
-    // LimeLight.setStream(2);
-    // LimeLight.setLEDMode(1);;
-    // CameraServer.startAutomaticCapture();
-    // RobotContainer.tab.addBoolean("Climb time?", () -> {return timer != null && timer.get() > TELEOP_TIME - CLIMB_TIME;});
 
 
     robotContainer.setToDefaultAnimation();
+    
     
   }
 
@@ -109,6 +112,11 @@ public class Robot extends TimedRobot {
     // robotContainer.setTeamColor();
     // timer = new Timer();
     // timer.start();
+    
+    // candle.configLEDType(LEDStripType.GRB);
+    // ColorFlowAnimation c = new ColorFlowAnimation(255, 0, 0, 255, .1, 60 * 2, Direction.Forward, 8);
+    // candle.animate(c, 1);
+// System.out.println(candle.setLEDs(255, 255, 255, 255, 0, 8).name());
     
   }
 

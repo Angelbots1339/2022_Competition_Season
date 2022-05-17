@@ -29,14 +29,6 @@ public class CandleSubsystem extends SubsystemBase {
     candle.configLOSBehavior(true);
     candle.configBrightnessScalar(CandleConstants.CANDLE_BRIGHTNESS);
 
-    if(Logging.candle) {
-      log();
-    }
-  }
-
-  public void log() {
-    tab.addNumber("Candle Current", () -> candle.getCurrent());
-    tab.addNumber("Candle Temp", () -> candle.getTemperature());
   }
 
 
@@ -64,8 +56,19 @@ candle.animate(new LarsonAnimation(R, G, B));
 
   public void setToDefaultAnimation(){
 
-    candle.animate(new LarsonAnimation(CandleConstants.DEFAULT_R, CandleConstants.DEFAULT_G, CandleConstants.DEFAULT_B, CandleConstants.DEFAULT_W, CandleConstants.DEFAULT_SPEED, CandleConstants.DEFAULT_NUM_LED, CandleConstants.DEFAULT_BOUNCE_MODE, CandleConstants.DEFAULT_SIZE));
+    // candle.animate(new LarsonAnimation(CandleConstants.DEFAULT_R, CandleConstants.DEFAULT_G, CandleConstants.DEFAULT_B, CandleConstants.DEFAULT_W, CandleConstants.DEFAULT_SPEED, CandleConstants.DEFAULT_NUM_LED, CandleConstants.DEFAULT_BOUNCE_MODE, CandleConstants.DEFAULT_SIZE));
 
+    candle.setLEDs(255, 0, 0, 255, 8, 40);
+    candle.setLEDs(255, 0, 0, 255, 41, 80);
+    candle.setLEDs(255, 0, 0, 255, 81, 120);
+
+  }
+
+  public void setToShootAnimation(){
+
+    candle.setLEDs(0, 255, 0, 255, 8, 40);
+    candle.setLEDs(0, 255, 0, 255, 41, 80);
+    candle.setLEDs(0, 255, 0, 255, 81, 120);
   }
 
   public void setAllToColor(int R, int G, int B) {

@@ -303,7 +303,7 @@ public final class Constants {
 
     public final static class CandleConstants {
 
-        public static final int CANDLE_ID = 30;
+        public static final int CANDLE_ID = 37;
         public static final double CANDLE_BRIGHTNESS = 1;
         
         public static final int DEFAULT_R = 255;

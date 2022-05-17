@@ -4,13 +4,9 @@
 
 package frc.robot;
 
-import java.io.Console;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -21,9 +17,9 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.drive.ClearDrivingFaults;
-import frc.robot.commands.drive.TargetBall;
 import frc.robot.commands.auto.AutoSequences;
+import frc.robot.commands.candle.IdleAnimation;
+import frc.robot.commands.candle.ShootAnimation;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
@@ -35,11 +31,13 @@ import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.CandleSubsystem;
+// import frc.robot.subsystems.CandleSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Candle;
 import frc.robot.utils.Logging;
 import frc.robot.utils.NetworkTablesHelper;
 import frc.robot.utils.Targeting;
@@ -49,7 +47,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import static frc.robot.Constants.JoystickConstants.*;
 
@@ -71,19 +68,22 @@ public class RobotContainer {
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
   private final static CandleSubsystem candleSubsystem = new CandleSubsystem();
 
+  private final static Candle candleUtil = new Candle();
+
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
   private static boolean isTeamRed = false;
-  //private static BooleanSupplier isTeamRed = () -> false;//() -> NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
-  
+  // private static BooleanSupplier isTeamRed = () -> false;//() ->
+  // NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
+
   private boolean driveMode = true;
   private static boolean rejectBalls = true;
   private static final AutoSequences autos = new AutoSequences(driveSubsystem, intakeSubsystem, loaderSubsystem,
       shooterSubsystem, rejectBalls);
-  
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -105,42 +105,49 @@ public class RobotContainer {
     climbingSubsystem.reset(true);
   }
 
-  public void setPipeline(){
+  public void setPipeline() {
 
     Targeting.setPipeline(isTeamRed ? 0 : 1);
 
   }
 
-  public void setToDefaultAnimation(){
+  // public void setToDefaultAnimation(){
 
-    candleSubsystem.setToDefaultAnimation();
+  // // candleSubsystem.setToDefaultAnimation();
 
-  }
+  // }
 
   /**
    * Populate auto chooser in SmartDashboard with auto commands
    */
   public void addAutoCommands() {
     // Sequence
-    // TODO adding autos overrunning loop times? try timer & speed up code or start new thread
+    // TODO adding autos overrunning loop times? try timer & speed up code or start
+    // new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
-   
-    //tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
-    if(Logging.general) {
+
+    // tab.addNumber("Camera pipeline", () -> Targeting.getPipeline());
+    if (Logging.general) {
       tab.addBoolean("isTEAMred", () -> isTeamRed);
     }
-    
 
-    //Test code for turn and arms
+    // Test code for turn and arms
     // SmartDashboard.putData("turn 90",new TurnToAngle(driveSubsystem, 90));
     // SmartDashboard.putData("turn -90", new TurnToAngle(driveSubsystem, -90));
 
-    // SmartDashboard.putData("arms up", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_TOP_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
-    // SmartDashboard.putData("arms down", new PIDArmsToSetpoints(climbingSubsystem, ClimberConstants.EXTENDER_BOTTOM_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
+    // SmartDashboard.putData("arms up", new PIDArmsToSetpoints(climbingSubsystem,
+    // ClimberConstants.EXTENDER_TOP_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
+    // SmartDashboard.putData("arms down", new PIDArmsToSetpoints(climbingSubsystem,
+    // ClimberConstants.EXTENDER_BOTTOM_LIMIT, 0, new ArmSpeeds(0, 0, 1, 1)));
 
-    // SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, 0, 0, 3, 0, true, true));
-    // SmartDashboard.putData("rotator front", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_FRONT_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
-    // SmartDashboard.putData("rotator back", new PIDArmsToSetpoints(climbingSubsystem, 0, ClimberConstants.ROTATOR_BACK_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
+    // SmartDashboard.putData("BrakeMode", new ArmsToSetpoints(climbingSubsystem, 0,
+    // 0, 3, 0, true, true));
+    // SmartDashboard.putData("rotator front", new
+    // PIDArmsToSetpoints(climbingSubsystem, 0,
+    // ClimberConstants.ROTATOR_FRONT_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
+    // SmartDashboard.putData("rotator back", new
+    // PIDArmsToSetpoints(climbingSubsystem, 0,
+    // ClimberConstants.ROTATOR_BACK_LIMIT_DEG, new ArmSpeeds(10, 10, 0, 0)));
 
     tab.add(autoChooser);
   }
@@ -163,9 +170,10 @@ public class RobotContainer {
 
     // Target ball when x pressed and not in climb mode.
     // new JoystickButton(joystick, BUTTON_X).whenHeld(new ConditionalCommand(
-    //   new TargetBall(driveSubsystem, fwd, rot),
-    //   new InstantCommand(), () -> !driveMode));
-    // new JoystickButton(joystick, BUTTON_X).whenHeld(new TargetBall(driveSubsystem, fwd, rot));
+    // new TargetBall(driveSubsystem, fwd, rot),
+    // new InstantCommand(), () -> !driveMode));
+    // new JoystickButton(joystick, BUTTON_X).whenHeld(new
+    // TargetBall(driveSubsystem, fwd, rot));
 
     // Feed drive watchdog when idle
     Command stopDrive = new RunCommand(() -> driveSubsystem.disable(), driveSubsystem);
@@ -177,9 +185,8 @@ public class RobotContainer {
     /* CLIMBING */
 
     // Bind extension to left axis, rotation to right axis
-    DoubleSupplier extension = () -> (
-      joystick.getLeftTriggerAxis() * ClimberConstants.DROP_EXTENDER_VOLTS
-    - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS);
+    DoubleSupplier extension = () -> (joystick.getLeftTriggerAxis() * ClimberConstants.DROP_EXTENDER_VOLTS
+        - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS);
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
     // TODO move to schedule in auto
@@ -212,29 +219,45 @@ public class RobotContainer {
 
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(
-      new ClearClimbingFaults(climbingSubsystem)
-      .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-            isTeamRed)))
-    .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
+        new ClearClimbingFaults(climbingSubsystem)
+            .andThen(new ParallelCommandGroup(
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
+                    isTeamRed),
+                new ShootAnimation(candleSubsystem))))
+        .whenReleased(new ParallelCommandGroup(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1),
+            new IdleAnimation(candleSubsystem)));
 
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(
-      new ClearClimbingFaults(climbingSubsystem)
-      .andThen(new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-            isTeamRed)))
-    .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
+        new ClearClimbingFaults(climbingSubsystem)
+            .andThen(new ParallelCommandGroup(
+                new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
+                    isTeamRed),
+                new InstantCommand(() -> candleUtil.setToShootingAnimation()))))
+        .whenReleased(new ParallelCommandGroup(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1),
+            new InstantCommand(() -> candleUtil.setToIdleAnimation())));
 
-    //shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
+    // shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
     /* INTAKE */
 
     // Run Intake-in while the left bumper is held
-    new JoystickButton(joystick, LEFT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem))).whenReleased(new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
+    new JoystickButton(joystick, LEFT_BUMPER)
+        .whenHeld(new ParallelCommandGroup(
+            new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)),
+            new InstantCommand(() -> {})))
+        .whenReleased(
+            new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
 
     // Run reverse intake when right bumper is pressed
-    new JoystickButton(joystick, RIGHT_BUMPER).whenHeld(new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem))).whenReleased(new RetractIntake(intakeSubsystem));
+    new JoystickButton(joystick, RIGHT_BUMPER)
+        .whenHeld(new ParallelCommandGroup(
+            new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)),
+            new InstantCommand(() -> {})))
+        .whenReleased(new RetractIntake(intakeSubsystem));
 
-    //loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem, shooterSubsystem, rejectBalls));
+    // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
+    // shooterSubsystem, rejectBalls));
   }
 
   /**
@@ -275,14 +298,14 @@ public class RobotContainer {
 
   public void testModeRunIntake() {
     double leftVolts = 0, rightVolts = 0;
-    
+
     if (joystick.getXButton()) {
       leftVolts = -1.5;
     }
     if (joystick.getBButton()) {
       rightVolts = -1.5;
     }
-    if(joystick.getYButton()) {
+    if (joystick.getYButton()) {
       intakeSubsystem.resetIntake();
     }
     intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
@@ -309,6 +332,13 @@ public class RobotContainer {
     SmartDashboard.putBoolean("back right limit", climbingSubsystem.isRightBackAtLimit());
     SmartDashboard.putBoolean("front left limit", climbingSubsystem.isLeftFrontAtLimit());
     SmartDashboard.putBoolean("front right limit", climbingSubsystem.isRightFrontAtLimit());
+  }
+
+
+  public void setToDefaultAnimation() {
+
+    new IdleAnimation(candleSubsystem);
+
   }
 
 }
