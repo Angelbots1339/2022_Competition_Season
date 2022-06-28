@@ -18,8 +18,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.auto.AutoSequences;
-import frc.robot.commands.candle.IdleAnimation;
-import frc.robot.commands.candle.ShootAnimation;
 import frc.robot.commands.climber.ArmsToSetpoints;
 import frc.robot.commands.climber.AutoClimb;
 import frc.robot.commands.climber.ClearClimbingFaults;
@@ -30,14 +28,11 @@ import frc.robot.commands.intake.RejectBall;
 import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
-import frc.robot.subsystems.CandleSubsystem;
-// import frc.robot.subsystems.CandleSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.utils.Candle;
 import frc.robot.utils.Logging;
 import frc.robot.utils.NetworkTablesHelper;
 import frc.robot.utils.Targeting;
@@ -66,9 +61,6 @@ public class RobotContainer {
   private final static ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
-  private final static CandleSubsystem candleSubsystem = new CandleSubsystem();
-
-  private final static Candle candleUtil = new Candle();
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
@@ -110,12 +102,6 @@ public class RobotContainer {
     Targeting.setPipeline(isTeamRed ? 0 : 1);
 
   }
-
-  // public void setToDefaultAnimation(){
-
-  // // candleSubsystem.setToDefaultAnimation();
-
-  // }
 
   /**
    * Populate auto chooser in SmartDashboard with auto commands
@@ -220,22 +206,18 @@ public class RobotContainer {
     // Shoot high when Y button is pressed
     new JoystickButton(joystick, BUTTON_Y).whileHeld(
         new ClearClimbingFaults(climbingSubsystem)
-            .andThen(new ParallelCommandGroup(
+            .andThen(
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-                    isTeamRed),
-                new ShootAnimation(candleSubsystem))))
-        .whenReleased(new ParallelCommandGroup(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1),
-            new IdleAnimation(candleSubsystem)));
+                    isTeamRed)))
+        .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // Shoot low when A button is pressed
     new JoystickButton(joystick, BUTTON_A).whileHeld(
         new ClearClimbingFaults(climbingSubsystem)
-            .andThen(new ParallelCommandGroup(
+            .andThen(
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-                    isTeamRed),
-                new InstantCommand(() -> candleUtil.setToShootingAnimation()))))
-        .whenReleased(new ParallelCommandGroup(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1),
-            new InstantCommand(() -> candleUtil.setToIdleAnimation())));
+                    isTeamRed)))
+        .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
 
@@ -245,7 +227,8 @@ public class RobotContainer {
     new JoystickButton(joystick, LEFT_BUMPER)
         .whenHeld(new ParallelCommandGroup(
             new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)),
-            new InstantCommand(() -> {})))
+            new InstantCommand(() -> {
+            })))
         .whenReleased(
             new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
 
@@ -253,7 +236,8 @@ public class RobotContainer {
     new JoystickButton(joystick, RIGHT_BUMPER)
         .whenHeld(new ParallelCommandGroup(
             new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)),
-            new InstantCommand(() -> {})))
+            new InstantCommand(() -> {
+            })))
         .whenReleased(new RetractIntake(intakeSubsystem));
 
     // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
@@ -332,13 +316,6 @@ public class RobotContainer {
     SmartDashboard.putBoolean("back right limit", climbingSubsystem.isRightBackAtLimit());
     SmartDashboard.putBoolean("front left limit", climbingSubsystem.isLeftFrontAtLimit());
     SmartDashboard.putBoolean("front right limit", climbingSubsystem.isRightFrontAtLimit());
-  }
-
-
-  public void setToDefaultAnimation() {
-
-    new IdleAnimation(candleSubsystem);
-
   }
 
 }
