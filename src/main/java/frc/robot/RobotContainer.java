@@ -28,6 +28,7 @@ import frc.robot.commands.intake.RejectBall;
 import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
+import frc.robot.subsystems.CandleSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -61,6 +62,7 @@ public class RobotContainer {
   private final static ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
+  private final static CandleSubsystem candleSubsystem = new CandleSubsystem();
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
@@ -316,6 +318,12 @@ public class RobotContainer {
     SmartDashboard.putBoolean("back right limit", climbingSubsystem.isRightBackAtLimit());
     SmartDashboard.putBoolean("front left limit", climbingSubsystem.isLeftFrontAtLimit());
     SmartDashboard.putBoolean("front right limit", climbingSubsystem.isRightFrontAtLimit());
+  }
+
+  public void setCandleToIdle() {
+
+    candleSubsystem.setAllToColor(255, 0, 255);
+
   }
 
 }
