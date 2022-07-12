@@ -34,9 +34,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Candle;
 import frc.robot.utils.Logging;
 import frc.robot.utils.NetworkTablesHelper;
 import frc.robot.utils.Targeting;
+import frc.robot.utils.Candle.LEDState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -63,6 +65,7 @@ public class RobotContainer {
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
   private final static CandleSubsystem candleSubsystem = new CandleSubsystem();
+  
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
 
@@ -147,11 +150,16 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    /* DRIVING */
 
+    // new JoystickButton(joystick, Constants.JoystickConstants.BUTTON_Y).whenPressed(Candle.getInstance()::incrementAnimation, candleSubsystem);
+    // new JoystickButton(joystick, Constants.JoystickConstants.BUTTON_B).whenPressed(Candle.getInstance()::clearAllAnims, candleSubsystem);
+    // /* DRIVING */
+
+    
     // Invert drive when using rear camera
     DoubleSupplier fwd = () -> -joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
+    Candle.getInstance().setRobotSpeed(fwd, rot);
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
@@ -227,19 +235,15 @@ public class RobotContainer {
 
     // Run Intake-in while the left bumper is held
     new JoystickButton(joystick, LEFT_BUMPER)
-        .whenHeld(new ParallelCommandGroup(
-            new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)),
-            new InstantCommand(() -> {
-            })))
+        .whenHeld(
+            new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)))
         .whenReleased(
             new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
 
     // Run reverse intake when right bumper is pressed
     new JoystickButton(joystick, RIGHT_BUMPER)
-        .whenHeld(new ParallelCommandGroup(
-            new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)),
-            new InstantCommand(() -> {
-            })))
+        .whenHeld(
+            new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)))
         .whenReleased(new RetractIntake(intakeSubsystem));
 
     // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
@@ -257,11 +261,12 @@ public class RobotContainer {
 
     // Follow path, then cut voltage to motors (stop)
 
+
     if (autoChooser.getSelected() == null) {
       return new InstantCommand();
     }
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable)
-        .andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
+        .andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable).andThen(() -> Candle.getInstance().changeLedState(LEDState.Idle));
   }
 
   public void testModeRunArms() {
@@ -320,10 +325,5 @@ public class RobotContainer {
     SmartDashboard.putBoolean("front right limit", climbingSubsystem.isRightFrontAtLimit());
   }
 
-  public void setCandleToIdle() {
-
-    candleSubsystem.setAllToColor(255, 0, 255);
-
-  }
 
 }

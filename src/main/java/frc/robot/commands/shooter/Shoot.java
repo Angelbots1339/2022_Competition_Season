@@ -13,7 +13,10 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Candle;
 import frc.robot.utils.ShooterProfiles;
+import frc.robot.utils.Candle.LEDState;
+
 import static frc.robot.Constants.LoaderConstants.*;
 import java.util.function.BooleanSupplier;
 
@@ -56,6 +59,7 @@ public class Shoot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Candle.getInstance().changeLedState(LEDState.Fire);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -97,6 +101,7 @@ public class Shoot extends CommandBase {
     loaderSubsystem.disable();
     shooterSubsystem.disable();
     intakeSubsystem.disable();
+    Candle.getInstance().changeLedState(LEDState.Idle);
   }
 
   // Returns true when the command should end.

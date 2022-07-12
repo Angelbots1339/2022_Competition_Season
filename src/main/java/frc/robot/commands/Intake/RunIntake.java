@@ -7,6 +7,8 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
+import frc.robot.utils.Candle;
+import frc.robot.utils.Candle.LEDState;
 
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.LoaderConstants.*;
@@ -36,6 +38,8 @@ public class RunIntake extends CommandBase {
     loaderSubsystem.runLoader(MAX_LOADER_INTAKE_SPEED);
     intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
     intakeSubsystem.runIndexerLow(INTAKE_DEPLOY_SPEED);
+    Candle.getInstance().changeLedState(LEDState.Intake);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -60,6 +64,7 @@ public class RunIntake extends CommandBase {
   public void end(boolean interrupted) {
     intakeSubsystem.disable();
     loaderSubsystem.disable();
+    Candle.getInstance().changeLedState(LEDState.Idle);
   }
 
   // Returns true when the command should end.
