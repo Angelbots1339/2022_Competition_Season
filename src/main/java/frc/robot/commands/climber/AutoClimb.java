@@ -2,11 +2,15 @@ package frc.robot.commands.climber;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.utils.Candle;
+import frc.robot.utils.Candle.LEDState;
+
 import static frc.robot.Constants.ClimberConstants.*;
 
 
@@ -18,6 +22,7 @@ public class AutoClimb extends SequentialCommandGroup{
 
         addRequirements(climbingSubsystem);
         addCommands(
+            new InstantCommand(() -> {Candle.getInstance().changeLedState(LEDState.Climbing);}),
 
             // First Bar Transfer
             // Rotate arms back @ default speed

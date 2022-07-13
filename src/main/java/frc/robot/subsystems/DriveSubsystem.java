@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.Candle;
 import frc.robot.utils.Logging;
 import frc.robot.utils.Targeting;
 
@@ -74,6 +75,9 @@ public class DriveSubsystem extends SubsystemBase {
     resetOdometry(new Pose2d());
     //leftMotorTop.configFactoryDefault();
     //rightMotorTop.configFactoryDefault();
+
+
+    Candle.getInstance().setRobotSpeed(() -> getWheelSpeeds().leftMetersPerSecond, () -> getWheelSpeeds().rightMetersPerSecond);;
     
 
     rightMotorControllerGroup.setInverted(RIGHT_INVERTED);

@@ -9,6 +9,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.utils.Candle;
+
 import static frc.robot.Constants.ClimberConstants.*;
 
 /**
@@ -120,6 +122,8 @@ public class ArmsToSetpoints extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Candle.getInstance().incrementClimb();
+    
     //climbingSubsystem.clearStickies();
   }
 

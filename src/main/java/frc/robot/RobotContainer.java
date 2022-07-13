@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -28,7 +29,6 @@ import frc.robot.commands.intake.RejectBall;
 import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.Shoot;
-import frc.robot.subsystems.CandleSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -64,7 +64,6 @@ public class RobotContainer {
   private final static ClimbingSubsystem climbingSubsystem = new ClimbingSubsystem();
   private final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final static LoaderSubsystem loaderSubsystem = new LoaderSubsystem();
-  private final static CandleSubsystem candleSubsystem = new CandleSubsystem();
   
 
   private final XboxController joystick = new XboxController(Constants.JoystickConstants.MAIN_JOYSTICK);
@@ -73,6 +72,7 @@ public class RobotContainer {
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("RobotContainer");
   private static boolean isTeamRed = false;
+  private static boolean teamColorSet = false;
   // private static BooleanSupplier isTeamRed = () -> false;//() ->
   // NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false);
 
@@ -159,7 +159,7 @@ public class RobotContainer {
     // Invert drive when using rear camera
     DoubleSupplier fwd = () -> -joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
-    Candle.getInstance().setRobotSpeed(fwd, rot);
+    Candle.getInstance().setCandleJoystickValues(fwd, rot);
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));
@@ -185,6 +185,8 @@ public class RobotContainer {
         - joystick.getRightTriggerAxis() * ClimberConstants.MANUAL_UP_VOLTS);
     DoubleSupplier rotation = () -> -joystick.getRightY() * ClimberConstants.MAX_ROTATOR_VOLTS;
 
+    Candle.getInstance().setClimbSuppliers(() -> joystick.getLeftTriggerAxis(), () -> joystick.getRightTriggerAxis(), () -> joystick.getRightY());
+
     // TODO move to schedule in auto
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
@@ -193,7 +195,9 @@ public class RobotContainer {
         .toggleWhenPressed(new ManualArms(climbingSubsystem, extension, rotation))
         .toggleWhenPressed(stopToClimb)
         .toggleWhenPressed(new InstantCommand(() -> {
-          driveMode = !driveMode;
+          if(driveMode) Candle.getInstance().changeLedState(LEDState.ManualClimbing);
+          else Candle.getInstance().changeLedState(LEDState.Idle);
+          driveMode = !driveMode;          
         }));
 
     // Start auto climb when left menu button pressed, and release to stop. Press X
@@ -218,7 +222,7 @@ public class RobotContainer {
         new ClearClimbingFaults(climbingSubsystem)
             .andThen(
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_HIGH,
-                    isTeamRed)))
+                    rejectBalls)))
         .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // Shoot low when A button is pressed
@@ -226,7 +230,7 @@ public class RobotContainer {
         new ClearClimbingFaults(climbingSubsystem)
             .andThen(
                 new Shoot(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_LOW,
-                    isTeamRed)))
+                    rejectBalls)))
         .whenReleased(new ArmsToSetpoints(climbingSubsystem, 0, 0, 4, 1));
 
     // shooterSubsystem.setDefaultCommand(new IdleShooter(shooterSubsystem));
@@ -260,13 +264,14 @@ public class RobotContainer {
     // System.err.println(autoChooser.getSelected().getName());
 
     // Follow path, then cut voltage to motors (stop)
+    Candle.getInstance().changeLedState(LEDState.Idle);
 
 
     if (autoChooser.getSelected() == null) {
       return new InstantCommand();
     }
     return autoChooser.getSelected().andThen(driveSubsystem::disable).andThen(shooterSubsystem::disable)
-        .andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable).andThen(() -> Candle.getInstance().changeLedState(LEDState.Idle));
+        .andThen(intakeSubsystem::disable).andThen(loaderSubsystem::disable);
   }
 
   public void testModeRunArms() {
@@ -302,8 +307,11 @@ public class RobotContainer {
     intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
   }
 
-  public void setTeamColor() {
-    isTeamRed = NetworkTablesHelper.getBoolean("FMSInfo", "IsRedAlliance", false);
+  public static void setTeamColor() {
+    if(!teamColorSet && NetworkTableInstance.getDefault().isConnected()) {
+      teamColorSet = true;
+      isTeamRed = NetworkTablesHelper.getBoolean("FMSInfo", "IsRedAlliance", false);
+    }
   }
 
   public void updatePose() {

@@ -13,6 +13,8 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Candle;
+import frc.robot.utils.Candle.LEDState;
 
 import static frc.robot.Constants.LoaderConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -58,6 +60,9 @@ public class RejectBall extends CommandBase {
         reject = true;
       }
     }
+
+
+    Candle.getInstance().changeLedState(LEDState.Reject);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -103,6 +108,7 @@ public class RejectBall extends CommandBase {
   public void end(boolean interrupted) {
     loaderSubsystem.disable();
     shooterSubsystem.disable();
+    Candle.getInstance().changeLedState(LEDState.Idle);
   }
 
   // Returns true when the command should end.

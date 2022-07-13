@@ -44,6 +44,7 @@ public class Shoot extends CommandBase {
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
+    this.reject = reject;
     addRequirements(loaderSubsystem, shooterSubsystem);
   }
   public Shoot(IntakeSubsystem intakeSubsystem, LoaderSubsystem loaderSubsystem, ShooterSubsystem shooterSubsystem,
@@ -52,6 +53,7 @@ public class Shoot extends CommandBase {
     this.shooterSubsystem = shooterSubsystem;
     this.shooterProfiles = shooterProfile;
     this.intakeSubsystem = intakeSubsystem;
+    this.reject = false;
     addRequirements(loaderSubsystem, shooterSubsystem);
 
   }
@@ -67,16 +69,19 @@ public class Shoot extends CommandBase {
   public void execute() {
     // If so, surround color sensor calls in try/catch loop
     // Check ball color and team color chosen
-    if (intakeSubsystem.isBallLow() && reject
+    if (
+     // intakeSubsystem.isBallLow() && 
+      reject
       // If ball is blue and we are red
       && ((BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
       // If ball is red and we are blue
-      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()))) { 
+      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !RobotContainer.getTeamColor()))) { 
         // Reject current ball
         // If behavior is unexpected, try updating flywheel setpoints for a set
         // timer, then reverting back to previous setpoints.
         // Make sure to revert to old setpoints when command ends/ is cancelled.
         this.cancel();
+        Candle.getInstance().changeLedState(LEDState.ReverseIntake);
         CommandScheduler.getInstance().schedule(
           new ShootTimed(intakeSubsystem, loaderSubsystem, shooterSubsystem, ShooterConstants.SHOOTER_PROFILE_REJECT, AutoConstants.SHOOT_TIME_1B));
     }

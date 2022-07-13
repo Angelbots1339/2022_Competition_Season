@@ -186,7 +186,7 @@ public final class Constants {
         // Config
         public final static boolean LOADER_INVERSE = true;
 
-        public final static ColorRange RED = new ColorRange(990, 500, 100, 600);
+        public final static ColorRange RED = new ColorRange(990, 500, 100, 750);
         public final static ColorRange BLUE = new ColorRange(280, 620, 540, 600);    
     }
 

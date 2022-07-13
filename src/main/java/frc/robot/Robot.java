@@ -21,6 +21,7 @@ import frc.robot.utils.Candle.LEDState;
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private Boolean hasBeenEnabled = false;
   //CANdle candle = new CANdle(37);
 
   
@@ -32,10 +33,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     LiveWindow.disableAllTelemetry();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our  
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-
+    Candle.getInstance().changeLedState(LEDState.PreMatch);
   }
 
   /**
@@ -61,6 +62,13 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     if(this.isTest()) robotContainer.clearClimberStickies();
+
+
+    if(hasBeenEnabled){
+      Candle.getInstance().changeLedState(LEDState.Disabled);
+    } else {
+      Candle.getInstance().changeLedState(LEDState.PreMatch);
+    }
   }
 
   @Override
@@ -75,8 +83,8 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
-    Candle.getInstance().changeLedState(LEDState.Auto);
 
+    hasBeenEnabled = true;
   }
 
   /** This function is called periodically during autonomous. */
@@ -92,7 +100,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
-    
+    hasBeenEnabled = true;
 
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
@@ -125,6 +133,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    hasBeenEnabled = true;
   }
 
   /** This function is called periodically during test mode. */
