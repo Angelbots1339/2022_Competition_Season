@@ -8,7 +8,9 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.Candle;
 import frc.robot.utils.ShooterProfiles;
+import frc.robot.utils.Candle.LEDState;
 
 public class ShootTimed extends CommandBase {
     Timer timer;
@@ -28,6 +30,9 @@ public class ShootTimed extends CommandBase {
 
     @Override
     public void initialize() {
+        
+        Candle.getInstance().changeLedState(LEDState.Fire);
+
 
     timer.start();    
 
@@ -53,6 +58,8 @@ public class ShootTimed extends CommandBase {
         loaderSubsystem.runLoader(0);
 
         intakeSubsystem.runIndexerLow(0);
+        Candle.getInstance().changeLedState(LEDState.Idle);
+
 
 
     }

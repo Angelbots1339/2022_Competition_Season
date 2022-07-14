@@ -53,6 +53,7 @@ public class Candle {
         Reject,
         Disabled,
         PreMatch,
+        TestMode,
         Off
     }
 
@@ -144,7 +145,7 @@ public class Candle {
                 break;
             case Auto:
 
-                candle.animate(new RainbowAnimation(1, 1, 120, false, 8));
+                //  candle.animate(new LarsonAnimation(255, 0, 255, 0, 0.01, 120, BounceMode.Back, 7, 8), 1);
                 currentState = LEDState.Auto;
                 break;
             case ReverseIntake:
@@ -176,6 +177,11 @@ public class Candle {
                 // candle.animate(new SingleFadeAnimation(255, 0, 0, 0, 0.1, 120, 8), 1);
 
                 currentState = LEDState.PreMatch;
+                break;
+            case TestMode:
+                candle.animate(new SingleFadeAnimation(200, 70, 0, 0, 0.1, 120, 8), 1);
+
+                currentState = LEDState.TestMode;
                 break;
             case Off:
 

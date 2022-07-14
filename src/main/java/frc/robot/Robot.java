@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    Candle.getInstance().changeLedState(LEDState.Idle);
     robotContainer.setTeamColor();
     autonomousCommand = robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
@@ -100,6 +101,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
 
+    Candle.getInstance().changeLedState(LEDState.Idle);
+
     hasBeenEnabled = true;
 
     if (autonomousCommand != null) {
@@ -112,14 +115,7 @@ public class Robot extends TimedRobot {
     robotContainer.setOverrideRejectBalls(false);
     robotContainer.clearClimberStickies();
     robotContainer.setPipeline();
-    // robotContainer.setTeamColor();
-    // timer = new Timer();
-    // timer.start();
-    
-    // candle.configLEDType(LEDStripType.GRB);
-    // ColorFlowAnimation c = new ColorFlowAnimation(255, 0, 0, 255, .1, 60 * 2, Direction.Forward, 8);
-    // candle.animate(c, 1);
-// System.out.println(candle.setLEDs(255, 255, 255, 255, 0, 8).name());
+
     
   }
 
@@ -134,6 +130,8 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
     hasBeenEnabled = true;
+    Candle.getInstance().changeLedState(LEDState.TestMode);
+
   }
 
   /** This function is called periodically during test mode. */
