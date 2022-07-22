@@ -93,6 +93,14 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         grabTimed("1BForward", 2, REGULAR)
                 ));
 
+        this.add(
+                "1 Ball Left",
+                "1BForwardLeft",
+                new SequentialCommandGroup(
+                        shoot(SHOOT_TIME_1B, SHOOTER_PROFILE_HIGH),
+                        grabTimed("1BForwardLeft", 2, REGULAR)
+                ));
+
         // Shoots ball and hides opponent's
         this.add(
                 "1 Ball Alt 1", 
@@ -125,11 +133,23 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 
                 );
 
+        this.add(
+                "2 Ball Hide Wait 4 Fender",
+                "2BGrab",
+                new SequentialCommandGroup(
+                                grabDriveShootWait("2BGrab", "2BShoot", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, REGULAR),
+                                grab("2BHide", REGULAR),
+                                eject(3),
+                                turnTimed(HALF_TURN_TIME, TURN_VOLTS)
+                        )
+                
+                );
+
         // Grabs a different second ball and shoots
         this.add(
                 "2 Ball Alt 1",
                 "4BGrab1stSet",
-                grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B, SHOOTER_PROFILE_HIGH, 2, REGULAR)
+                grabGrabShoot("4BGrab1stSet", "4BShoot1stSet", SHOOT_TIME_2B + 5, SHOOTER_PROFILE_HIGH, 2, REGULAR)
                 );
         // Grabs another different second ball and shoots
         this.add(
@@ -339,6 +359,13 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                 grab(grabPath, folderName), drive(drivePath, folderName), shoot(time, shooterProfile)
         );
     }
+
+    private SequentialCommandGroup grabDriveShootWait(String grabPath, String drivePath, double time, ShooterProfiles shooterProfile, double seconds, String folderName) {
+        return new SequentialCommandGroup(
+                grab(grabPath, folderName), new WaitCommand(seconds), drive(drivePath, folderName), shoot(time, shooterProfile)
+        );
+    }
+
     private SequentialCommandGroup grabGrabShoot(String grabPath, String drivePath, double shootTime, ShooterProfiles shooterProfile, double grabTime, String folderName) {
         return new SequentialCommandGroup(
                 grab(grabPath, folderName), grabTimed(drivePath, grabTime, folderName), shoot(shootTime, shooterProfile)

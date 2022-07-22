@@ -125,7 +125,7 @@ public class ClimbingSubsystem extends SubsystemBase {
         extenderLeftMotor.setSelectedSensorPosition(0);
         extenderRightMotor.setSelectedSensorPosition(0);
         if(resetAngle) {
-            leftEncoder.reset();;
+            leftEncoder.reset();
             rightEncoder.reset();
         }
     }
@@ -300,6 +300,7 @@ public class ClimbingSubsystem extends SubsystemBase {
     }
 
     public double getLeftAngle() {
+        // return 7;
         return Math.IEEEremainder(-leftEncoder.get() * 360, 180);
     }
     public double getRightAngleOffset() {

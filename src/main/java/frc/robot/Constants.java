@@ -258,11 +258,11 @@ public final class Constants {
         // General
         public final static double AIM_WHEEL_TOLERANCE = 70; // 70 rpm
         public final static double POWER_WHEEL_TOLERANCE = 70; // 70 rpm
-        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1400, () -> 3350); // () -> 1260, () -> 3015
+        public final static ShooterProfiles SHOOTER_PROFILE_HIGH = new ShooterProfiles(() -> 1350, () -> 3750); // () -> 1450, () -> 3350
         public final static ShooterProfiles SHOOTER_PROFILE_LOW = new ShooterProfiles(() -> 1200, () -> 1100); // 1200, 1100
         public final static ShooterProfiles SHOOTER_PROFILE_REJECT = new ShooterProfiles(() -> 700, () -> 300);
 
-        // Ports
+        // Ports    
         public final static int LEFT_POWER_WHEEL = 11; // 11
         public final static int RIGHT_POWER_WHEEL = 32; // 12
         public final static int AIM_WHEEL = 13; // 13
