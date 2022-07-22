@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,7 +39,6 @@ public class ShooterSubsystem extends SubsystemBase {
     powerWheelRight.setInverted(RIGHT_POWER_WHEEL_INVERTED);
     powerWheelLeft.setInverted(LEFT_POWER_WHEEL_INVERTED);
 
-    //TODO remove after running once
     powerWheelRight.setStatusFramePeriod(StatusFrame.Status_1_General, powerWheelLeft.getStatusFramePeriod(StatusFrame.Status_1_General));
     powerWheelRight.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, powerWheelLeft.getStatusFramePeriod(StatusFrame.Status_2_Feedback0));
 

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.utils.ColorRange;
 import frc.robot.utils.ShooterProfiles;
 
-import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 
 

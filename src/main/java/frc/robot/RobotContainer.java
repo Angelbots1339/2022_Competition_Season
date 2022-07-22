@@ -159,7 +159,6 @@ public class RobotContainer {
     // Invert drive when using rear camera
     DoubleSupplier fwd = () -> -joystick.getLeftY();
     DoubleSupplier rot = () -> -joystick.getRightX() * DriveConstants.ROT_SCALE;
-    Candle.getInstance().setCandleJoystickValues(fwd, rot);
 
     // Set drive default command to left Y (speed) right X (turn)
     driveSubsystem.setDefaultCommand(new ArcadeDrive(fwd, rot, driveSubsystem));

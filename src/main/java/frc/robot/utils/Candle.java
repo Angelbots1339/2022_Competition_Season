@@ -10,21 +10,15 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-import com.ctre.phoenix.led.CANdle;
 
 import frc.robot.RobotContainer;
 import frc.robot.Constants.CandleConstants;
@@ -32,8 +26,6 @@ import frc.robot.Constants.CandleConstants;
 /** Add your docs here. */
 public class Candle {
     private static Candle CANDLE = null;
-
-    private boolean clearAllAnims;
 
     private int climbIndx = 0;
 
@@ -48,7 +40,6 @@ public class Candle {
         Intake,
         Climbing,
         ManualClimbing,
-        Auto,
         ReverseIntake,
         Reject,
         Disabled,
@@ -58,9 +49,6 @@ public class Candle {
     }
 
     private LEDState currentState = LEDState.Off;
-
-    private DoubleSupplier fwd;
-    private DoubleSupplier rot;
 
     private DoubleSupplier leftTrigger;
     private DoubleSupplier rightTrigger;
@@ -82,41 +70,17 @@ public class Candle {
         candle.configLOSBehavior(true);
     }
 
-    public void incrementAnimation() {
-        System.out.println(currentState);
-        switch (currentState) {
-            case Off:
-                changeLedState(LEDState.Fire);
-                break;
-            case Fire:
-                changeLedState(LEDState.Intake);
-                break;
-            case Intake:
-                changeLedState(LEDState.Idle);
-                break;
-            case Idle:
-                changeLedState(LEDState.Climbing);
-                break;
-            case Climbing:
-                changeLedState(LEDState.Fire);
-                break;
-            case ReverseIntake:
-                changeLedState(LEDState.ReverseIntake);
-                break;
-        }
-    }
-
     public void incrementClimb() {
         ++climbIndx;
     }
 
-    public void changeLedState(LEDState fire) {
+    public void changeLedState(LEDState state) {
 
         for (int i = 0; i < 10; ++i) {
             candle.clearAnimation(i);
         }
         candle.setLEDs(0, 0, 0, 0, 8, 128);
-        switch (fire) {
+        switch (state) {
             case Fire:
                 candle.animate(new FireAnimation(1, 0.7, 32, 0.8, 0.4, false, 8), 1);
                 candle.animate(new FireAnimation(1, 0.7, 32, 0.8, 0.4, true, 120 + 8 - 32), 2);
@@ -142,11 +106,6 @@ public class Candle {
                 // candle.animate(new LarsonAnimation(255, 140, 0, 0, 0.7, 120, BounceMode.Back, 3, 8), 1);
                 currentState = LEDState.Climbing;
 
-                break;
-            case Auto:
-
-                //  candle.animate(new LarsonAnimation(255, 0, 255, 0, 0.01, 120, BounceMode.Back, 7, 8), 1);
-                currentState = LEDState.Auto;
                 break;
             case ReverseIntake:
 
@@ -293,11 +252,6 @@ public class Candle {
 
     }
 
-    public void setCandleJoystickValues(DoubleSupplier fwd, DoubleSupplier rot) {
-        this.fwd = fwd;
-        this.rot = rot;
-    }
-
     public void setRobotSpeed(DoubleSupplier LSpeed, DoubleSupplier RSpeed) {
         this.RSpeed = RSpeed;
         this.LSpeed = LSpeed;
@@ -338,10 +292,6 @@ public class Candle {
 
     public void configStatusLedBehavior(boolean offWhenActive) {
         candle.configStatusLedState(offWhenActive, 0);
-    }
-
-    public void clearAllAnims() {
-        clearAllAnims = true;
     }
 
     public void setAllToColor(int r, int g, int b) {

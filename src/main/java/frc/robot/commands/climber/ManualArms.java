@@ -9,8 +9,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbingSubsystem;
-import frc.robot.utils.Candle;
-import frc.robot.utils.Candle.LEDState;
 
 public class ManualArms extends CommandBase {
   private final ClimbingSubsystem climbingSubsystem;

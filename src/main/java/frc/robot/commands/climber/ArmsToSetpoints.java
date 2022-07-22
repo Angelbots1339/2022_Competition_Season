@@ -52,6 +52,8 @@ public class ArmsToSetpoints extends CommandBase {
    * @param angleSetpoint Target rotation
    * @param extenderVoltage Voltage to drive extension
    * @param rotatorVoltage Voltage to drive rotation
+   * @param stallRotate Enable stalling to try and hold position
+   * @param stopEnd Never finish if true
    */
   public ArmsToSetpoints(ClimbingSubsystem climbingSubsystem, double lengthSetpoint, double angleSetpoint, double extenderVoltage, double rotatorVoltage, boolean stallRotate, boolean stopEnd) {
     addRequirements(climbingSubsystem);
@@ -183,9 +185,7 @@ public class ArmsToSetpoints extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    if(stopEnd) {
-      return false;
-    }
+    if(stopEnd) return false;
     if (stopRoatator || stallRotate) {
       return (isWithinThreshold(climbingSubsystem.getRightLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD)
           && isWithinThreshold(climbingSubsystem.getLeftLength(), lengthSetpoint, EXTENDER_SETPOINT_THRESHOLD))

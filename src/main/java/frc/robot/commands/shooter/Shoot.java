@@ -18,7 +18,6 @@ import frc.robot.utils.ShooterProfiles;
 import frc.robot.utils.Candle.LEDState;
 
 import static frc.robot.Constants.LoaderConstants.*;
-import java.util.function.BooleanSupplier;
 
 public class Shoot extends CommandBase {
 
@@ -73,9 +72,9 @@ public class Shoot extends CommandBase {
      // intakeSubsystem.isBallLow() && 
       reject
       // If ball is blue and we are red
-      && ((BLUE.colorMatch(intakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
+      && ((BLUE.colorMatch(IntakeSubsystem.getColorSensorRaw()) && RobotContainer.getTeamColor()) 
       // If ball is red and we are blue
-      || (RED.colorMatch(intakeSubsystem.getColorSensorRaw()) && !RobotContainer.getTeamColor()))) { 
+      || (RED.colorMatch(IntakeSubsystem.getColorSensorRaw()) && !RobotContainer.getTeamColor()))) { 
         // Reject current ball
         // If behavior is unexpected, try updating flywheel setpoints for a set
         // timer, then reverting back to previous setpoints.

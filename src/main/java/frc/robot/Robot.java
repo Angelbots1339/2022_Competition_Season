@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Candle.getInstance().changeLedState(LEDState.Idle);
-    robotContainer.setTeamColor();
+    RobotContainer.setTeamColor();
     autonomousCommand = robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-    robotContainer.setTeamColor();
+    RobotContainer.setTeamColor();
     robotContainer.resetOdometry();
     robotContainer.resetArms();
     robotContainer.setDriveMode();

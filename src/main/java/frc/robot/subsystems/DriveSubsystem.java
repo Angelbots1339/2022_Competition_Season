@@ -25,7 +25,6 @@ import frc.robot.utils.Targeting;
 
 import static frc.robot.Constants.DriveConstants.*;
 
-import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
@@ -105,7 +104,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void updatePose() {
-    // FIXME Put back in periodic if autos are weird
     pose = driveOdometry.update(getHeading(), getDistanceLeft(), getDistanceRight());
   }
 

@@ -5,7 +5,6 @@
 package frc.robot.commands.auto;
 
 import java.util.ArrayList;
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
 
-import frc.robot.RobotContainer;
 import frc.robot.commands.drive.FollowTrajectory;
 import frc.robot.commands.drive.TurnSimple;
 import frc.robot.commands.drive.TurnToAngle;
@@ -120,7 +118,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
                         )
                 
                 );
-        // TODO Upgrade 2BHide to hide 2 balls, probably using turntoangle
+                
         this.add(
                 "2 Ball Hide",
                 "2BGrab",
@@ -310,7 +308,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
      * Drive a path, run intake on a timer
      * @param pathName
      * @param grabTime
-     * @return
+     * @return Built command
      */
     private ParallelDeadlineGroup grabTimed(String pathName, double grabTime, String folderName) {
         return new ParallelDeadlineGroup(
@@ -333,7 +331,7 @@ public final class AutoSequences extends ArrayList<NamedSequentialCommandGroup> 
      * Shoot for a given time
      * @param time
      * @param shooterProfile
-     * @return
+     * @return Built command
      */
     private ParallelDeadlineGroup shoot(double time, ShooterProfiles shooterProfile) {
         return new ParallelDeadlineGroup(
