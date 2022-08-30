@@ -113,7 +113,6 @@ public class RobotContainer {
    */
   public void addAutoCommands() {
     // Sequence
-    // TODO adding autos overrunning loop times? try timer & speed up code or start
     // new thread
     autos.forEach((cmd) -> autoChooser.addOption(cmd.toString(), cmd));
 
@@ -186,7 +185,6 @@ public class RobotContainer {
 
     Candle.getInstance().setClimbSuppliers(() -> joystick.getLeftTriggerAxis(), () -> joystick.getRightTriggerAxis(), () -> joystick.getRightY());
 
-    // TODO move to schedule in auto
     climbingSubsystem.setDefaultCommand(new ManualArms(climbingSubsystem, extension, () -> 0));
 
     // Right Menu to toggle between driving and climbing
