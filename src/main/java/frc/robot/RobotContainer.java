@@ -234,18 +234,35 @@ public class RobotContainer {
 
     /* INTAKE */
 
+    // TODO Uncomment this code when we add back in retraction
+
     // Run Intake-in while the left bumper is held
-    new JoystickButton(joystick, LEFT_BUMPER)
-        .whenHeld(
-            new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)))
-        .whenReleased(
-            new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
+    // new JoystickButton(joystick, LEFT_BUMPER)
+    //     .whenHeld(
+      //         new DeployIntake(intakeSubsystem).andThen(new RunIntake(intakeSubsystem, loaderSubsystem)))
+      //     .whenReleased(
+        //         new RetractIntake(intakeSubsystem).andThen(new RejectBall(loaderSubsystem, shooterSubsystem, true)));
+        
+            new JoystickButton(joystick, LEFT_BUMPER)
+                .whenHeld(
+                    new RunIntake(intakeSubsystem, loaderSubsystem))
+                .whenReleased(
+                    new RejectBall(loaderSubsystem, shooterSubsystem, true));
+        
+
+    // TODO Uncomment this code when we add back in retraction
 
     // Run reverse intake when right bumper is pressed
+    // new JoystickButton(joystick, RIGHT_BUMPER)
+    //     .whenHeld(
+    //         new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)))
+    //     .whenReleased(new RetractIntake(intakeSubsystem));
+
+
     new JoystickButton(joystick, RIGHT_BUMPER)
         .whenHeld(
-            new DeployIntake(intakeSubsystem).andThen(new EjectBalls(intakeSubsystem, loaderSubsystem)))
-        .whenReleased(new RetractIntake(intakeSubsystem));
+            new EjectBalls(intakeSubsystem, loaderSubsystem));
+        
 
     // loaderSubsystem.setDefaultCommand(new RejectBall(loaderSubsystem,
     // shooterSubsystem, rejectBalls));
@@ -298,10 +315,6 @@ public class RobotContainer {
     if (joystick.getBButton()) {
       rightVolts = -1.5;
     }
-    if (joystick.getYButton()) {
-      intakeSubsystem.resetIntake();
-    }
-    intakeSubsystem.setDeployMotorsVolts(leftVolts, rightVolts);
   }
 
   public static void setTeamColor() {

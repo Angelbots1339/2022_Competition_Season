@@ -143,25 +143,17 @@ public final class Constants {
         // General
         public final static double MAX_INDEXER_PERCENT = 0.5;
         public final static double MAX_INTAKE_PERCENT = 1;
+
         public final static double INTAKE_DEPLOY_SPEED = .2;
         public final static double INTAKE_DEPLOY_TIME = .4;
-        public final static double INTAKE_RETRACT_VOLTS =10;//= 10;
-        public final static double INTAKE_DEPLOY_VOLTS = 6;//7;
 
-        public final static double RETRACTION_THRESHOLD = 0.2;
         public final static double ROTATIONS_TO_METERS = Units.inchesToMeters(25 * Math.PI);
-        public final static double DEPLOY_SETPOINT = 40; // rot
-        public final static double RETRACTION_SETPOINT = 7;
-        public final static boolean LEFT_DEPLOY_INVERTED = true;
 
 
         // Ports
         public final static int INTAKE_MOTOR_PORT = 7;
         public final static int INDEXER_RIGHT_PORT = 9;
         public final static int INDEXER_LEFT_PORT = 28;
-
-        public final static int INTAKE_RETRACT_LEFT_PORT = 18;
-        public final static int INTAKE_RETRACT_RIGHT_PORT = 19;
 
         // Config
         public final static boolean INDEXER_LEFT_INVERTED = true;

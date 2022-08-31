@@ -17,7 +17,6 @@ public class DeployIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setDeployMotorsVolts(INTAKE_DEPLOY_VOLTS);
         intakeSubsystem.runIntake(INTAKE_DEPLOY_SPEED);
         intakeSubsystem.runIndexerLow(MAX_INDEXER_PERCENT);
 
@@ -26,11 +25,7 @@ public class DeployIntake extends CommandBase {
     @Override
     public void execute() {
 
-        intakeSubsystem.setDeployMotorsVolts(
-            isLeftDeployed() ? 0 : INTAKE_DEPLOY_VOLTS,
-            isRightDeployed() ? 0 : INTAKE_DEPLOY_VOLTS);
     }
-
 
     @Override
     public void end(boolean interrupted) {
@@ -39,14 +34,7 @@ public class DeployIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return isLeftDeployed() && isRightDeployed();
+        return true;
     }
 
-    private boolean isLeftDeployed() {
-        return intakeSubsystem.getLeftPosition() > Constants.IntakeConstants.DEPLOY_SETPOINT;
-    }
-
-    private boolean isRightDeployed() {
-        return intakeSubsystem.getRightPosition() > Constants.IntakeConstants.DEPLOY_SETPOINT;
-    }
 }

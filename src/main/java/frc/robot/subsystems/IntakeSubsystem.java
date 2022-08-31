@@ -27,8 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_TalonFX intakeMotor = new WPI_TalonFX(INTAKE_MOTOR_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerLeftMotor = new WPI_TalonFX(INDEXER_LEFT_PORT, Constants.CANIVORE_NAME);
   private WPI_TalonFX indexerRightMotor = new WPI_TalonFX(INDEXER_RIGHT_PORT, Constants.CANIVORE_NAME);
-  private CANSparkMax leftRetractMotor = new CANSparkMax(INTAKE_RETRACT_LEFT_PORT, MotorType.kBrushless);
-  private CANSparkMax rightRetractMotor = new CANSparkMax(INTAKE_RETRACT_RIGHT_PORT, MotorType.kBrushless);
+  // private CANSparkMax leftRetractMotor = new CANSparkMax(INTAKE_RETRACT_LEFT_PORT, MotorType.kBrushless);
+  // private CANSparkMax rightRetractMotor = new CANSparkMax(INTAKE_RETRACT_RIGHT_PORT, MotorType.kBrushless);
 
   public static ShuffleboardTab tab = Shuffleboard.getTab("IntakeSubsystem");
 
@@ -42,12 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerRightMotor.setInverted(INDEXER_RIGHT_INVERTED);
     Constants.updateGeneralStatusFrame(indexerRightMotor);
     intakeMotor.setInverted(INTAKE_INVERTED);
-    
-    leftRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
-    rightRetractMotor.setInverted(LEFT_DEPLOY_INVERTED);
-    
-    leftRetractMotor.setIdleMode(IdleMode.kBrake);
-    rightRetractMotor.setIdleMode(IdleMode.kBrake);
+
     
     
     if(Logging.intake) {
@@ -65,8 +60,6 @@ public class IntakeSubsystem extends SubsystemBase {
     tab.addNumber("Blue Value", () -> (double)getColorSensorRaw().blue);
     tab.addNumber("Green Value", () -> (double)getColorSensorRaw().green);
     tab.addNumber("Red Value", () -> (double)getColorSensorRaw().red);
-    tab.addNumber("Retract L Position", () -> getLeftPosition());
-    tab.addNumber("Retract R Position", () -> getRightPosition());
     tab.add(this);
   }
 
@@ -86,34 +79,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
-  /**
-   * Runs the deploy motors at a set voltage
-   * 
-   * @param volts
-   */
-  public void setDeployMotorsVolts(double volts){
-    setDeployMotorsVolts(volts, volts);
-  }
-  public void setDeployMotorsVolts(double leftVolts, double rightVolts){
-    leftRetractMotor.setVoltage(leftVolts * (LEFT_DEPLOY_INVERTED ? -1 : 1));
-    rightRetractMotor.setVoltage(rightVolts * (LEFT_DEPLOY_INVERTED ? 1 : -1));
-  }
+  
 
-  /**
-   * @return Current position of the left retract motor position in rotations
-   */
-  public double getLeftPosition() {
-    return leftRetractMotor.getEncoder().getPosition() * (LEFT_DEPLOY_INVERTED ? -1 : 1);
-  }
-
-  /**
-   * 
-   * @return Current position of the right retract motor position in rotations
-   */
-  public double getRightPosition() {
-    return rightRetractMotor.getEncoder().getPosition() * (LEFT_DEPLOY_INVERTED ? 1 : -1);
-  }
-
+  
   /**
    * This will run the belts on the lower indexer
    * 
@@ -136,11 +104,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return colorSensorLow.getRawColor();
   }
 
-  public void resetIntake() {
-    leftRetractMotor.getEncoder().setPosition(0);
-    rightRetractMotor.getEncoder().setPosition(0);
-  }
-
   /**
    * Disables all motors 
    */
@@ -148,8 +111,6 @@ public class IntakeSubsystem extends SubsystemBase {
     indexerLeftMotor.set(0);
     indexerRightMotor.set(0);
     intakeMotor.set(0);
-    rightRetractMotor.set(0);
-    leftRetractMotor.set(0);
   }
 
 }
